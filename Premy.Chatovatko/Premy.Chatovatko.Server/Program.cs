@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Premy.Chatovatko.Server.Database;
+using System;
 
 namespace Premy.Chatovatko.Server
 {
@@ -7,6 +8,8 @@ namespace Premy.Chatovatko.Server
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            
+            Console.ReadLine();
         }
     }
 }
