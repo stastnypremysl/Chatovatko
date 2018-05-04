@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server.Database
 {
-    internal static class IDGenerator
+    internal static class DatabaseIDGenerator
     {
         private static ulong theLastOne = 0;
         public static ulong getNext()

@@ -45,5 +45,10 @@ namespace Premy.Chatovatko.Server.Logging
             WriteToOutput(GetProperOutput(String.Format("Database, Connection {0}", id), output));
         }
 
+        public static void LogConfigError(String output)
+        {
+            WriteToOutput(GetProperOutput("Config", output));
+        }
+
     }
 }

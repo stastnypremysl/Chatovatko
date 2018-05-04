@@ -14,17 +14,25 @@ namespace Premy.Chatovatko.Server.Database
 
         public DBConnection()
         {
-            id = IDGenerator.getNext();
-
-            theConnection = new MySqlConnection(DatabaseSelector.GetDatabaseAddress());
-            theConnection.Open();
-            Logger.LogConnectionInfo(id, "The connection has been opened");
+            id = DatabaseIDGenerator.getNext();
+            try
+            { 
+                theConnection = new MySqlConnection(DatabaseSelector.GetDatabaseAddress());
+                theConnection.Open();
+                Logger.LogConnectionInfo(id, "The connection has been opened.");
+            }
+            catch(Exception ex)
+            {
+                Logger.LogConnectionInfo(id, "The connection can't be opened.");
+                Logger.LogConnectionError(id, ex.Message);
+                throw ex;
+            }
         }
 
         ~DBConnection()
         {
             theConnection.Close();
-            Logger.LogConnectionInfo(id, "The connection has been closed");
+            Logger.LogConnectionInfo(id, "The connection has been closed.");
         }
 
         public ulong Id { get => id; set => id = value; }
