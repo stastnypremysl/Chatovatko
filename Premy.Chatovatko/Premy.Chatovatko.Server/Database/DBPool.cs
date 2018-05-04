@@ -6,7 +6,7 @@ namespace Premy.Chatovatko.Server.Database
 {
     public static class DBPool
     {
-        public DBConnection GetConnection()
+        public static DBConnection GetConnection()
         {
             return new DBConnection();
         }
