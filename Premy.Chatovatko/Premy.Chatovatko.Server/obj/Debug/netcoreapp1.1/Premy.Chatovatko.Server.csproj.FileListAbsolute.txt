@@ -1,0 +1,10 @@
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp1.1\Premy.Chatovatko.Server.deps.json
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp1.1\Premy.Chatovatko.Server.runtimeconfig.json
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp1.1\Premy.Chatovatko.Server.runtimeconfig.dev.json
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp1.1\Premy.Chatovatko.Server.dll
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp1.1\Premy.Chatovatko.Server.pdb
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp1.1\Premy.Chatovatko.Server.csprojResolveAssemblyReference.cache
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp1.1\Premy.Chatovatko.Server.csproj.CoreCompileInputs.cache
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp1.1\Premy.Chatovatko.Server.AssemblyInfo.cs
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp1.1\Premy.Chatovatko.Server.dll
+C:\OneDrive\Dokumenty\mff.cuni.cz\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp1.1\Premy.Chatovatko.Server.pdb

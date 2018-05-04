@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Libs", "Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj", "{9A3EC965-4483-4BC8-BE1A-85F14EF789F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Server", "Premy.Chatovatko.Server\Premy.Chatovatko.Server.csproj", "{D5E7BCEC-8ACF-409D-BD02-55B22CA56459}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A3EC965-4483-4BC8-BE1A-85F14EF789F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A3EC965-4483-4BC8-BE1A-85F14EF789F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A3EC965-4483-4BC8-BE1A-85F14EF789F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A3EC965-4483-4BC8-BE1A-85F14EF789F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5E7BCEC-8ACF-409D-BD02-55B22CA56459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5E7BCEC-8ACF-409D-BD02-55B22CA56459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5E7BCEC-8ACF-409D-BD02-55B22CA56459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5E7BCEC-8ACF-409D-BD02-55B22CA56459}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB2F9787-6F2B-4A72-875F-E73427F3A3FB}
+	EndGlobalSection
+EndGlobal
