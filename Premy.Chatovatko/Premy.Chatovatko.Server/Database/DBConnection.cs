@@ -7,7 +7,7 @@ using Premy.Chatovatko.Server.Logging;
 
 namespace Premy.Chatovatko.Server.Database
 {
-    public class DBConnection
+    public class DBConnection : IDisposable
     {
         private ulong id;
         private MySqlConnection theConnection;
@@ -31,12 +31,18 @@ namespace Premy.Chatovatko.Server.Database
 
         ~DBConnection()
         {
-            theConnection.Close();
-            Logger.LogConnectionInfo(id, "The connection has been closed.");
+            Dispose();
         }
 
         public ulong Id { get => id; set => id = value; }
         public MySqlConnection TheConnection { get => theConnection; }
+
+        public void Dispose()
+        {
+            theConnection.Close();
+            theConnection.Dispose();
+            Logger.LogConnectionInfo(id, "The connection has been closed.");
+        }
 
         public override bool Equals(object obj)
         {

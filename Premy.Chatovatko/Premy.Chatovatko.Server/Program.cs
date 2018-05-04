@@ -11,6 +11,7 @@ namespace Premy.Chatovatko.Server
             Console.WriteLine("Chatovatko at your service!");
 
             Config.LoadConfig();
+            ServerCert.Load();
             DBPool.Init();
             GodotFountain.Run();
 
