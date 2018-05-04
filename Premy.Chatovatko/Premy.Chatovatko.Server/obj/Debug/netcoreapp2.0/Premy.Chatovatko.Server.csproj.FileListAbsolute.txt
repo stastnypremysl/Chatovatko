@@ -9,3 +9,4 @@ C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.AssemblyInfo.cs
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.dll
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.pdb
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp2.0\config.txt

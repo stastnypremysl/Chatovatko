@@ -1,4 +1,5 @@
-﻿using Premy.Chatovatko.Server.Database;
+﻿using Premy.Chatovatko.Server.ClientListener;
+using Premy.Chatovatko.Server.Database;
 using System;
 
 namespace Premy.Chatovatko.Server
@@ -7,8 +8,12 @@ namespace Premy.Chatovatko.Server
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            
+            Console.WriteLine("Chatovatko at your service!");
+
+            Config.LoadConfig();
+            DBPool.Init();
+            GodotFountain.Run();
+
             Console.ReadLine();
         }
     }

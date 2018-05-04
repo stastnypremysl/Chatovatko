@@ -9,7 +9,7 @@ namespace Premy.Chatovatko.Server
     static class Config
     {
         public static String connectionString = "";
-        public static String certPasswd = "";
+        public static String certPasswd = null;
         public static String certAddress = "";
         public static void LoadConfig()
         {
@@ -20,7 +20,7 @@ namespace Premy.Chatovatko.Server
                     String[] parts = line.Split('=');
                     String name = parts[0];
                     String rest = "";
-                    for (int i = 0; i != parts.Length; i++)
+                    for (int i = 1; i != parts.Length; i++)
                     { 
                         rest += parts[i];
                         if(i != parts.Length - 1)

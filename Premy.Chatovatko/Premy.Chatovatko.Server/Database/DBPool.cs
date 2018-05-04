@@ -10,5 +10,10 @@ namespace Premy.Chatovatko.Server.Database
         {
             return new DBConnection();
         }
+
+        public static void Init()
+        {
+
+        }
     }
 }
