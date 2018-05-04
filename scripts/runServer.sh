@@ -9,6 +9,15 @@ SOURCE="$(readlink "$SOURCE")"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 #Run the file
+cd /tmp
+temp=$$Chat
+mkdir $temp
+
 cd $DIR/..
-cd "Premy.Chatovatko/Premy.Chatovatko.Server/bin/Debug/netcoreapp2.0"
-dotnet Premy.Chatovatko.Server.dll;
+cd "Premy.Chatovatko"
+cp -r Premy.Chatovatko.Server /tmp/$temp
+cd /tmp/$temp/Premy.Chatovatko.Server
+dotnet run;
+cd /tmp
+rm -r $temp
+
