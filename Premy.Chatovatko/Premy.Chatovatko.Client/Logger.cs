@@ -59,5 +59,10 @@ namespace Premy.Chatovatko.Client
         {
             Write(GetProperOutput("UserData", output));
         }
+
+        public static void LogConnection(String output)
+        {
+            Write(GetProperOutput("Connection", output));
+        }
     }
 }

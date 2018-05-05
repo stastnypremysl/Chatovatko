@@ -56,30 +56,39 @@ namespace Premy.Chatovatko.Server.ClientListener
             {
                 Thread.Sleep(50);
             }
-            Logger.LogGodotInfo(id, "Godot has been activated.");
-            GodotFountain.IncreaseRunning();
+            try
+            { 
+                Logger.LogGodotInfo(id, "Godot has been activated.");
+                GodotFountain.IncreaseRunning();
 
-            sslStream = new SslStream(client.GetStream(), false, App_CertificateValidation);
-            sslStream.AuthenticateAsServer(ServerCert.serverCertificate, true, SslProtocols.Tls12, true);
+                sslStream = new SslStream(client.GetStream(), false, App_CertificateValidation);
+                sslStream.AuthenticateAsServer(ServerCert.serverCertificate, true, SslProtocols.Tls12, true);
 
-            var outputMessage = "Hello from the server.";
-            var outputBuffer = Encoding.UTF8.GetBytes(outputMessage);
-            sslStream.Write(outputBuffer);
-
-
+                var outputMessage = "Hello from the server.";
+                var outputBuffer = Encoding.UTF8.GetBytes(outputMessage);
+                sslStream.Write(outputBuffer);
 
 
-            sslStream.Close();
-            client.Close();
-            GodotFountain.IncreaseDestroyed();
-            Dispose();
-            Logger.LogGodotInfo(id, "Godot has died.");
+
+            }
+            catch(Exception ex)
+            {
+                Logger.LogGodotError(id, String.Format("The godot has crashed. Exception:\n{0}", ex.Message));
+            }
+            finally
+            { 
+                sslStream.Close();
+                client.Close();
+                GodotFountain.IncreaseDestroyed();
+                Dispose();
+                Logger.LogGodotInfo(id, "Godot has died.");
+            }
         }
 
         private bool App_CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             if (sslPolicyErrors == SslPolicyErrors.None) { return true; }
-            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors) { return true; } 
+            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors) { return true; }
             Logger.LogGodotError(id, "*** SSL Error: " + sslPolicyErrors.ToString());
             return false;
         }

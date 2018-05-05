@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v2.0": {
       "Premy.Chatovatko.Server/1.0.0": {
         "dependencies": {
-          "MySql.Data": "8.0.11"
+          "MySql.Data": "8.0.11",
+          "Premy.Chatovatko.Libs": "1.0.0"
         },
         "runtime": {
           "Premy.Chatovatko.Server.dll": {}
@@ -195,6 +196,11 @@
           "Microsoft.NETCore.Targets": "1.0.1",
           "System.Runtime": "4.1.0"
         }
+      },
+      "Premy.Chatovatko.Libs/1.0.0": {
+        "runtime": {
+          "Premy.Chatovatko.Libs.dll": {}
+        }
       }
     }
   },
@@ -357,6 +363,11 @@
       "sha512": "sha512-k1S4Gc6IGwtHGT8188RSeGaX86Qw/wnrgNLshJvsdNUOPP9etMmo8S07c+UlOAx4K/xLuN9ivA1bD0LVurtIxQ==",
       "path": "system.threading.tasks/4.0.11",
       "hashPath": "system.threading.tasks.4.0.11.nupkg.sha512"
+    },
+    "Premy.Chatovatko.Libs/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

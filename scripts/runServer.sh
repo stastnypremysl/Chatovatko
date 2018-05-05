@@ -17,6 +17,7 @@ cd $DIR/..
 cd "Premy.Chatovatko"
 cp -r Premy.Chatovatko.Server /tmp/$temp
 cd /tmp/$temp/Premy.Chatovatko.Server
+cp $DIR/config.txt config.txt
 dotnet run;
 cd /tmp
 rm -r $temp

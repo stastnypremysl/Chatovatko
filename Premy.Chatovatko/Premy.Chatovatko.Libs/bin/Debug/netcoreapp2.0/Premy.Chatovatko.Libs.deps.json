@@ -6,14 +6,6 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.0": {
-      "Premy.Chatovatko.Client/1.0.0": {
-        "dependencies": {
-          "Premy.Chatovatko.Libs": "1.0.0"
-        },
-        "runtime": {
-          "Premy.Chatovatko.Client.dll": {}
-        }
-      },
       "Premy.Chatovatko.Libs/1.0.0": {
         "runtime": {
           "Premy.Chatovatko.Libs.dll": {}
@@ -22,11 +14,6 @@
     }
   },
   "libraries": {
-    "Premy.Chatovatko.Client/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
     "Premy.Chatovatko.Libs/1.0.0": {
       "type": "project",
       "serviceable": false,

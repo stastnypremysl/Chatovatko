@@ -1,1 +1,2 @@
 ﻿ServerAddress=localhost
+ServerName=Premy.Arcalipsus.Chatovatko

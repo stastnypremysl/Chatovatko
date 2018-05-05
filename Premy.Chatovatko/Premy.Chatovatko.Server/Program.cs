@@ -20,7 +20,7 @@ namespace Premy.Chatovatko.Server
             }
             catch(Exception ex)
             {
-                Logger.LogCoreError(String.Format("The server has crashed. Exception:\n{0}", ex.Message));
+                Logger.LogCoreError(String.Format("The server has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace));
             }
             finally
             { 

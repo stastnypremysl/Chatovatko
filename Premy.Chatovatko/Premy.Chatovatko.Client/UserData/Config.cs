@@ -9,6 +9,7 @@ namespace Premy.Chatovatko.Client.UserData
     public static class Config
     {
         public static String serverAddress = null;
+        public static String serverName = null;
         public static void Load()
         {
             if (!Directory.Exists(Utils.GetConfigDirectory()))
@@ -34,6 +35,7 @@ namespace Premy.Chatovatko.Client.UserData
 
             Logger.LogUserData("Trying to load client certificate.");
             ClientCertificate.theCert = new X509Certificate2(Utils.GetClientCertificate());
+            ClientCertificate.clientCertificateCollection = new X509CertificateCollection(new X509Certificate[] { ClientCertificate.theCert });
 
             Logger.LogUserData("Done!");
 
@@ -63,6 +65,9 @@ namespace Premy.Chatovatko.Client.UserData
                         case "ServerAddress":
                             serverAddress = rest;
                             break;
+                        case "ServerName":
+                            serverName = rest;
+                            break;
                         default:
                             Logger.LogUserData(String.Format("The parameter {0} doesn't exist.", name));
                             break;
@@ -72,6 +77,10 @@ namespace Premy.Chatovatko.Client.UserData
             if(serverAddress == null)
             {
                 throw new Exception("ServerAddress parameter missing.");
+            }
+            if (serverName == null)
+            {
+                throw new Exception("ServerName parameter missing.");
             }
         }
     }

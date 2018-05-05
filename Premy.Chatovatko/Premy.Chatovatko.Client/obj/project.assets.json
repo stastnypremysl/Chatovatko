@@ -196,6 +196,16 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "Premy.Chatovatko.Libs/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Premy.Chatovatko.Libs.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Premy.Chatovatko.Libs.dll": {}
+        }
       }
     }
   },
@@ -656,11 +666,17 @@
         "netstandard.library.2.0.0.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "Premy.Chatovatko.Libs/1.0.0": {
+      "type": "project",
+      "path": "../Premy.Chatovatko.Libs/Premy.Chatovatko.Libs.csproj",
+      "msbuildProject": "../Premy.Chatovatko.Libs/Premy.Chatovatko.Libs.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.NETCore.App >= 2.0.0",
+      "Premy.Chatovatko.Libs >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -695,7 +711,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj": {
+              "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
