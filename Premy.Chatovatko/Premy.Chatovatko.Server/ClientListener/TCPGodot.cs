@@ -39,6 +39,7 @@ namespace Premy.Chatovatko.Server.ClientListener
         private void Init()
         {
             connection = DBPool.GetConnection();
+
             readyForLife = true;
             Logger.LogGodotInfo(id, "Godot has been created.");
         }
@@ -66,6 +67,10 @@ namespace Premy.Chatovatko.Server.ClientListener
             sslStream.Write(outputBuffer);
 
 
+
+
+            sslStream.Close();
+            client.Close();
             GodotFountain.IncreaseDestroyed();
             Dispose();
             Logger.LogGodotInfo(id, "Godot has died.");
@@ -83,6 +88,8 @@ namespace Premy.Chatovatko.Server.ClientListener
         public void Dispose()
         {
             connection.Dispose();
+            sslStream.Dispose();
+            client.Dispose();
         }
     }
 }

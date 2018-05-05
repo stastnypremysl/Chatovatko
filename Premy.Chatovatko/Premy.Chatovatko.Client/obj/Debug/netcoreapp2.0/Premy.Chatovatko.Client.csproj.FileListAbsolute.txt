@@ -1,0 +1,11 @@
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.csprojResolveAssemblyReference.cache
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.csproj.CoreCompileInputs.cache
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.AssemblyInfoInputs.cache
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.AssemblyInfo.cs
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Client.deps.json
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Client.runtimeconfig.json
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Client.runtimeconfig.dev.json
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Client.dll
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Client.pdb
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.dll
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.pdb
