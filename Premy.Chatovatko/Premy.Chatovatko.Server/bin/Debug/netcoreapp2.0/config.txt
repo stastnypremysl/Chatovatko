@@ -1,2 +1,0 @@
-﻿ConnectionString=Server=localhost; database=chatovatko;UID=chatovatko;password=4CPaBBp8D8ascWb
-CertAddress=C:/keys/private.p12

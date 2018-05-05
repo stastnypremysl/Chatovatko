@@ -14,9 +14,8 @@ temp=$$Chat
 mkdir $temp
 
 cd $DIR/..
-cd "Premy.Chatovatko"
-cp -r Premy.Chatovatko.Server /tmp/$temp
-cd /tmp/$temp/Premy.Chatovatko.Server
+cp -r Premy.Chatovatko /tmp/$temp
+cd /tmp/$temp/Premy.Chatovatko/Premy.Chatovatko.Server
 cp $DIR/config.txt config.txt
 dotnet run;
 cd /tmp

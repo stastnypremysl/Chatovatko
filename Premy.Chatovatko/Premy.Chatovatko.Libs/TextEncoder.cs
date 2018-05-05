@@ -39,7 +39,7 @@ namespace Premy.Chatovatko.Libs
                 }
             } while (bytes != 0);
 
-            return messageData.ToString().Substring(0, messageData.Length - 3);
+            return messageData.ToString().Substring(0, messageData.Length - 5);
         }
 
         public static void SendStringToSSLStream(SslStream sslStream, String message)

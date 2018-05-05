@@ -271,3 +271,204 @@ The remote certificate is invalid according to the validation procedure.
 15:22:18; UserData; Done!
 15:22:19; Connection; Client connected.
 15:22:19; Connection; SSL authentication completed.
+19:23:45; Core; Core has started inicialization
+19:23:45; UserData; Trying to load user config.
+19:23:45; UserData; Trying to load client certificate.
+19:23:45; UserData; Done!
+19:23:47; Core; The client has crashed. Exception:
+No connection could be made because the target machine actively refused it 127.0.0.1:8471
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Connect(EndPoint remoteEP)
+   at System.Net.Sockets.Socket.Connect(IPAddress address, Int32 port)
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+   at System.Net.Sockets.TcpClient..ctor(String hostname, Int32 port)
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 25
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:25:00; Core; Core has started inicialization
+19:25:00; UserData; Trying to load user config.
+19:25:00; UserData; Trying to load client certificate.
+19:25:00; UserData; Done!
+19:25:03; Core; The client has crashed. Exception:
+No connection could be made because the target machine actively refused it 127.0.0.1:8471
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Connect(EndPoint remoteEP)
+   at System.Net.Sockets.Socket.Connect(IPAddress address, Int32 port)
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+   at System.Net.Sockets.TcpClient..ctor(String hostname, Int32 port)
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 25
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:28:17; Core; Core has started inicialization
+19:28:17; UserData; Trying to load user config.
+19:28:17; UserData; Trying to load client certificate.
+19:28:17; UserData; Done!
+19:28:19; Connection; Client connected.
+19:28:20; Connection; SSL authentication completed.
+19:28:20; Core; The client has crashed. Exception:
+Length cannot be less than zero.
+Parameter name: length
+   at System.String.Substring(Int32 startIndex, Int32 length)
+   at Premy.Chatovatko.Libs.TextEncoder.ReadStringFromSSLStream(SslStream sslStream) in /mnt/c/Users/premy/Documents/Chatovatko/Premy.Chatovatko/Premy.Chatovatko.Libs/TextEncoder.cs:line 42
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 32
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:29:57; Core; Core has started inicialization
+19:29:57; UserData; Trying to load user config.
+19:29:57; UserData; Trying to load client certificate.
+19:29:57; UserData; Done!
+19:29:59; Connection; Client connected.
+19:29:59; Connection; SSL authentication completed.
+19:29:59; Core; The client has crashed. Exception:
+Length cannot be less than zero.
+Parameter name: length
+   at System.String.Substring(Int32 startIndex, Int32 length)
+   at Premy.Chatovatko.Libs.TextEncoder.ReadStringFromSSLStream(SslStream sslStream) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\TextEncoder.cs:line 42
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 32
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:30:25; Core; Core has started inicialization
+19:30:25; UserData; Trying to load user config.
+19:30:25; UserData; Trying to load client certificate.
+19:30:25; UserData; Done!
+19:30:27; Connection; Client connected.
+19:30:27; Connection; SSL authentication completed.
+19:30:27; Core; The client has crashed. Exception:
+Length cannot be less than zero.
+Parameter name: length
+   at System.String.Substring(Int32 startIndex, Int32 length)
+   at Premy.Chatovatko.Libs.TextEncoder.ReadStringFromSSLStream(SslStream sslStream) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\TextEncoder.cs:line 42
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 32
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:30:50; Core; Core has started inicialization
+19:30:50; UserData; Trying to load user config.
+19:30:50; UserData; Trying to load client certificate.
+19:30:50; UserData; Done!
+19:30:51; Connection; Client connected.
+19:30:51; Connection; SSL authentication completed.
+19:30:52; Core; The client has crashed. Exception:
+Length cannot be less than zero.
+Parameter name: length
+   at System.String.Substring(Int32 startIndex, Int32 length)
+   at Premy.Chatovatko.Libs.TextEncoder.ReadStringFromSSLStream(SslStream sslStream) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\TextEncoder.cs:line 42
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 32
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:38:38; Core; Core has started inicialization
+19:38:38; UserData; Trying to load user config.
+19:38:38; UserData; Trying to load client certificate.
+19:38:38; UserData; Done!
+19:38:40; Connection; Client connected.
+19:38:40; Connection; SSL authentication completed.
+19:38:40; Core; The client has crashed. Exception:
+Length cannot be less than zero.
+Parameter name: length
+   at System.String.Substring(Int32 startIndex, Int32 length)
+   at Premy.Chatovatko.Libs.TextEncoder.ReadStringFromSSLStream(SslStream sslStream) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\TextEncoder.cs:line 42
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 32
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:39:11; Core; Core has started inicialization
+19:39:11; UserData; Trying to load user config.
+19:39:11; UserData; Trying to load client certificate.
+19:39:11; UserData; Done!
+19:39:13; Connection; Client connected.
+19:39:13; Connection; SSL authentication completed.
+19:39:13; Core; The client has crashed. Exception:
+Length cannot be less than zero.
+Parameter name: length
+   at System.String.Substring(Int32 startIndex, Int32 length)
+   at Premy.Chatovatko.Libs.TextEncoder.ReadStringFromSSLStream(SslStream sslStream) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\TextEncoder.cs:line 42
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 32
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:40:39; Core; Core has started inicialization
+19:40:39; UserData; Trying to load user config.
+19:40:39; UserData; Trying to load client certificate.
+19:40:39; UserData; Done!
+19:40:41; Core; The client has crashed. Exception:
+No connection could be made because the target machine actively refused it 127.0.0.1:8471
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Connect(EndPoint remoteEP)
+   at System.Net.Sockets.Socket.Connect(IPAddress address, Int32 port)
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+   at System.Net.Sockets.TcpClient..ctor(String hostname, Int32 port)
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 25
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:40:57; Core; Core has started inicialization
+19:40:57; UserData; Trying to load user config.
+19:40:57; UserData; Trying to load client certificate.
+19:40:57; UserData; Done!
+19:40:59; Connection; Client connected.
+19:40:59; Connection; SSL authentication completed.
+19:40:59; Core; The client has crashed. Exception:
+Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 32
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:43:11; Core; Core has started inicialization
+19:43:12; UserData; Trying to load user config.
+19:43:12; UserData; Trying to load client certificate.
+19:43:12; UserData; Done!
+19:43:13; Connection; Client connected.
+19:43:13; Connection; SSL authentication completed.
+19:43:14; Connection; Data connection has been successfully estamblished.
+19:44:48; Core; Core has started inicialization
+19:44:48; UserData; Trying to load user config.
+19:44:48; UserData; Trying to load client certificate.
+19:44:48; UserData; Done!
+19:44:49; Connection; Client connected.
+19:44:50; Connection; SSL authentication completed.
+19:44:51; Connection; Data connection has been successfully estamblished.
+19:47:05; Core; Core has started inicialization
+19:47:05; UserData; Trying to load user config.
+19:47:05; UserData; Trying to load client certificate.
+19:47:05; UserData; Done!
+19:47:07; Connection; Client connected.
+19:47:08; Connection; SSL authentication completed.
+19:47:10; Connection; Data connection has been successfully estamblished.
+19:48:18; Core; Core has started inicialization
+19:48:18; UserData; Trying to load user config.
+19:48:18; UserData; Trying to load client certificate.
+19:48:18; UserData; Done!
+19:48:19; Connection; Client connected.
+19:49:07; Core; Core has started inicialization
+19:49:07; UserData; Trying to load user config.
+19:49:07; UserData; Trying to load client certificate.
+19:49:07; UserData; Done!
+19:49:09; Connection; Client connected.
+19:49:53; Connection; SSL authentication completed.
+19:49:54; Connection; Data connection has been successfully estamblished.
+19:50:20; Core; Core has started inicialization
+19:50:20; UserData; Trying to load user config.
+19:50:20; UserData; Trying to load client certificate.
+19:50:20; UserData; Done!
+19:50:24; Core; The client has crashed. Exception:
+No connection could be made because the target machine actively refused it 127.0.0.1:8471
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Connect(EndPoint remoteEP)
+   at System.Net.Sockets.Socket.Connect(IPAddress address, Int32 port)
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Net.Sockets.TcpClient.Connect(String hostname, Int32 port)
+   at System.Net.Sockets.TcpClient..ctor(String hostname, Int32 port)
+   at Premy.Chatovatko.Client.Comunication.Connection.Connect() in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Comunication\Connection.cs:line 25
+   at Premy.Chatovatko.Client.Program.Main(String[] args) in C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\Program.cs:line 20
+19:50:32; Core; Core has started inicialization
+19:50:32; UserData; Trying to load user config.
+19:50:32; UserData; Trying to load client certificate.
+19:50:32; UserData; Done!
+19:50:33; Connection; Client connected.
+19:50:33; Connection; SSL authentication completed.
+19:50:34; Connection; Data connection has been successfully estamblished.
+19:52:11; Core; Core has started inicialization
+19:52:11; UserData; Trying to load user config.
+19:52:11; UserData; Trying to load client certificate.
+19:52:11; UserData; Done!
+19:52:12; Connection; Client connected.
+19:52:12; Connection; SSL authentication completed.
+19:52:13; Connection; Data connection has been successfully estamblished.
