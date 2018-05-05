@@ -1,5 +1,6 @@
 ﻿using Premy.Chatovatko.Server.ClientListener;
 using Premy.Chatovatko.Server.Database;
+using Premy.Chatovatko.Server.Logging;
 using System;
 
 namespace Premy.Chatovatko.Server
@@ -10,12 +11,21 @@ namespace Premy.Chatovatko.Server
         {
             Console.WriteLine("Chatovatko at your service!");
 
-            Config.LoadConfig();
-            ServerCert.Load();
-            DBPool.Init();
-            GodotFountain.Run();
-
-            Console.ReadLine();
+            try
+            { 
+                Config.LoadConfig();
+                ServerCert.Load();
+                DBPool.Init();
+                GodotFountain.Run();
+            }
+            catch(Exception ex)
+            {
+                Logger.LogCoreError(String.Format("The server has crashed. Exception:\n{0}", ex.Message));
+            }
+            finally
+            { 
+                Console.ReadLine();
+            }
         }
     }
 }

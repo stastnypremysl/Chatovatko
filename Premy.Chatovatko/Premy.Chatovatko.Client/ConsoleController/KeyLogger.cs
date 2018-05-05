@@ -14,19 +14,24 @@ namespace Premy.Chatovatko.Client.ConsoleController
             buffer = new LinkedList<char>();
             keyLogger = new Thread(() => KeyLoggerJob());
             keyLogger.Start();
+            keyWH = new AutoResetEvent(false);
         }
 
+        public static EventWaitHandle keyWH = new AutoResetEvent(false);
         public static LinkedList<char> buffer;
+        public static bool writeToConsole = false;
         private static void KeyLoggerJob()
         {
             while (true)
             {
-                char key = Console.ReadKey(true).KeyChar;
+                char key = Console.ReadKey(!writeToConsole).KeyChar;
                 if (key == 4)
-                { 
+                {
+                    Logger.Close();
                     Environment.Exit(0);
                 }
                 buffer.AddLast(key);
+                keyWH.Set();
             }
         }
     }

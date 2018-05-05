@@ -9,3 +9,5 @@ C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Client.pdb
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.dll
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.pdb
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\DefaultConfig\client.crt
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\DefaultConfig\config.txt

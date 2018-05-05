@@ -8,7 +8,7 @@ namespace Premy.Chatovatko.Client.ConsoleController
     
     public class TextOutput
     {
-        public Dictionary<String, StreamWriter> outs;
+        private Dictionary<String, StreamWriter> outs;
         public TextOutput()
         {
             outs = new Dictionary<String, StreamWriter>();
@@ -58,7 +58,26 @@ namespace Premy.Chatovatko.Client.ConsoleController
 
         public void AddFileOut(String path)
         {
-
+            FileStream fileStream = new FileStream(path, FileMode.Append);
+            StreamWriter sw = new StreamWriter(fileStream);
+            outs.Add(path,sw);
         }
+
+        public void Write(String text)
+        {
+            foreach (var pair in outs)
+            {
+                pair.Value.Write(text);
+            }
+        }
+
+        public void Close()
+        {
+            foreach (var pair in outs)
+            {
+                pair.Value.Close();
+            }
+        }
+
     }
 }

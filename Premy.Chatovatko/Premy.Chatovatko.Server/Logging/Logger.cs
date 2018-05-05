@@ -27,7 +27,7 @@ namespace Premy.Chatovatko.Server.Logging
 
         public static void LogDatabaseError(String error)
         {
-            WriteToOutput(GetProperOutput("Database", error));
+            WriteToError(GetProperOutput("Database", error));
         }
 
         public static void LogDatabaseInfo(String output)
@@ -37,7 +37,7 @@ namespace Premy.Chatovatko.Server.Logging
 
         public static void LogConnectionError(ulong id, String error)
         {
-            WriteToOutput(GetProperOutput(String.Format("Database, Connection {0}", id), error));
+            WriteToError(GetProperOutput(String.Format("Database, Connection {0}", id), error));
         }
 
         public static void LogConnectionInfo(ulong id, String output)
@@ -47,7 +47,7 @@ namespace Premy.Chatovatko.Server.Logging
 
         public static void LogGodotError(ulong id, String error)
         {
-            WriteToOutput(GetProperOutput(String.Format("Godot {0}", id), error));
+            WriteToError(GetProperOutput(String.Format("Godot {0}", id), error));
         }
 
         public static void LogGodotInfo(ulong id, String output)
@@ -57,7 +57,7 @@ namespace Premy.Chatovatko.Server.Logging
 
         public static void LogConfigError(String output)
         {
-            WriteToOutput(GetProperOutput("Config", output));
+            WriteToError(GetProperOutput("Config", output));
         }
 
         public static void LogClientListenerInfo(String output)
@@ -67,7 +67,12 @@ namespace Premy.Chatovatko.Server.Logging
 
         public static void LogClientListenerError(String output)
         {
-            WriteToOutput(GetProperOutput("Client listener", output));
+            WriteToError(GetProperOutput("Client listener", output));
+        }
+
+        public static void LogCoreError(String output)
+        {
+            WriteToError(GetProperOutput("Core", output));
         }
 
     }
