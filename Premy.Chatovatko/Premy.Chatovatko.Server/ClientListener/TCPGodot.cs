@@ -2,6 +2,7 @@
 using Premy.Chatovatko.Server.Logging;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
@@ -21,6 +22,8 @@ namespace Premy.Chatovatko.Server.ClientListener
         private bool readyForLife = false;
 
         private SslStream sslStream;
+        private TcpListener dataListener;
+
 
         public TCPGodot(ulong id)
         {
@@ -39,6 +42,8 @@ namespace Premy.Chatovatko.Server.ClientListener
         private void Init()
         {
             connection = DBPool.GetConnection();
+            dataListener = new TcpListener(IPAddress.Any, 0);
+            dataListener.Start();
 
             readyForLife = true;
             Logger.LogGodotInfo(id, "Godot has been created.");
@@ -64,6 +69,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 sslStream = new SslStream(client.GetStream(), false, App_CertificateValidation);
                 sslStream.AuthenticateAsServer(ServerCert.serverCertificate, true, SslProtocols.Tls12, true);
 
+                
                 var outputMessage = "Hello from the server.";
                 var outputBuffer = Encoding.UTF8.GetBytes(outputMessage);
                 sslStream.Write(outputBuffer);
@@ -79,6 +85,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             { 
                 sslStream.Close();
                 client.Close();
+                dataListener.Stop();
                 GodotFountain.IncreaseDestroyed();
                 Dispose();
                 Logger.LogGodotInfo(id, "Godot has died.");

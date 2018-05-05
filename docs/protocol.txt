@@ -1,0 +1,5 @@
+There are 2 TCP connection. The first one is control connection and the second one is for data. Each connection is encrypted by TLS 1.2.
+Control connection uses UTF-8. Each transmision is terminated by "<EOF>" sequence. Client is master and server slave.
+Data connection is purely binary.
+
+Firsts, client connects to server at the port 8471. After TLS handshake, the server sends to client port for data connection. :
