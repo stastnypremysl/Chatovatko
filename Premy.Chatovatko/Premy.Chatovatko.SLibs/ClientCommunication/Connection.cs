@@ -10,17 +10,17 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Comunication
 {
-    public static class Connection
+    public class ClientConnection
     {
-        private static readonly int ServerPort = 8471;
-        private static int dataPort = -1;
-        private static TcpClient client;
-        private static TcpClient dataClient;
+        private readonly int ServerPort = 8471;
+        private int dataPort = -1;
+        private TcpClient client;
+        private TcpClient dataClient;
 
-        private static SslStream stream;
-        private static SslStream dataStream;
+        private SslStream stream;
+        private SslStream dataStream;
 
-        public static void Connect()
+        public void Connect()
         {
             client = new TcpClient(Config.serverAddress, ServerPort);
             Logger.LogConnection("Client connected.");
@@ -37,7 +37,7 @@ namespace Premy.Chatovatko.Client.Comunication
             Logger.LogConnection("Data connection has been successfully estamblished.");
         }
 
-        private static bool App_CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private bool App_CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             if (sslPolicyErrors == SslPolicyErrors.None) { return true; }
             if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors) { return true; }

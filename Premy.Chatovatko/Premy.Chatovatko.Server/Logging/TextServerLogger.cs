@@ -4,17 +4,11 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server.Logging
 {
-    public static class Logger
+    public abstract class TextServerLogger : IServerLogger
     {
-        private static void WriteToError(String text)
-        {
-            Console.Error.Write(String.Format("{0}; {1}\n", DateTime.Now.ToLongTimeString(), text));
-        }
+        internal abstract void WriteToOutput(String text);
+        internal abstract void WriteToError(String text);
 
-        private static void WriteToOutput(String text)
-        {
-            Console.Error.Write(String.Format("{0}; {1}\n", DateTime.Now.ToLongTimeString(), text));
-        }
 
 
         ///<remark>
@@ -25,55 +19,54 @@ namespace Premy.Chatovatko.Server.Logging
             return String.Format("{0}; {1}", nameOfUtility, message);
         }
 
-        public static void LogDatabaseError(String error)
+        public void LogDatabaseError(String error)
         {
             WriteToError(GetProperOutput("Database", error));
         }
 
-        public static void LogDatabaseInfo(String output)
+        public void LogDatabaseInfo(String output)
         {
             WriteToOutput(GetProperOutput("Database", output));
         }
 
-        public static void LogConnectionError(ulong id, String error)
+        public void LogConnectionError(ulong id, String error)
         {
             WriteToError(GetProperOutput(String.Format("Database, Connection {0}", id), error));
         }
 
-        public static void LogConnectionInfo(ulong id, String output)
+        public void LogConnectionInfo(ulong id, String output)
         {
             WriteToOutput(GetProperOutput(String.Format("Database, Connection {0}", id), output));
         }
 
-        public static void LogGodotError(ulong id, String error)
+        public void LogGodotError(ulong id, String error)
         {
             WriteToError(GetProperOutput(String.Format("Godot {0}", id), error));
         }
 
-        public static void LogGodotInfo(ulong id, String output)
+        public void LogGodotInfo(ulong id, String output)
         {
             WriteToOutput(GetProperOutput(String.Format("Godot {0}", id), output));
         }
 
-        public static void LogConfigError(String output)
+        public void LogConfigError(String output)
         {
             WriteToError(GetProperOutput("Config", output));
         }
 
-        public static void LogClientListenerInfo(String output)
+        public void LogClientListenerInfo(String output)
         {
             WriteToOutput(GetProperOutput("Client listener", output));
         }
 
-        public static void LogClientListenerError(String output)
+        public void LogClientListenerError(String output)
         {
             WriteToError(GetProperOutput("Client listener", output));
         }
 
-        public static void LogCoreError(String output)
+        public void LogCoreError(String output)
         {
             WriteToError(GetProperOutput("Core", output));
         }
-
     }
 }

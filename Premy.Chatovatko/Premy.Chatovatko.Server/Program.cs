@@ -13,14 +13,14 @@ namespace Premy.Chatovatko.Server
 
             try
             { 
-                Config.LoadConfig();
+                ServerConfig.LoadConfig();
                 ServerCert.Load();
                 DBPool.Init();
                 GodotFountain.Run();
             }
             catch(Exception ex)
             {
-                Logger.LogCoreError(String.Format("The server has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace));
+                ConsoleServerLogger.LogCoreError(String.Format("The server has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace));
             }
             finally
             { 

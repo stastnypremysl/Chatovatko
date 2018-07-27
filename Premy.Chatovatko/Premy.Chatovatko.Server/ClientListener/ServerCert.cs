@@ -13,7 +13,7 @@ namespace Premy.Chatovatko.Server.ClientListener
         {
             try
             { 
-                serverCertificate = new X509Certificate2(Config.certAddress, Config.certPasswd);
+                serverCertificate = new X509Certificate2(ServerConfig.certAddress, ServerConfig.certPasswd);
                 if (!serverCertificate.HasPrivateKey)
                 {
                     throw new Exception("Certificate has no private key.");
@@ -21,10 +21,10 @@ namespace Premy.Chatovatko.Server.ClientListener
             }
             catch(Exception ex)
             {
-                Logger.LogClientListenerError(ex.Message);
+                ConsoleServerLogger.LogClientListenerError(ex.Message);
                 throw ex;
             }
-            Logger.LogClientListenerInfo(String.Format("Certificate has been successfully loaded."));
+            ConsoleServerLogger.LogClientListenerInfo(String.Format("Certificate has been successfully loaded."));
         }
     }
 }

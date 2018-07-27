@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server.Database
 {
-    public static class DatabaseSelector
+    public class DatabaseSelector
     {
-        public static String GetDatabaseAddress()
+        public String GetDatabaseAddress()
         {
-            return Config.connectionString;
+            return ServerConfig.connectionString;
         }
     }
 }

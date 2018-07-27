@@ -19,12 +19,12 @@ namespace Premy.Chatovatko.Server.Database
             { 
                 theConnection = new MySqlConnection(DatabaseSelector.GetDatabaseAddress());
                 theConnection.Open();
-                Logger.LogConnectionInfo(id, "The connection has been opened.");
+                ConsoleServerLogger.LogConnectionInfo(id, "The connection has been opened.");
             }
             catch(Exception ex)
             {
-                Logger.LogConnectionInfo(id, "The connection can't be opened.");
-                Logger.LogConnectionError(id, ex.Message);
+                ConsoleServerLogger.LogConnectionInfo(id, "The connection can't be opened.");
+                ConsoleServerLogger.LogConnectionError(id, ex.Message);
                 throw ex;
             }
         }
@@ -41,7 +41,7 @@ namespace Premy.Chatovatko.Server.Database
         {
             theConnection.Close();
             theConnection.Dispose();
-            Logger.LogConnectionInfo(id, "The connection has been closed.");
+            ConsoleServerLogger.LogConnectionInfo(id, "The connection has been closed.");
         }
 
         public override bool Equals(object obj)

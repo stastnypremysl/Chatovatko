@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server
 {
-    static class Config
+    class ServerConfig
     {
-        public static String connectionString = "";
-        public static String certPasswd = null;
-        public static String certAddress = "";
+        public String connectionString = "";
+        public String certPasswd = null;
+        public String certAddress = "";
         public static void LoadConfig()
         {
             using (StreamReader sr = new StreamReader("./config.txt"))
@@ -41,7 +41,7 @@ namespace Premy.Chatovatko.Server
                             certAddress = rest;
                             break;
                         default:
-                            Logger.LogConfigError(String.Format("The parameter {0} doesn't exist.", name));
+                            ConsoleServerLogger.LogConfigError(String.Format("The parameter {0} doesn't exist.", name));
                             break;
                     }
                 }
