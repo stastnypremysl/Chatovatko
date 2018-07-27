@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Client", "
 		{F8BC7C18-C3C8-4458-A9BA-7879BB97AA23} = {F8BC7C18-C3C8-4458-A9BA-7879BB97AA23}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Libs", "Premy.Chatovatko.SLibs\Premy.Chatovatko.Libs.csproj", "{F8BC7C18-C3C8-4458-A9BA-7879BB97AA23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Libs", "Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj", "{F8BC7C18-C3C8-4458-A9BA-7879BB97AA23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.ClientLibs", "Premy.Chatovatko.ClientLibs\Premy.Chatovatko.ClientLibs.csproj", "{F1789851-EC70-4D92-AE3C-7058130A5E94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.ClientLibs", "Premy.Chatovatko.ClientLibs\Premy.Chatovatko.ClientLibs.csproj", "{F1789851-EC70-4D92-AE3C-7058130A5E94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
