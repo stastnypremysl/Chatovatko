@@ -6,25 +6,17 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server.ClientListener
 {
-    public static class ServerCert
+    public class ServerCert
     {
-        public static X509Certificate2 serverCertificate;
-        public static void Load()
+        public X509Certificate2 serverCertificate;
+        public void Load(ServerConfig config)
         {
-            try
-            { 
-                serverCertificate = new X509Certificate2(ServerConfig.certAddress, ServerConfig.certPasswd);
-                if (!serverCertificate.HasPrivateKey)
-                {
-                    throw new Exception("Certificate has no private key.");
-                }
-            }
-            catch(Exception ex)
+            serverCertificate = new X509Certificate2(config.certAddress, config.certPasswd);
+            if (!serverCertificate.HasPrivateKey)
             {
-                ConsoleServerLogger.LogClientListenerError(ex.Message);
-                throw ex;
+                throw new Exception("Certificate has no private key.");
+
             }
-            ConsoleServerLogger.LogClientListenerInfo(String.Format("Certificate has been successfully loaded."));
         }
     }
 }

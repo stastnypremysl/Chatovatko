@@ -64,7 +64,7 @@ namespace Premy.Chatovatko.Server.Logging
             WriteToError(GetProperOutput("Client listener", output));
         }
 
-        public void LogCoreError(String output)
+        public void IServerLogger.LogCoreError(String output)
         {
             WriteToError(GetProperOutput("Core", output));
         }

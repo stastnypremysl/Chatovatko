@@ -10,8 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Logging\ConsoleServerLogger.cs" />
+    <Compile Remove="Logging\IServerLogger.cs" />
+    <Compile Remove="Logging\TextServerLogger.cs" />
+    <Compile Remove="StaticCore.cs" />
   </ItemGroup>
+
 
 
   <ItemGroup>

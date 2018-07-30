@@ -15,7 +15,7 @@ namespace Premy.Chatovatko.Server.Logging
         void LogConfigError(String output);
         void LogClientListenerInfo(String output);
         void LogClientListenerError(String output);
-
+        void LogCoreError(String output);
 
     }
 }

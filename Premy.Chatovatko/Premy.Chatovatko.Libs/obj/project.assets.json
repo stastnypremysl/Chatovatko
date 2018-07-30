@@ -186,11 +186,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.SLibs\\Premy.Chatovatko.Libs.csproj",
+      "projectUniqueName": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj",
       "projectName": "Premy.Chatovatko.Libs",
-      "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.SLibs\\Premy.Chatovatko.Libs.csproj",
+      "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj",
       "packagesPath": "C:\\Users\\premy\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.SLibs\\obj\\",
+      "outputPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

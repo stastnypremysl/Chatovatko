@@ -11,10 +11,16 @@ namespace Premy.Chatovatko.Server.Database
     {
         private ulong id;
         private MySqlConnection theConnection;
+        private IServerLogger logger;
+        private ServerConfig config;
+        private DatabaseIDGenerator idGenerator;
 
-        public DBConnection()
+        public DBConnection(IServerLogger logger, ServerConfig config, DatabaseIDGenerator idGenerator)
         {
-            id = DatabaseIDGenerator.getNext();
+            this.logger = logger;
+            this.config = config;
+            id = idGenerator.getNext();
+
             try
             { 
                 theConnection = new MySqlConnection(DatabaseSelector.GetDatabaseAddress());
@@ -23,8 +29,8 @@ namespace Premy.Chatovatko.Server.Database
             }
             catch(Exception ex)
             {
-                ConsoleServerLogger.LogConnectionInfo(id, "The connection can't be opened.");
-                ConsoleServerLogger.LogConnectionError(id, ex.Message);
+                logger.LogConnectionInfo(id, "The connection can't be opened.");
+                logger.LogConnectionError(id, ex.Message);
                 throw ex;
             }
         }
