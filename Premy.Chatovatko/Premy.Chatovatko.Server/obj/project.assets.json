@@ -334,6 +334,16 @@
             "rid": "win"
           }
         }
+      },
+      "Premy.Chatovatko.Libs/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/Premy.Chatovatko.Libs.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Premy.Chatovatko.Libs.dll": {}
+        }
       }
     }
   },
@@ -1050,13 +1060,19 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "Premy.Chatovatko.Libs/1.0.0": {
+      "type": "project",
+      "path": "../Premy.Chatovatko.Libs/Premy.Chatovatko.Libs.csproj",
+      "msbuildProject": "../Premy.Chatovatko.Libs/Premy.Chatovatko.Libs.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "Microsoft.NETCore.App >= 2.0.0",
       "MySql.Data >= 8.0.12",
-      "Newtonsoft.Json >= 11.0.2"
+      "Newtonsoft.Json >= 11.0.2",
+      "Premy.Chatovatko.Libs >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -1088,7 +1104,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj": {
+              "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

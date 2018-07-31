@@ -32,4 +32,8 @@
     <Folder Include="Logging\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
+  </ItemGroup>
+
 </Project>

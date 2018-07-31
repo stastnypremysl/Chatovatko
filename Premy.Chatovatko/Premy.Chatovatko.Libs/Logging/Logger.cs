@@ -13,7 +13,7 @@ namespace Premy.Chatovatko.Libs.Logging
             outputs = new List<ILoggerOutput>();
         }
 
-        public Logger(ILoggerOutput output) :base()
+        public Logger(ILoggerOutput output) :this()
         {
             outputs.Add(output);
         }
@@ -28,9 +28,15 @@ namespace Premy.Chatovatko.Libs.Logging
             }
         }
 
+        public void Log(String name, String source, String message, bool error)
+        {
+            DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(name, message, source, DateTime.Now, error);
+            Log(theLogMessage);
+        }
+
         public void Log(ILoggable me, String message, bool error)
         {
-            DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, me.GetSource(), DateTime.Now, error);
+            DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, me.GetLogSource(), DateTime.Now, error);
             Log(theLogMessage);
         }
 

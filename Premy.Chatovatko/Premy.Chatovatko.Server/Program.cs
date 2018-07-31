@@ -1,16 +1,17 @@
-﻿using Premy.Chatovatko.Server.ClientListener;
+﻿using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Server.ClientListener;
 using Premy.Chatovatko.Server.Database;
 using Premy.Chatovatko.Server.Logging;
 using System;
 
 namespace Premy.Chatovatko.Server
 {
-    class Program
+    class Program : ILoggable
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Chatovatko at your service!");
-            IServerLogger logger = new ConsoleServerLogger();
+            Logger logger = new Logger(new ConsoleLoggerOutput());
             try
             {
                 ServerConfig config = new ServerConfig(logger);
@@ -19,18 +20,24 @@ namespace Premy.Chatovatko.Server
                 ServerCert certificate = new ServerCert();
                 certificate.Load(config);
 
-                DBPool pool = new DBPool();
+                DBPool pool = new DBPool(logger, config);
 
-                GodotFountain.Run();
+                GodotFountain godotFountain = new GodotFountain(logger, pool, certificate);
+                godotFountain.Run();
             }
             catch(Exception ex)
             {
-                logger.LogCoreError(String.Format("The server has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace));
+                logger.Log("Program", "Core", String.Format("The server has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
             }
             finally
             { 
                 Console.ReadLine();
             }
+        }
+
+        public string GetLogSource()
+        {
+            return "Core";
         }
     }
 }

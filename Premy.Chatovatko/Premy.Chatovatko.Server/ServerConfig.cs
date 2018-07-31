@@ -1,4 +1,5 @@
-﻿using Premy.Chatovatko.Server.Logging;
+﻿using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Server.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,14 +7,14 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server
 {
-    public class ServerConfig
+    public class ServerConfig : ILoggable
     {
-        public ServerConfig(IServerLogger logger)
+        public ServerConfig(Logger logger)
         {
             this.logger = logger;
         }
 
-        private IServerLogger logger;
+        private Logger logger;
         private String connectionString = "";
         private String certPasswd = null;
         private String certAddress = "";
@@ -52,11 +53,16 @@ namespace Premy.Chatovatko.Server
                             certAddress = rest;
                             break;
                         default:
-                            logger.LogConfigError(String.Format("The parameter {0} doesn't exist.", name));
+                            logger.Log(this, String.Format("The parameter {0} doesn't exist.", name));
                             break;
                     }
                 }
             }
+        }
+
+        public string GetLogSource()
+        {
+            return "Configuration";
         }
     }
 }

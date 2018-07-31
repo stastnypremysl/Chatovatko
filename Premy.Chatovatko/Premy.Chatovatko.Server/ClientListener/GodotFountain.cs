@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Server.Database;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -7,39 +9,40 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server.ClientListener
 {
-    public static class GodotFountain
+    public class GodotFountain
     {
-        private static readonly int ServerPort = 8471;
+        private readonly int ServerPort = 8471;
 
-        private static ulong running = 0;
-        private static ulong destroyed = 0;
-        private static ulong created = 0;
-        private static int readyToExist = 10;
+        
+        private int readyToExist = 10;
+        private readonly GodotCounter counter;
 
-        private static List<TCPGodot> godotPool;
+        private readonly Logger logger;
+        private readonly DBPool pool;
+        private readonly ServerCert serverCert;
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void IncreaseRunning()
+        private List<Godot> godotPool;
+
+        public GodotFountain(Logger logger, DBPool pool, ServerCert serverCert)
         {
-            running++;
+            this.counter = new GodotCounter();
+            this.logger = logger;
+            this.pool = pool;
+            this.serverCert = serverCert;
         }
 
+        public int ReadyToExist { get => readyToExist; set => readyToExist = value; }
+                
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void IncreaseDestroyed()
+
+        public void Run()
         {
-            destroyed++;
-            running--;
-        }
+            godotPool = new List<Godot>();
 
-
-        public static void Run()
-        {
-            godotPool = new List<TCPGodot>();
-
-            for(int i = 0; i != readyToExist; i++)
+            for(int i = 0; i != ReadyToExist; i++)
             {
-                godotPool.Add(new TCPGodot(created++));
+                godotPool.Add(new Godot(counter.Created, logger, pool, serverCert, counter));
+                counter.IncreaseCreated();
             }
 
             TcpListener listener = new TcpListener(IPAddress.Any, ServerPort);
@@ -50,7 +53,8 @@ namespace Premy.Chatovatko.Server.ClientListener
                 TcpClient client = listener.AcceptTcpClient();
                 godotPool[ite].Run(client);
                 ite++;
-                godotPool.Add(new TCPGodot(created++));
+                godotPool.Add(new Godot(counter.Created, logger, pool, serverCert, counter));
+                counter.IncreaseCreated();
             }
         }
     }

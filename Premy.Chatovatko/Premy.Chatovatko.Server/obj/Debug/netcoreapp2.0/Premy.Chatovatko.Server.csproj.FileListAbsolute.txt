@@ -21,9 +21,10 @@ C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Server.pdb
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Libs.dll
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Libs.pdb
-C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.csprojResolveAssemblyReference.cache
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.csproj.CoreCompileInputs.cache
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.AssemblyInfoInputs.cache
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.AssemblyInfo.cs
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.dll
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.pdb
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.csprojAssemblyReference.cache
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Server\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Server.csproj.CopyComplete

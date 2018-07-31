@@ -13,3 +13,4 @@ C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\DefaultConfig\config.txt
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Libs.dll
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\bin\Debug\netcoreapp2.0\Premy.Chatovatko.Libs.pdb
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Client\obj\Debug\netcoreapp2.0\Premy.Chatovatko.Client.csprojAssemblyReference.cache

@@ -1,23 +1,31 @@
 ﻿using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Premy.Chatovatko.Server.Logging
 {
     public class ConsoleLoggerOutput : ILoggerOutput
     {
-        internal override void WriteToError(String text)
+        public string GetName()
         {
-            Console.Error.Write(String.Format("{0}; {1}\n", DateTime.Now.ToLongTimeString(), text));
+            return this.GetType().Name;
         }
 
-        internal override void WriteToOutput(String text)
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void Log(ILoggerMessage message)
         {
-            Console.Error.Write(String.Format("{0}; {1}\n", DateTime.Now.ToLongTimeString(), text));
+            String theText = String.Format("{0}; {1}; {2}: {3}\n", message.GetTimeOfCreation().ToLongTimeString(), message.GetSource(), message.GetClassName(), message.GetMessage());
+            if (message.IsError)
+            {
+                Console.Error.Write(theText);
+            }
+            else
+            {
+                Console.Out.Write(theText);
+            }
         }
-
-
-
+        
     }
 }

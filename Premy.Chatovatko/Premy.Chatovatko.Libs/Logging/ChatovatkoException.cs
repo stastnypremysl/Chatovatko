@@ -10,7 +10,7 @@ namespace Premy.Chatovatko.Libs.Logging
         public ChatovatkoException(ILoggable me, String message) : base()
         {
             message = message + "\n" + this.StackTrace;
-            theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, me.GetSource(), DateTime.Now, true);
+            theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, me.GetLogSource(), DateTime.Now, true);
             
         }
 
