@@ -62,8 +62,8 @@ namespace Premy.Chatovatko.Libs.Logging
 
 
 
-        public void Log(ILoggable me, String message) => Log(me, message);
+        public void Log(ILoggable me, String message) => Log(me, message, false);
 
-        public void Log(object me, String message) => Log(me, message);
+        public void Log(object me, String message) => Log(me, message, false);
     }
 }

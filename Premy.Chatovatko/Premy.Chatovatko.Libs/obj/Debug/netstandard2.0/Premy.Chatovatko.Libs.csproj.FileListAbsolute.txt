@@ -1,7 +1,6 @@
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.csproj.CoreCompileInputs.cache
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.AssemblyInfoInputs.cache
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.AssemblyInfo.cs
-C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.csprojAssemblyReference.cache
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.deps.json
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.dll
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.pdb
