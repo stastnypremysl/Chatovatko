@@ -4,7 +4,22 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs.Logging
 {
-    class ChatovatkoException : Exception
+    public class ChatovatkoException : Exception
     {
+        private readonly ILoggerMessage theLogMessage;
+        public ChatovatkoException(ILoggable me, String message) : base()
+        {
+            message = message + "\n" + this.StackTrace;
+            theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, me.GetSource(), DateTime.Now, true);
+            
+        }
+
+        public ChatovatkoException(object me, String message) : base()
+        {
+            message = message + "\n" + this.StackTrace;
+            theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, "", DateTime.Now, true);
+        }
+
+        public ILoggerMessage GetLogMessage => theLogMessage;
     }
 }

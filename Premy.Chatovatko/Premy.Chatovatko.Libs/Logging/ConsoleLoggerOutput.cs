@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Premy.Chatovatko.Libs.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Premy.Chatovatko.Server.Logging
 {
-    public class ConsoleServerLogger : TextServerLogger
+    public class ConsoleLoggerOutput : ILoggerOutput
     {
         internal override void WriteToError(String text)
         {

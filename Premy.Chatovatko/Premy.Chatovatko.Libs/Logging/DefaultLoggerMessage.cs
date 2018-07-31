@@ -12,7 +12,7 @@ namespace Premy.Chatovatko.Libs.Logging
         private readonly DateTime timeOfCreation;
         private readonly bool error;
 
-        DefaultLoggerMessage(String className, String message, String source, DateTime timeOfCreation, bool error)
+        public DefaultLoggerMessage(String className, String message, String source, DateTime timeOfCreation, bool error)
         {
             this.className = className;
             this.message = message;

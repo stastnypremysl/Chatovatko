@@ -30,22 +30,28 @@ namespace Premy.Chatovatko.Libs.Logging
 
         public void Log(ILoggable me, String message, bool error)
         {
-
+            DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, me.GetSource(), DateTime.Now, error);
+            Log(theLogMessage);
         }
 
         public void Log(object me, String message, bool error)
         {
-            
+            DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, "", DateTime.Now, error);
+            Log(theLogMessage);
         }
 
         public void LogException(ILoggable me, Exception exception)
         {
-
+            StringBuilder builder = new StringBuilder();
+            builder.Append(exception.Message);
+            builder.Append("\n");
+            builder.Append(exception.StackTrace);
+            Log(me, builder.ToString(), true);
         }
 
         public void LogException(ChatovatkoException exception)
         {
-
+            Log(exception.GetLogMessage);
         }
 
 
