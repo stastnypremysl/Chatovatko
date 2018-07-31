@@ -6,6 +6,7 @@ namespace Premy.Chatovatko.Libs.Logging
 {
     public interface ILoggerMessage
     {
+        String GetSource();
         String GetClassName();
         String GetMessage();
         DateTime GetTimeOfCreation();

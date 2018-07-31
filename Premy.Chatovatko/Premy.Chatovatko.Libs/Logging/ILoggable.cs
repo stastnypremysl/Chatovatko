@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs.Logging
 {
-    public interface ILoggerOutput
+    public interface ILoggable
     {
-        void Log(ILoggerMessage message);
-        String GetName();
+        String GetSource();
+        
     }
 }
