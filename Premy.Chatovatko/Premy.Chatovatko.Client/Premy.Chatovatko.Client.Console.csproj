@@ -22,7 +22,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\Premy.Chatovatko.ClientLibs\Premy.Chatovatko.ClientLibs.csproj" />
+    <ProjectReference Include="..\Premy.Chatovatko.ClientLibs\Premy.Chatovatko.Client.Libs.csproj" />
     <ProjectReference Include="..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
   </ItemGroup>
 

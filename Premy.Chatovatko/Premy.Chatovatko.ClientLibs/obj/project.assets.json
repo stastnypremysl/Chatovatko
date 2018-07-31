@@ -249,9 +249,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.ClientLibs.csproj",
-      "projectName": "Premy.Chatovatko.ClientLibs",
-      "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.ClientLibs.csproj",
+      "projectUniqueName": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.Client.csproj",
+      "projectName": "Premy.Chatovatko.Client",
+      "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.Client.csproj",
       "packagesPath": "C:\\Users\\premy\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\obj\\",
       "projectStyle": "PackageReference",

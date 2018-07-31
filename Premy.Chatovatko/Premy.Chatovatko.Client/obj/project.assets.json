@@ -209,7 +209,7 @@
       "System.Data.SQLite/1.0.108": {
         "type": "package"
       },
-      "Premy.Chatovatko.ClientLibs/1.0.0": {
+      "Premy.Chatovatko.Client.Libs/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
@@ -218,10 +218,10 @@
           "System.Data.SQLite": "1.0.108"
         },
         "compile": {
-          "bin/placeholder/Premy.Chatovatko.ClientLibs.dll": {}
+          "bin/placeholder/Premy.Chatovatko.Client.Libs.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Premy.Chatovatko.ClientLibs.dll": {}
+          "bin/placeholder/Premy.Chatovatko.Client.Libs.dll": {}
         }
       },
       "Premy.Chatovatko.Libs/1.0.0": {
@@ -731,10 +731,10 @@
         "system.data.sqlite.nuspec"
       ]
     },
-    "Premy.Chatovatko.ClientLibs/1.0.0": {
+    "Premy.Chatovatko.Client.Libs/1.0.0": {
       "type": "project",
-      "path": "../Premy.Chatovatko.ClientLibs/Premy.Chatovatko.ClientLibs.csproj",
-      "msbuildProject": "../Premy.Chatovatko.ClientLibs/Premy.Chatovatko.ClientLibs.csproj"
+      "path": "../Premy.Chatovatko.ClientLibs/Premy.Chatovatko.Client.Libs.csproj",
+      "msbuildProject": "../Premy.Chatovatko.ClientLibs/Premy.Chatovatko.Client.Libs.csproj"
     },
     "Premy.Chatovatko.Libs/1.0.0": {
       "type": "project",
@@ -745,7 +745,7 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "Microsoft.NETCore.App >= 2.0.0",
-      "Premy.Chatovatko.ClientLibs >= 1.0.0",
+      "Premy.Chatovatko.Client.Libs >= 1.0.0",
       "Premy.Chatovatko.Libs >= 1.0.0"
     ]
   },
@@ -756,9 +756,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Client\\Premy.Chatovatko.Client.csproj",
-      "projectName": "Premy.Chatovatko.Client",
-      "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Client\\Premy.Chatovatko.Client.csproj",
+      "projectUniqueName": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Client\\Premy.Chatovatko.Client.Console.csproj",
+      "projectName": "Premy.Chatovatko.Client.Console",
+      "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Client\\Premy.Chatovatko.Client.Console.csproj",
       "packagesPath": "C:\\Users\\premy\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Client\\obj\\",
       "projectStyle": "PackageReference",
@@ -779,8 +779,8 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.ClientLibs.csproj": {
-              "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.ClientLibs.csproj"
+            "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.Client.Libs.csproj": {
+              "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.ClientLibs\\Premy.Chatovatko.Client.Libs.csproj"
             },
             "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj": {
               "projectPath": "C:\\Users\\premy\\Documents\\Chatovatko\\Premy.Chatovatko\\Premy.Chatovatko.Libs\\Premy.Chatovatko.Libs.csproj"

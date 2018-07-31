@@ -150,9 +150,9 @@
     <PackageReference Include="Xamarin.Forms" Version="3.0.0.561731" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Premy.Chatovatko.ClientLibs\Premy.Chatovatko.ClientLibs.csproj">
+    <ProjectReference Include="..\..\Premy.Chatovatko.ClientLibs\Premy.Chatovatko.Client.Libs.csproj">
       <Project>{f1789851-ec70-4d92-ae3c-7058130a5e94}</Project>
-      <Name>Premy.Chatovatko.ClientLibs</Name>
+      <Name>Premy.Chatovatko.Client.Libs</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj">
       <Project>{f8bc7c18-c3c8-4458-a9ba-7879bb97aa23}</Project>
