@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.UserData
 {
-    public static class Config
+    public class ClientConfig
     {
-        public static String serverAddress = null;
-        public static String serverName = null;
-        public static void Load()
+        public String serverAddress = null;
+        public String serverName = null;
+        public void Load()
         {
             if (!Directory.Exists(Utils.GetConfigDirectory()))
             {
@@ -41,7 +41,7 @@ namespace Premy.Chatovatko.Client.UserData
 
         }
 
-        private static void LoadConfig()
+        private void LoadConfig()
         {
             using (StreamReader sr = new StreamReader(Utils.GetConfigFile()))
             {

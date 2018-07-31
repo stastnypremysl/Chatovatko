@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.108" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
   </ItemGroup>
 

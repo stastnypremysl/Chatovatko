@@ -1,7 +1,8 @@
-﻿using Premy.Chatovatko.Client.ConsoleController;
-using Premy.Chatovatko.Client.UserData;
+﻿using Premy.Chatovatko.Client.UserData;
 using Premy.Chatovatko.Client.Comunication;
 using System;
+using Premy.Chatovatko.Server.Logging;
+using Premy.Chatovatko.Libs.Logging;
 
 namespace Premy.Chatovatko.Client
 {
@@ -9,12 +10,10 @@ namespace Premy.Chatovatko.Client
     {
         static void Main(string[] args)
         {
+            Logger logger = new Logger(new ConsoleLoggerOutput());
             Console.WriteLine("Chatovatko client at your service!");
             try { 
-                Logger.Init();
-                Logger.LogCore("Core has started inicialization");
-
-                KeyLogger.Run();
+                
                 Config.Load();
 
                 Connection.Connect();

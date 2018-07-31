@@ -8,3 +8,6 @@ C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.ClientLibs
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.ClientLibs\obj\Debug\netstandard2.0\Premy.Chatovatko.ClientLibs.dll
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.ClientLibs\obj\Debug\netstandard2.0\Premy.Chatovatko.ClientLibs.pdb
 C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.ClientLibs\obj\Debug\netstandard2.0\Premy.Chatovatko.ClientLibs.csprojAssemblyReference.cache
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.ClientLibs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.dll
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.ClientLibs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.pdb
+C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.ClientLibs\obj\Debug\netstandard2.0\Premy.Chatovatko.ClientLibs.csproj.CopyComplete
