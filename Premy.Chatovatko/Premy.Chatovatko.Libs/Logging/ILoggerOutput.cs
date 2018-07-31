@@ -6,5 +6,6 @@ namespace Premy.Chatovatko.Libs.Logging
 {
     interface ILoggerOutput
     {
+        
     }
 }

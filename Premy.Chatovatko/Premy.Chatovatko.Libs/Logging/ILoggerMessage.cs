@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs.Logging
 {
-    interface ILoggerMessage
+    public interface ILoggerMessage
     {
-        String getSource();
-
+        String GetClassName();
+        String GetMessage();
+        DateTime GetTimeOfCreation();
+        bool IsError { get; }
     }
 }
