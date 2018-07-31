@@ -8,29 +8,28 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Server", "
 		{F8BC7C18-C3C8-4458-A9BA-7879BB97AA23} = {F8BC7C18-C3C8-4458-A9BA-7879BB97AA23}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Client.Console", "Premy.Chatovatko.Client\Premy.Chatovatko.Client.Console.csproj", "{E1295457-9ABC-45E5-876F-D74FF7578A36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Client.Console", "Premy.Chatovatko.Client.Console\Premy.Chatovatko.Client.Console.csproj", "{E1295457-9ABC-45E5-876F-D74FF7578A36}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F8BC7C18-C3C8-4458-A9BA-7879BB97AA23} = {F8BC7C18-C3C8-4458-A9BA-7879BB97AA23}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Libs", "Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj", "{F8BC7C18-C3C8-4458-A9BA-7879BB97AA23}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Client.Libs", "Premy.Chatovatko.ClientLibs\Premy.Chatovatko.Client.Libs.csproj", "{F1789851-EC70-4D92-AE3C-7058130A5E94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Client.Libs", "Premy.Chatovatko.Client.Libs\Premy.Chatovatko.Client.Libs.csproj", "{F1789851-EC70-4D92-AE3C-7058130A5E94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.Android", "Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.Android\Premy.Chatovatko.Client.Android.csproj", "{0F7BC961-AA38-442A-8CF8-7522679365A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.Android", "Premy.Chatovatko.Client\Premy.Chatovatko.Client.Android\Premy.Chatovatko.Client.Android.csproj", "{0F7BC961-AA38-442A-8CF8-7522679365A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.iOS", "Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.iOS\Premy.Chatovatko.Client.iOS.csproj", "{22B77D16-F208-4D39-944B-C1F407B85C4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.iOS", "Premy.Chatovatko.Client\Premy.Chatovatko.Client.iOS\Premy.Chatovatko.Client.iOS.csproj", "{22B77D16-F208-4D39-944B-C1F407B85C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.UWP", "Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.UWP\Premy.Chatovatko.Client.UWP.csproj", "{59B82A21-39F8-47D1-8B5E-3F97C159AD42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.UWP", "Premy.Chatovatko.Client\Premy.Chatovatko.Client.UWP\Premy.Chatovatko.Client.UWP.csproj", "{59B82A21-39F8-47D1-8B5E-3F97C159AD42}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Premy.Chatovatko.Client", "Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient\Premy.Chatovatko.Client.shproj", "{5CF5D29F-2C41-49A9-B5BA-A53F9B31F79A}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Premy.Chatovatko.Client", "Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.shproj", "{5CF5D29F-2C41-49A9-B5BA-A53F9B31F79A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.projitems*{0f7bc961-aa38-442a-8cf8-7522679365a4}*SharedItemsImports = 4
-		Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.projitems*{22b77d16-f208-4d39-944b-c1f407b85c4f}*SharedItemsImports = 4
-		Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.projitems*{59b82a21-39f8-47d1-8b5e-3f97c159ad42}*SharedItemsImports = 4
-		Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.projitems*{5cf5d29f-2c41-49a9-b5ba-a53f9b31f79a}*SharedItemsImports = 13
+		Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems*{0f7bc961-aa38-442a-8cf8-7522679365a4}*SharedItemsImports = 4
+		Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems*{22b77d16-f208-4d39-944b-c1f407b85c4f}*SharedItemsImports = 4
+		Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems*{59b82a21-39f8-47d1-8b5e-3f97c159ad42}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU

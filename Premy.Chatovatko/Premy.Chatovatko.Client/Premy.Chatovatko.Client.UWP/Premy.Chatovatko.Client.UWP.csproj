@@ -7,8 +7,8 @@
     <ProjectGuid>{59B82A21-39F8-47D1-8B5E-3F97C159AD42}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Premy.Chatovatko.MobileClient.UWP</RootNamespace>
-    <AssemblyName>Premy.Chatovatko.MobileClient.UWP</AssemblyName>
+    <RootNamespace>Premy.Chatovatko.Client.UWP</RootNamespace>
+    <AssemblyName>Premy.Chatovatko.Client.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
@@ -17,7 +17,7 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>Premy.Chatovatko.MobileClient.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Premy.Chatovatko.Client.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -147,7 +147,7 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Premy.Chatovatko.ClientLibs\Premy.Chatovatko.Client.Libs.csproj">
+    <ProjectReference Include="..\..\Premy.Chatovatko.Client.Libs\Premy.Chatovatko.Client.Libs.csproj">
       <Project>{f1789851-ec70-4d92-ae3c-7058130a5e94}</Project>
       <Name>Premy.Chatovatko.Client.Libs</Name>
     </ProjectReference>
@@ -156,7 +156,7 @@
       <Name>Premy.Chatovatko.Libs</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\Premy.Chatovatko.MobileClient\Premy.Chatovatko.MobileClient.projitems" Label="Shared" />
+  <Import Project="..\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
