@@ -1,0 +1,65 @@
+CREATE SCHEMA IF NOT EXISTS `chatovatko` DEFAULT CHARACTER SET utf8 ;
+/*----------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `chatovatko`.`users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `public_key` BINARY(512) NOT NULL,
+  `user_name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `publicKey_UNIQUE` (`public_key` ASC),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  UNIQUE INDEX `user_name_UNIQUE` (`user_name` ASC))
+ENGINE = InnoDB;
+/*----------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `chatovatko`.`blob_messages` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `recepient_id` INT NOT NULL,
+  `sender_id` INT NOT NULL,
+  `content` BLOB NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  INDEX `recepiant_id` (`recepient_id` ASC, `id` ASC),
+  INDEX `sender_id` (`sender_id` ASC),
+  CONSTRAINT `recepient_id_foreign_key`
+    FOREIGN KEY (`recepient_id`)
+    REFERENCES `chatovatko`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT `sender_id_foreign_key`
+    FOREIGN KEY (`sender_id`)
+    REFERENCES `chatovatko`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+/*----------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `chatovatko`.`logs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `message` VARCHAR(200) NOT NULL,
+  `class` VARCHAR(50) NOT NULL,
+  `error` BINARY(1) NOT NULL DEFAULT 0,
+  `time_of_creation` DATETIME NOT NULL,
+  `source` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC))
+ENGINE = InnoDB;
+/*----------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `chatovatko`.`public_keys` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `recepient_id` INT NOT NULL,
+  `sender_id` INT NOT NULL,
+  `encrypted_sym_key` BINARY(512) NOT NULL,
+  `trusted` BINARY(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `user_id_keys` (`recepient_id` ASC, `sender_id` ASC),
+  UNIQUE INDEX `public_key_UNIQUE` (`encrypted_sym_key` ASC),
+  INDEX `fk_public_keys_users2_idx` (`sender_id` ASC),
+  CONSTRAINT `fk_public_keys_users1`
+    FOREIGN KEY (`recepient_id`)
+    REFERENCES `chatovatko`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_public_keys_users2`
+    FOREIGN KEY (`sender_id`)
+    REFERENCES `chatovatko`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
