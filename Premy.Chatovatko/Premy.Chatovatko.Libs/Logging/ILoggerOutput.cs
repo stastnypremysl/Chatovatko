@@ -10,5 +10,6 @@ namespace Premy.Chatovatko.Libs.Logging
         [MethodImpl(MethodImplOptions.Synchronized)]
         void Log(ILoggerMessage message);
         String GetName();
+        void Close();
     }
 }

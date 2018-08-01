@@ -20,7 +20,9 @@ namespace Premy.Chatovatko.Client
             return GetHomeDir() + "/.chatovatko";
         }
 
+        public static String GetDatabaseAddress() => GetConfigDirectory() + "/client.db";
 
+        /*
         public static String GetConfigFile()
         {
             return GetConfigDirectory() + "/config.txt";
@@ -35,5 +37,6 @@ namespace Premy.Chatovatko.Client
         {
             return GetConfigDirectory() + "/user.p12";
         }
+        */
     }
 }

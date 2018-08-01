@@ -13,4 +13,19 @@
     <ProjectReference Include="..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Database\SqlScripts\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Database\SqlScripts\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

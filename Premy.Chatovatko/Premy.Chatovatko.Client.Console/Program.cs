@@ -1,6 +1,7 @@
-﻿using Premy.Chatovatko.Client.UserData;
+﻿using System;
+using static System.Console;
+using Premy.Chatovatko.Client.UserData;
 using Premy.Chatovatko.Client.Comunication;
-using System;
 using Premy.Chatovatko.Server.Logging;
 using Premy.Chatovatko.Libs.Logging;
 
@@ -11,20 +12,20 @@ namespace Premy.Chatovatko.Client
         static void Main(string[] args)
         {
             Logger logger = new Logger(new ConsoleLoggerOutput());
-            Console.WriteLine("Chatovatko client at your service!");
-            try { 
+            WriteLine("Chatovatko client at your service!");
+            try {
                 
-                Config.Load();
+                //Config config;
 
-                Connection.Connect();
+                //Connection.Connect();
             }
             catch(Exception ex)
             {
-                Logger.LogCore(String.Format("The client has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace));
+                logger.Log("Core", "Program",String.Format("The client has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
             }
             finally
             {
-                Logger.Close();
+                logger.Close();
             }
             
         }

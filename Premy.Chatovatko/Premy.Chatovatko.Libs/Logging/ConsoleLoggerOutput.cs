@@ -8,6 +8,11 @@ namespace Premy.Chatovatko.Server.Logging
 {
     public class ConsoleLoggerOutput : ILoggerOutput
     {
+        public void Close()
+        {
+            
+        }
+
         public string GetName()
         {
             return this.GetType().Name;

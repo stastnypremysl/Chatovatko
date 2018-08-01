@@ -30,6 +30,7 @@ Global
 		Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems*{0f7bc961-aa38-442a-8cf8-7522679365a4}*SharedItemsImports = 4
 		Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems*{22b77d16-f208-4d39-944b-c1f407b85c4f}*SharedItemsImports = 4
 		Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems*{59b82a21-39f8-47d1-8b5e-3f97c159ad42}*SharedItemsImports = 4
+		Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems*{5cf5d29f-2c41-49a9-b5ba-a53f9b31f79a}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU

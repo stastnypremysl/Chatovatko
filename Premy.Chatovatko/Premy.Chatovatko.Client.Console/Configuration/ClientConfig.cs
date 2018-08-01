@@ -6,10 +6,16 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.UserData
 {
-    public class ClientConfig
+/*    public class ClientConfig
     {
-        public String serverAddress = null;
-        public String serverName = null;
+        private String serverAddress = null;
+        private String serverName = null;
+        private String databaseAddress = null;
+
+        public string DatabaseAddress { get => databaseAddress; set => databaseAddress = value; }
+        public string ServerName { get => serverName; set => serverName = value; }
+        public string ServerAddress { get => serverAddress; set => serverAddress = value; }
+
         public void Load()
         {
             if (!Directory.Exists(Utils.GetConfigDirectory()))
@@ -63,10 +69,10 @@ namespace Premy.Chatovatko.Client.UserData
                     switch (parts[0])
                     {
                         case "ServerAddress":
-                            serverAddress = rest;
+                            ServerAddress = rest;
                             break;
                         case "ServerName":
-                            serverName = rest;
+                            ServerName = rest;
                             break;
                         default:
                             Logger.LogUserData(String.Format("The parameter {0} doesn't exist.", name));
@@ -74,14 +80,14 @@ namespace Premy.Chatovatko.Client.UserData
                     }
                 }
             }
-            if(serverAddress == null)
+            if(ServerAddress == null)
             {
                 throw new Exception("ServerAddress parameter missing.");
             }
-            if (serverName == null)
+            if (ServerName == null)
             {
                 throw new Exception("ServerName parameter missing.");
             }
         }
-    }
+    }*/
 }

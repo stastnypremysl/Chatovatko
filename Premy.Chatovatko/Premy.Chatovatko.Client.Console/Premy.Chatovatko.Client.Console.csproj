@@ -17,12 +17,12 @@
 
 
   <ItemGroup>
-    <Folder Include="Logs\" />
+    <Folder Include="Database\" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\Premy.Chatovatko.ClientLibs\Premy.Chatovatko.Client.Libs.csproj" />
+    <ProjectReference Include="..\Premy.Chatovatko.Client.Libs\Premy.Chatovatko.Client.Libs.csproj" />
     <ProjectReference Include="..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
   </ItemGroup>
 

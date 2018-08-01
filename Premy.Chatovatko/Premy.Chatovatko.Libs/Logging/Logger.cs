@@ -28,6 +28,14 @@ namespace Premy.Chatovatko.Libs.Logging
             }
         }
 
+        public void Close()
+        {
+            foreach (ILoggerOutput output in outputs)
+            {
+                output.Close();
+            }
+        }
+
         public void Log(String name, String source, String message, bool error)
         {
             DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(name, message, source, DateTime.Now, error);
