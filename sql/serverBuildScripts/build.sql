@@ -1,8 +1,9 @@
+START TRANSACTION;
 CREATE SCHEMA IF NOT EXISTS `chatovatko` DEFAULT CHARACTER SET utf8 ;
 /*----------------------------------------------------------------------*/
 CREATE TABLE IF NOT EXISTS `chatovatko`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `public_key` BINARY(512) NOT NULL,
+  `public_key` VARBINARY(2000) NOT NULL,
   `user_name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `publicKey_UNIQUE` (`public_key` ASC),
@@ -35,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`logs` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(200) NOT NULL,
   `class` VARCHAR(50) NOT NULL,
-  `error` BINARY(1) NOT NULL DEFAULT 0,
+  `error` BIT(1) NOT NULL DEFAULT 0,
   `time_of_creation` DATETIME NOT NULL,
   `source` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
@@ -46,8 +47,8 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`public_keys` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `recepient_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
-  `encrypted_sym_key` BINARY(512) NOT NULL,
-  `trusted` BINARY(1) NOT NULL DEFAULT 0,
+  `encrypted_sym_key` VARBINARY(2000) NOT NULL,
+  `trusted` BIT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_id_keys` (`recepient_id` ASC, `sender_id` ASC),
   UNIQUE INDEX `public_key_UNIQUE` (`encrypted_sym_key` ASC),
@@ -63,3 +64,4 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`public_keys` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+COMMIT;
