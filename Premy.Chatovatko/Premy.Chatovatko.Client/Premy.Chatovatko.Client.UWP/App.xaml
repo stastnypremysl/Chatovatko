@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="Premy.Chatovatko.MobileClient.UWP.App"
+    x:Class="Premy.Chatovatko.Client.UWP.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Premy.Chatovatko.MobileClient.UWP"
+    xmlns:local="using:Premy.Chatovatko.Client.UWP"
     RequestedTheme="Light">
 
 </Application>

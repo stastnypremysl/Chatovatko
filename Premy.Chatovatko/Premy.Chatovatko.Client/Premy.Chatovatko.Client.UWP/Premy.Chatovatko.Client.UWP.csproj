@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{59B82A21-39F8-47D1-8B5E-3F97C159AD42}</ProjectGuid>
+    <ProjectGuid>{DBFB762C-4821-44F7-A9D6-6BED0E6DCF18}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Premy.Chatovatko.Client.UWP</RootNamespace>
@@ -147,16 +147,11 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Premy.Chatovatko.Client.Libs\Premy.Chatovatko.Client.Libs.csproj">
-      <Project>{f1789851-ec70-4d92-ae3c-7058130a5e94}</Project>
-      <Name>Premy.Chatovatko.Client.Libs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj">
-      <Project>{f8bc7c18-c3c8-4458-a9ba-7879bb97aa23}</Project>
-      <Name>Premy.Chatovatko.Libs</Name>
+    <ProjectReference Include="..\Premy.Chatovatko.Client\Premy.Chatovatko.Client.csproj">
+      <Project>{945357CD-DE35-4C9A-A368-EC35EAC449F1}</Project>
+      <Name>Premy.Chatovatko.Client</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

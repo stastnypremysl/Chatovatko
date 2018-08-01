@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace Premy.Chatovatko.MobileClient.UWP
+namespace Premy.Chatovatko.Client.UWP
 {
     public sealed partial class MainPage
     {
@@ -21,7 +21,7 @@ namespace Premy.Chatovatko.MobileClient.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new Premy.Chatovatko.MobileClient.App());
+            LoadApplication(new Premy.Chatovatko.Client.App());
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Premy.Chatovatko.MobileClient
+namespace Premy.Chatovatko.Client
 {
 	public partial class MainPage : ContentPage
 	{

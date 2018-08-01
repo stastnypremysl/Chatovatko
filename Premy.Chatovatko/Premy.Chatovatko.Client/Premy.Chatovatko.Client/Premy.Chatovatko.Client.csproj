@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="3.0.0.561731" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Premy.Chatovatko.Client.Libs\Premy.Chatovatko.Client.Libs.csproj" />
+    <ProjectReference Include="..\..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
+  </ItemGroup>
+</Project>

@@ -3,7 +3,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
-namespace Premy.Chatovatko.MobileClient
+namespace Premy.Chatovatko.Client
 {
 	public partial class App : Application
 	{

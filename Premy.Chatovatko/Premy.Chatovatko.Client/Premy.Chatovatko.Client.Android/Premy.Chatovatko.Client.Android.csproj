@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0F7BC961-AA38-442A-8CF8-7522679365A4}</ProjectGuid>
+    <ProjectGuid>{E00F2523-9299-4C43-86D2-1DF735F5B475}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{c9e5eea5-ca05-42a1-839b-61506e0a37df}</TemplateGuid>
     <OutputType>Library</OutputType>
@@ -84,22 +84,17 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Resources\drawable\" />
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-xhdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\drawable-xxxhdpi\" />
-    <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Premy.Chatovatko.Client.Libs\Premy.Chatovatko.Client.Libs.csproj">
-      <Project>{f1789851-ec70-4d92-ae3c-7058130a5e94}</Project>
-      <Name>Premy.Chatovatko.Client.Libs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj">
-      <Project>{f8bc7c18-c3c8-4458-a9ba-7879bb97aa23}</Project>
-      <Name>Premy.Chatovatko.Libs</Name>
+    <ProjectReference Include="..\Premy.Chatovatko.Client\Premy.Chatovatko.Client.csproj">
+      <Project>{945357CD-DE35-4C9A-A368-EC35EAC449F1}</Project>
+      <Name>Premy.Chatovatko.Client</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\Premy.Chatovatko.Client\Premy.Chatovatko.Client.projitems" Label="Shared" />
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+ <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

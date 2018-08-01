@@ -1,5 +1,6 @@
 ﻿using Premy.Chatovatko.Client.UserData;
 using Premy.Chatovatko.Libs;
+using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Security;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Comunication
 {
-    public class ClientConnection
+    public class ClientConnection : ILoggable
     {
         private readonly int ServerPort = 8471;
         private int dataPort = -1;
@@ -19,29 +20,41 @@ namespace Premy.Chatovatko.Client.Comunication
 
         private SslStream stream;
         private SslStream dataStream;
+        private Logger logger;
+
+        public ClientConnection(Logger logger)
+        {
+            this.logger = logger;
+        }
 
         public void Connect()
         {
+            /*
             client = new TcpClient(Config.serverAddress, ServerPort);
-            Logger.LogConnection("Client connected.");
+            logger.Log(this,"Client connected.");
 
             stream = new SslStream(client.GetStream(), false, App_CertificateValidation);
             stream.AuthenticateAsClient(Config.serverName, ClientCertificate.clientCertificateCollection, SslProtocols.Tls12, false);
-            Logger.LogConnection("SSL authentication completed.");
+            logger.Log(this, "SSL authentication completed.");
 
             dataPort = Int32.Parse(TextEncoder.ReadStringFromSSLStream(stream));
             dataClient = new TcpClient(Config.serverAddress, dataPort);
             dataStream = new SslStream(dataClient.GetStream(), false, App_CertificateValidation);
             dataStream.AuthenticateAsClient(Config.serverName, ClientCertificate.clientCertificateCollection, SslProtocols.Tls12, false);
+            */
+            logger.Log(this, "Data connection has been successfully estamblished.");
+        }
 
-            Logger.LogConnection("Data connection has been successfully estamblished.");
+        public string GetLogSource()
+        {
+            return "Connection";
         }
 
         private bool App_CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             if (sslPolicyErrors == SslPolicyErrors.None) { return true; }
             if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors) { return true; }
-            Logger.LogConnection("*** SSL Error: " + sslPolicyErrors.ToString());
+            logger.Log(this, "*** SSL Error: " + sslPolicyErrors.ToString());
             return false;
         }
     }
