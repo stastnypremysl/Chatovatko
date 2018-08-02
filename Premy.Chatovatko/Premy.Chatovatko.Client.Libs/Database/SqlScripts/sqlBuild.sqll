@@ -6,4 +6,32 @@ CREATE TABLE `main`.`settings` (
   `user_name` VARCHAR(45) NOT NULL,
   `server_name` VARCHAR(200) NOT NULL,
   `server_address` VARCHAR(200) NOT NULL);
+
   ---------------------------------------
+  CREATE TABLE IF NOT EXISTS `main`.`contacts` (
+  `public_id` INTEGER PRIMARY KEY,
+  `user_name` VARCHAR(45) NOT NULL,
+  `public_key` VARBINARY(2000) NOT NULL,
+  `symmetric_key` VARBINARY(2000) NOT NULL);
+
+  ---------------------------------------
+  CREATE TABLE IF NOT EXISTS `main`.`blob_messages` (
+  `id` INTEGER AUTO_INCREMENT,
+  `public_id` INT NULL,
+  `recepient_id` INT NOT NULL REFERENCES contacts(contact_id) 
+    ON DELETE NO ACTION 
+	ON UPDATE NO ACTION,
+  `sender_id` INT NOT NULL REFERENCES contacts(contact_id)
+    ON DELETE NO ACTION
+	ON UPDATE NO ACTION,
+  `downloaded` BIT(1) NOT NULL,
+  `uploaded` BIT(1) NOT NULL,
+  `do_delete` BIT(1) NOT NULL DEFAULT 0,
+  `blob` BLOB NULL);
+
+  CREATE INDEX `fk_blob_messages_contacts1_idx` ON blob_messages (`recepient_id` ASC);
+  CREATE INDEX `fk_blob_messages_contacts2_idx` ON blob_messages (`sender_id` ASC);
+
+  ---------------------------------------
+
+

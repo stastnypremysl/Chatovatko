@@ -5,6 +5,10 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20180802172607_the.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <None Update="DefaultConfig\client.crt">
@@ -18,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Database\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 

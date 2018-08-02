@@ -6,8 +6,10 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
 {
     public partial class ChatovatkoContext : DbContext
     {
-        public ChatovatkoContext()
+        private ServerConfig config = null;
+        public ChatovatkoContext(ServerConfig config)
         {
+            this.config = config;
         }
 
         public ChatovatkoContext(DbContextOptions<ChatovatkoContext> options)
@@ -24,7 +26,7 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
         {
             if (!optionsBuilder.IsConfigured)
             {
-                
+                optionsBuilder.UseMySql(config.ConnectionString);
             }
         }
 
