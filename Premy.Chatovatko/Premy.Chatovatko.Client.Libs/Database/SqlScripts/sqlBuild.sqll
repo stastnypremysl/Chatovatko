@@ -18,10 +18,10 @@ CREATE TABLE `main`.`settings` (
   CREATE TABLE IF NOT EXISTS `main`.`blob_messages` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `public_id` INT NULL,
-  `recepient_id` INT NOT NULL REFERENCES contacts(contact_id) 
+  `recepient_id` INT NOT NULL REFERENCES contacts(public_id) 
     ON DELETE NO ACTION 
 	ON UPDATE NO ACTION,
-  `sender_id` INT NOT NULL REFERENCES contacts(contact_id)
+  `sender_id` INT NOT NULL REFERENCES contacts(public_id)
     ON DELETE NO ACTION
 	ON UPDATE NO ACTION,
   `downloaded` BIT(1) NOT NULL,
