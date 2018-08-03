@@ -22,6 +22,9 @@ namespace Premy.Chatovatko.Server
 
                 DBPool pool = new DBPool(logger, config);
 
+                InfoService infoService = new InfoService(logger, config, certificate);
+                infoService.RunInBackground();
+
                 GodotFountain godotFountain = new GodotFountain(logger, pool, certificate);
                 godotFountain.Run();
             }
@@ -33,6 +36,7 @@ namespace Premy.Chatovatko.Server
             {
                 logger.Close();
                 Console.ReadLine();
+                System.Environment.Exit(1);
             }
         }
 
