@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
+using System;
 using System.IO;
 using System.Net.Security;
 using System.Text;
@@ -48,7 +50,26 @@ namespace Premy.Chatovatko.Libs
         public static void SendStringToStream(Stream stream, String message)
         {
             byte[] bytes = GetBytes(message + CONST_SURFIX);
-            stream.Write(GetBytes(message + "<EOF>"), 0, bytes.Length);
+            stream.Write(bytes, 0, bytes.Length);
         }
+
+        public static void SendJson(Stream stream, object obj)
+        {
+            String json = JsonConvert.SerializeObject(obj);
+            SendStringToStream(stream, json);
+        }
+
+        public static ServerConnectionInfo ReadServerConnectionInfo(Stream stream)
+        {
+            String json = ReadStringFromStream(stream);
+            return JsonConvert.DeserializeObject<ServerConnectionInfo>(json);
+        }
+
+        public static ServerInfo ReadServerInfo(Stream stream)
+        {
+            String json = ReadStringFromStream(stream);
+            return JsonConvert.DeserializeObject<ServerInfo>(json);
+        }
+
     }
 }

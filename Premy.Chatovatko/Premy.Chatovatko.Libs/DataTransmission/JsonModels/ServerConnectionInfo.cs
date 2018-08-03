@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs.DataTransmission.JsonModels
 {
-    public class ServerInfo
+    public class ServerConnectionInfo
     {
-        public String Name { get; set; }
-        public String PublicKey { get; set; }
+        public int GodotID { get; set; }
+        public bool Authenticated { get; set; }
     }
 }

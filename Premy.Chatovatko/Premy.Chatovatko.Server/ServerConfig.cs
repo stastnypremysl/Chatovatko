@@ -22,6 +22,7 @@ namespace Premy.Chatovatko.Server
         public string ConnectionString { get => connectionString; set => connectionString = value; }
         public string CertPasswd { get => certPasswd; set => certPasswd = value; }
         public string CertAddress { get => certAddress; set => certAddress = value; }
+        public string ServerName { get; set; }
 
         public void LoadConfig()
         {
@@ -51,6 +52,9 @@ namespace Premy.Chatovatko.Server
                             break;
                         case "CertAddress":
                             certAddress = rest;
+                            break;
+                        case "ServerName":
+                            ServerName = rest;
                             break;
                         default:
                             logger.Log(this, String.Format("The parameter {0} doesn't exist.", name));
