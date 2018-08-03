@@ -1,13 +1,16 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Premy.Chatovatko.Client.Libs.UserData;
 
-namespace Premy.Chatovatko.Client.Libs.Models
+namespace Premy.Chatovatko.Client.Libs.Database.Models
 {
     public partial class SqlClientContext : DbContext
     {
-        public SqlClientContext()
+        IClientDatabaseConfig config = null;
+        public SqlClientContext(IClientDatabaseConfig config)
         {
+            this.config = config;
         }
 
         public SqlClientContext(DbContextOptions<SqlClientContext> options)
@@ -27,8 +30,7 @@ namespace Premy.Chatovatko.Client.Libs.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlite("Data Source=C:/chatovatko/sql/client.db");
+                optionsBuilder.UseSqlite(String.Format("Data Source={0}", config.DatabaseAddress));
             }
         }
 

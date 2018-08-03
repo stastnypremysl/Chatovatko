@@ -1,4 +1,5 @@
-﻿using Premy.Chatovatko.Client.Libs.UserData;
+﻿using Premy.Chatovatko.Client.Libs.Models;
+using Premy.Chatovatko.Client.Libs.UserData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +22,14 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
         public void DBInit()
         {
+            if (File.Exists(databaseAddress))
+            {
+                DBDelete();
+            }
+            using(var context = new SqlClientContext())
+            {
 
+            }
         }
 
         public void DBGet()

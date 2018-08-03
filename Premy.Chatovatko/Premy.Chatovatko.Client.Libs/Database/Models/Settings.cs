@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Premy.Chatovatko.Client.Libs.Models
+namespace Premy.Chatovatko.Client.Libs.Database.Models
 {
     public partial class Settings
     {

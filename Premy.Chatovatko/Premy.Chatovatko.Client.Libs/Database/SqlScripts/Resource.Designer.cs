@@ -63,14 +63,18 @@ namespace Premy.Chatovatko.Client.Libs.Database.SqlScripts {
         /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE `main`.`settings` (
         ///  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-        ///  `public_id` INT NOT NULL,
+        ///  `user_public_id` INT NOT NULL, --user public id
         ///  `private_key` VARBINARY(2000) NOT NULL,
         ///  `public_key` VARBINARY(2000) NOT NULL,
         ///  `user_name` VARCHAR(45) NOT NULL,
         ///  `server_name` VARCHAR(200) NOT NULL,
         ///  `server_address` VARCHAR(200) NOT NULL);
+        ///
         ///  ---------------------------------------
-        ///.
+        ///  CREATE TABLE IF NOT EXISTS `main`.`contacts` (
+        ///  `public_id` INTEGER PRIMARY KEY,
+        ///  `user_name` VARCHAR(45) NOT NULL,
+        ///  `public_ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string sqlBuild {
             get {
