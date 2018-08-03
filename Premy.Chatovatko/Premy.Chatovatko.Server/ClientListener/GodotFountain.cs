@@ -1,4 +1,5 @@
-﻿using Premy.Chatovatko.Libs.Logging;
+﻿using Premy.Chatovatko.Libs.DataTransmission;
+using Premy.Chatovatko.Libs.Logging;
 using Premy.Chatovatko.Server.Database;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 {
     public class GodotFountain
     {
-        private readonly int ServerPort = 8471;
+        private readonly int ServerPort = TcpConstants.MAIN_SERVER_PORT;
 
         
         private int readyToExist = 10;

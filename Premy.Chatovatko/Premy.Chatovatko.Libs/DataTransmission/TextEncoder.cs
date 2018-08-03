@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Security;
 using System.Text;
 
@@ -16,7 +17,9 @@ namespace Premy.Chatovatko.Libs
             return Encoding.UTF8.GetString(bytes);
         }
 
-        public static String ReadStringFromSSLStream(SslStream sslStream)
+        private static readonly string CONST_SURFIX = "<E42x?OF>";
+
+        public static String ReadStringFromStream(Stream stream)
         {
             // Read the  message sent by the server.
             // The end of the message is signaled using the
@@ -26,14 +29,14 @@ namespace Premy.Chatovatko.Libs
             int bytes = -1;
             do
             {
-                bytes = sslStream.Read(buffer, 0, buffer.Length);
+                bytes = stream.Read(buffer, 0, buffer.Length);
 
                 Decoder decoder = Encoding.UTF8.GetDecoder();
                 char[] chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
                 decoder.GetChars(buffer, 0, bytes, chars, 0);
                 messageData.Append(chars);
                
-                if (messageData.ToString().IndexOf("<EOF>") != -1)
+                if (messageData.ToString().IndexOf(CONST_SURFIX) != -1)
                 {
                     break;
                 }
@@ -42,9 +45,10 @@ namespace Premy.Chatovatko.Libs
             return messageData.ToString().Substring(0, messageData.Length - 5);
         }
 
-        public static void SendStringToSSLStream(SslStream sslStream, String message)
+        public static void SendStringToStream(Stream stream, String message)
         {
-            sslStream.Write(GetBytes(message + "<EOF>"));
+            byte[] bytes = GetBytes(message + CONST_SURFIX);
+            stream.Write(GetBytes(message + "<EOF>"), 0, bytes.Length);
         }
     }
 }

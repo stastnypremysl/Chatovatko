@@ -941,6 +941,9 @@
       "Premy.Chatovatko.Libs/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "Newtonsoft.Json": "11.0.2"
+        },
         "compile": {
           "bin/placeholder/Premy.Chatovatko.Libs.dll": {}
         },

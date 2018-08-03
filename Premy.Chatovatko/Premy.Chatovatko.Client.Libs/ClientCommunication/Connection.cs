@@ -1,5 +1,6 @@
 ﻿using Premy.Chatovatko.Client.UserData;
 using Premy.Chatovatko.Libs;
+using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Premy.Chatovatko.Client.Comunication
 {
     public class ClientConnection : ILoggable
     {
-        private readonly int ServerPort = 8471;
+        private readonly int ServerPort = TcpConstants.MAIN_SERVER_PORT;
         private int dataPort = -1;
         private TcpClient client;
         private TcpClient dataClient;
@@ -50,12 +51,15 @@ namespace Premy.Chatovatko.Client.Comunication
             return "Connection";
         }
 
-        private bool App_CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private bool AppCertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            if (sslPolicyErrors == SslPolicyErrors.None) { return true; }
-            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors) { return true; }
-            logger.Log(this, "*** SSL Error: " + sslPolicyErrors.ToString());
-            return false;
+            if(sslPolicyErrors == SslPolicyErrors.RemoteCertificateNotAvailable)
+            {
+                logger.Log(this, "*** SSL Error: " + sslPolicyErrors.ToString());
+                return false;
+            }
+            
+            return true;
         }
     }
 }
