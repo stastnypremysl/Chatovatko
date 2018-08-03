@@ -7,19 +7,33 @@ using Premy.Chatovatko.Libs.Logging;
 using Premy.Chatovatko.Client.Console;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Client.Libs.Database;
+using Premy.Chatovatko.Client.Libs.Database.Models;
 
 namespace Premy.Chatovatko.Client
 {
     class Program
     {
+        static Logger logger;
         static void Main(string[] args)
         {
-            Logger logger = new Logger(new ConsoleLoggerOutput());
+            logger = new Logger(new ConsoleLoggerOutput());
             WriteLine("Chatovatko client at your service!");
             try {
                 IClientDatabaseConfig config = new ConsoleClientDatabaseConfig();
                 DBInitializator initializator = new DBInitializator(config, logger);
                 initializator.DBEnsureCreated();
+
+                SettingsLoader settingsLoader = new SettingsLoader(config, logger);
+                Settings settings = null;
+                if (settingsLoader.Exists())
+                {
+                    Log("Settings exists and will be loaded.");
+                    settings = settingsLoader.GetSettings();
+                }
+                else
+                {
+                    Log("Settings doesn't exist.");
+                }
 
                 bool running = true;
                 while(running){
@@ -52,6 +66,9 @@ namespace Premy.Chatovatko.Client
                         case "--":
                         case "":
                             break;
+                        case "status":
+                            WriteStatus(settings, config);
+                            break;
                         default:
                             WriteSyntaxError(commandParts[0]);
                             break;
@@ -64,7 +81,7 @@ namespace Premy.Chatovatko.Client
             }
             catch(Exception ex)
             {
-                logger.Log("Core", "Program",String.Format("The client has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
+                logger.Log("Program", "Core",String.Format("The client has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
             }
             finally
             {
@@ -73,9 +90,29 @@ namespace Premy.Chatovatko.Client
             
         }
 
+        static void WriteStatus(Settings settings, IClientDatabaseConfig config)
+        {
+            WriteLine("----------Chatovatko status-----------");
+            WriteLine(DateTime.Now);
+            WriteLine(String.Format("Database address: {0}", config.DatabaseAddress));
+            if(settings == null)
+            {
+                WriteLine("Settings doesn't exist.");
+            }
+            else
+            {
+
+            }
+        }
+
         static void WriteSyntaxError(String where)
         {
             WriteLine(String.Format("Syntax error near {0}", where));
+        }
+
+        static void Log(String message)
+        {
+            logger.Log("Program", "Core", "Settings doesn't exist yet.", false);
         }
     }
 }

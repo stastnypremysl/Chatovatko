@@ -12,7 +12,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
     {
         private readonly Logger logger;
         private readonly IClientDatabaseConfig config;
-        public SettingsLoader(Logger logger, IClientDatabaseConfig config)
+        public SettingsLoader(IClientDatabaseConfig config, Logger logger)
         {
             this.logger = logger;
             this.config = config;
@@ -23,6 +23,14 @@ namespace Premy.Chatovatko.Client.Libs.UserData
             using(SqlClientContext context = new SqlClientContext(config))
             {
                 return context.Settings.Any(o => true);
+            }
+        }
+
+        public Settings GetSettings()
+        {
+            using (SqlClientContext context = new SqlClientContext(config))
+            {
+                return context.Settings.First();
             }
         }
 
