@@ -8,7 +8,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Resources;
-using Premy.Chatovatko.Client.Libs.Database.SqlScripts;
 using Premy.Chatovatko.Libs.Logging;
 
 namespace Premy.Chatovatko.Client.Libs.Database
@@ -40,9 +39,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
             {
                 try
                 {
-                    ResourceManager resources = new ResourceManager(typeof(Resource));
-                    string createScript = (string)resources.GetObject("sqlBuild");
-
+                    string createScript = Utils.ReadResource("Premy.Chatovatko.Client.Libs.Database.SqlScripts.sqlBuild.sqll");
+                    
                     context.Database.ExecuteSqlCommand(createScript);
                 }
                 catch(Exception ex)

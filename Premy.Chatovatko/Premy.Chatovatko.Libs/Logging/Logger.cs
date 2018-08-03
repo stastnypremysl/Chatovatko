@@ -42,6 +42,12 @@ namespace Premy.Chatovatko.Libs.Logging
             Log(theLogMessage);
         }
 
+        public void LogException(Exception ex, String name, String source, String message)
+        {
+            DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(name, message, source, DateTime.Now, true);
+            LogException(theLogMessage, ex);
+        }
+
         public void Log(ILoggable me, String message, bool error)
         {
             DefaultLoggerMessage theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, me.GetLogSource(), DateTime.Now, error);
@@ -61,6 +67,18 @@ namespace Premy.Chatovatko.Libs.Logging
             builder.Append("\n");
             builder.Append(exception.StackTrace);
             Log(me, builder.ToString(), true);
+        }
+
+        private void LogException(DefaultLoggerMessage me, Exception exception)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(me.GetMessage());
+            builder.Append("\n");
+            builder.Append(exception.Message);
+            builder.Append("\n");
+            builder.Append(exception.StackTrace);
+            me.SetMessage(builder.ToString());
+            Log(me);
         }
 
         public void LogException(ChatovatkoException exception)

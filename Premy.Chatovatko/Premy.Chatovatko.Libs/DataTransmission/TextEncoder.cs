@@ -44,7 +44,7 @@ namespace Premy.Chatovatko.Libs
                 }
             } while (bytes != 0);
 
-            return messageData.ToString().Substring(0, messageData.Length - 5);
+            return messageData.ToString().Substring(0, messageData.Length - CONST_SURFIX.Length);
         }
 
         public static void SendStringToStream(Stream stream, String message)

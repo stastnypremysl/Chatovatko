@@ -92,9 +92,14 @@ namespace Premy.Chatovatko.Client
                                 break;
                         }
                     }
+                    catch (ChatovatkoException ex)
+                    {
+                        logger.Log("Program", "Core", "The command has failed.", true);
+                        logger.LogException(ex);
+                    }
                     catch (Exception ex)
                     {
-                        logger.Log("Program", "Core", String.Format("The command has failed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
+                        logger.LogException(ex, "Program", "Core", "The command has failed.");
                     }
                 
                 }

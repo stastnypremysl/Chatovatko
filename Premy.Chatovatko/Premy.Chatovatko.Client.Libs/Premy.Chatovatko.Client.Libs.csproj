@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Database\SqlScripts\sqlBuild.sqll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Database\SqlScripts\sqlBuild.sqll" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" />
@@ -13,21 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Database\SqlScripts\Resource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Database\SqlScripts\Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

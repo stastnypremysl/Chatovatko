@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Premy.Chatovatko.Client
 {
     public static class Utils
     {
+        public static bool IsWindows()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        }
         public static String GetHomeDir()
         {
-            string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
-                   Environment.OSVersion.Platform == PlatformID.MacOSX)
+            string homePath = (!IsWindows())
                     ? Environment.GetEnvironmentVariable("HOME")
                     : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
             return homePath;
@@ -17,7 +22,9 @@ namespace Premy.Chatovatko.Client
 
         public static String GetConfigDirectory()
         {
-            return GetHomeDir() + "/.chatovatko";
+            String path = GetHomeDir() + "/.chatovatko";
+            Directory.CreateDirectory(path);
+            return path;
         }
 
         public static String GetDatabaseAddress() => GetConfigDirectory() + "/client.db";

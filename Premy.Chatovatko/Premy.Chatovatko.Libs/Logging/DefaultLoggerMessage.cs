@@ -7,7 +7,7 @@ namespace Premy.Chatovatko.Libs.Logging
     public class DefaultLoggerMessage : ILoggerMessage
     {
         private readonly String className;
-        private readonly String message;
+        private String message;
         private readonly String source;
         private readonly DateTime timeOfCreation;
         private readonly bool error;
@@ -26,6 +26,7 @@ namespace Premy.Chatovatko.Libs.Logging
         public string GetClassName() => className;
 
         public string GetMessage() => message;
+        public string SetMessage(string message) => this.message = message;
 
         public string GetSource() => source;
 
