@@ -4,6 +4,9 @@ using Premy.Chatovatko.Client.UserData;
 using Premy.Chatovatko.Client.Comunication;
 using Premy.Chatovatko.Server.Logging;
 using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Client.Console;
+using Premy.Chatovatko.Client.Libs.UserData;
+using Premy.Chatovatko.Client.Libs.Database;
 
 namespace Premy.Chatovatko.Client
 {
@@ -14,7 +17,10 @@ namespace Premy.Chatovatko.Client
             Logger logger = new Logger(new ConsoleLoggerOutput());
             WriteLine("Chatovatko client at your service!");
             try {
-                
+                IClientDatabaseConfig config = new ConsoleClientDatabaseConfig();
+                DBInitializator initializator = new DBInitializator(config, logger);
+                initializator.DBEnsureCreated();
+
                 //Config config;
 
                 //Connection.Connect();
@@ -26,6 +32,7 @@ namespace Premy.Chatovatko.Client
             finally
             {
                 logger.Close();
+                ReadLine();
             }
             
         }

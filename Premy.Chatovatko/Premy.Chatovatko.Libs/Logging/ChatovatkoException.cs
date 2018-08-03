@@ -20,6 +20,12 @@ namespace Premy.Chatovatko.Libs.Logging
             theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, "", DateTime.Now, true);
         }
 
+        public ChatovatkoException(object me, Exception ex, String message) : base()
+        {
+            message = message + "\n" + ex.Message + "\n" + ex.StackTrace;
+            theLogMessage = new DefaultLoggerMessage(me.GetType().Name, message, "", DateTime.Now, true);
+        }
+
         public ILoggerMessage GetLogMessage => theLogMessage;
     }
 }
