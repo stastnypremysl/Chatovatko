@@ -319,6 +319,11 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("server_name")
                     .HasColumnType("VARCHAR(200)");
 
+                entity.Property(e => e.ServerPublicKey)
+                    .IsRequired()
+                    .HasColumnName("server_public_key")
+                    .HasColumnType("VARBINARY(2000)");
+
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasColumnName("user_name")

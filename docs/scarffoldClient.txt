@@ -1,0 +1,1 @@
+Scaffold-DbContext "Data Source=C:/chatovatko/sql/client.db" Microsoft.EntityFrameworkCore.Sqlite -OutputDir Models -Force

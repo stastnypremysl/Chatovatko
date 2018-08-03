@@ -9,5 +9,7 @@ namespace Premy.Chatovatko.Client.UserData
     {
         public X509Certificate2 theCert;
         public X509CertificateCollection clientCertificateCollection;
+
+
     }
 }
