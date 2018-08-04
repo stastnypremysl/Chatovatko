@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Premy.Chatovatko.Client.UserData
+namespace Premy.Chatovatko.Client.Configuration
 {
 /*    public class ClientConfig
     {

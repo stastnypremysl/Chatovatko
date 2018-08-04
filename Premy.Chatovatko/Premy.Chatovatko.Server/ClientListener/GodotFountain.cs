@@ -1,5 +1,6 @@
 ﻿using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Server.Cryptography;
 using Premy.Chatovatko.Server.Database;
 using System;
 using System.Collections.Generic;

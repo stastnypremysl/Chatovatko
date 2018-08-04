@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Premy.Chatovatko.Client.UserData
+namespace Premy.Chatovatko.Client.Libs.UserData
 {
     public class ClientCertificate
     {

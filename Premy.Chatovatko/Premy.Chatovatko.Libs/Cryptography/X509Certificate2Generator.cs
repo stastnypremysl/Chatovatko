@@ -4,7 +4,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Premy.Chatovatko.Client.UserData
+namespace Premy.Chatovatko.Client.Cryptography
 {
     public static class X509Certificate2Generator
     {
@@ -37,6 +37,6 @@ namespace Premy.Chatovatko.Client.UserData
                 certificate.FriendlyName = CertificateName;
 
                 return new X509Certificate2(certificate.Export(X509ContentType.Pfx, "WeNeedASaf3rPassword"), "WeNeedASaf3rPassword", X509KeyStorageFlags.MachineKeySet);
-            }
-        }*/
+            }*/
+    }
 }

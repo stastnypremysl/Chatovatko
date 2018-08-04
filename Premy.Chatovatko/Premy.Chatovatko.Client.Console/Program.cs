@@ -1,15 +1,13 @@
 ﻿using System;
 using static System.Console;
-using Premy.Chatovatko.Client.UserData;
-using Premy.Chatovatko.Client.Comunication;
 using Premy.Chatovatko.Server.Logging;
 using Premy.Chatovatko.Libs.Logging;
-using Premy.Chatovatko.Client.Console;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Client.Libs.Database;
 using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Client.Libs.ClientCommunication;
+using Premy.Chatovatko.Client.Configuration;
 
 namespace Premy.Chatovatko.Client
 {

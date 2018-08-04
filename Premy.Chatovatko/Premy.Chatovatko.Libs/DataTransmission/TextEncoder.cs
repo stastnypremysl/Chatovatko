@@ -5,7 +5,7 @@ using System.IO;
 using System.Net.Security;
 using System.Text;
 
-namespace Premy.Chatovatko.Libs
+namespace Premy.Chatovatko.Libs.DataTransmission
 {
     public static class TextEncoder
     {

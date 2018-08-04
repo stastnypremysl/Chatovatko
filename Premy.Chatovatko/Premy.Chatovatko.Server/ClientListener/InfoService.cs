@@ -2,6 +2,7 @@
 using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Server.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.IO;

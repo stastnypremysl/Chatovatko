@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Premy.Chatovatko.Server.ClientListener
+namespace Premy.Chatovatko.Server.Cryptography
 {
     public class ServerCert : ILoggable
     {

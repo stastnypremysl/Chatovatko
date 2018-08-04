@@ -1,5 +1,4 @@
-﻿using Premy.Chatovatko.Client.UserData;
-using Premy.Chatovatko.Libs;
+﻿using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
 using System;
@@ -10,7 +9,7 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Premy.Chatovatko.Client.Comunication
+namespace Premy.Chatovatko.Client.ClientComunication
 {
     public class ClientConnection : ILoggable
     {
