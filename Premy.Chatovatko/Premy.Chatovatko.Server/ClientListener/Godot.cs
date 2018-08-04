@@ -113,11 +113,6 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private bool CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            if(certificate == null || sslPolicyErrors.Equals(SslPolicyErrors.RemoteCertificateNotAvailable))
-            {
-                logger.Log(this, "Remote certificate is not available.");
-                return false;
-            }
             return true;
         }
 

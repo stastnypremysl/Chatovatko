@@ -26,8 +26,8 @@ namespace Premy.Chatovatko.Client.Cryptography
         
         public static X509Certificate2 GenerateCACertificate(Logger logger, string subjectName = "CN=root ca", int keyStrength = 4096)
         {
-            logger.Log("X509Certificate2Generator", "X509 certificate generator", "Generating new X509 certificate.", false);
-            // Generating Random Numbers
+            logger.Log("X509Certificate2Generator", "X509 certificate generator", "--Making new X509 certificate.--", false);
+            logger.Log("X509Certificate2Generator", "X509 certificate generator", "Generating random numbers.", false);
             var randomGenerator = new CryptoApiRandomGenerator();
             var random = new SecureRandom(randomGenerator);
 
@@ -55,21 +55,23 @@ namespace Premy.Chatovatko.Client.Cryptography
             certificateGenerator.SetNotBefore(notBefore);
             certificateGenerator.SetNotAfter(notAfter);
 
-            // Subject Public Key
+            
+            logger.Log("X509Certificate2Generator", "X509 certificate generator", "Making RSA key pair.", false);
             AsymmetricCipherKeyPair subjectKeyPair;
             var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
             var keyPairGenerator = new RsaKeyPairGenerator();
             keyPairGenerator.Init(keyGenerationParameters);
             subjectKeyPair = keyPairGenerator.GenerateKeyPair();
-
+            // Subject Public Key
             certificateGenerator.SetPublicKey(subjectKeyPair.Public);
 
             // Generating the Certificate
             var issuerKeyPair = subjectKeyPair;
-
+            logger.Log("X509Certificate2Generator", "X509 certificate generator", "Generating the X509 certificate without private key.", false);
             // selfsign certificate
             var certificate = certificateGenerator.Generate(issuerKeyPair.Private, random);
 
+            logger.Log("X509Certificate2Generator", "X509 certificate generator", "Merging the X509 certificate.", false);
             // in-memory PFX stream
             var pkcs12Store = new Pkcs12Store();
             var certEntry = new X509CertificateEntry(certificate);
