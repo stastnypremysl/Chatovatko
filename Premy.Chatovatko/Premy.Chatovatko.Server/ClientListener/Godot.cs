@@ -3,7 +3,6 @@ using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
 using Premy.Chatovatko.Server.Cryptography;
-using Premy.Chatovatko.Server.Database;
 using Premy.Chatovatko.Server.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,6 @@ namespace Premy.Chatovatko.Server.ClientListener
     {
 
         private readonly ulong id;
-        private MySqlConnection conn;
         private Thread theLife;
         private TcpClient client;
         TcpClient dataClient;
@@ -35,14 +33,16 @@ namespace Premy.Chatovatko.Server.ClientListener
         private readonly ServerCert serverCert;
         private readonly GodotCounter godotCounter;
 
+        private readonly ServerConfig config;
 
-        public Godot(ulong id, Logger logger, DBPool pool, ServerCert serverCert, GodotCounter godotCounter)
+
+        public Godot(ulong id, Logger logger, ServerConfig config, ServerCert serverCert, GodotCounter godotCounter)
         {
             this.id = id;
             this.logger = logger;
             this.serverCert = serverCert;
             this.godotCounter = godotCounter;
-            Thread initLife = new Thread(() => Init(pool));
+            Thread initLife = new Thread(() => Init());
             theLife = new Thread(() => MyJob());
             initLife.Start();
         }
@@ -53,9 +53,8 @@ namespace Premy.Chatovatko.Server.ClientListener
         }
 
 
-        private void Init(DBPool pool)
+        private void Init()
         {
-            conn = pool.GetConnection();
             dataListener = new TcpListener(IPAddress.Any, 0);
             dataListener.Start();
 
@@ -81,7 +80,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     Utils.GetIpAddress(client)));
                 godotCounter.IncreaseRunning();
 
-                sslStream = new SslStream(client.GetStream(), false, App_CertificateValidation);
+                sslStream = new SslStream(client.GetStream(), false, CertificateValidation);
                 sslStream.AuthenticateAsServer(serverCert.ServerCertificate, true, SslProtocols.Tls12, false);
 
                 logger.Log(this, "Godot is sending data connection port and waiting for connection.");
@@ -90,7 +89,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 dataClient = dataListener.AcceptTcpClient();
                 logger.Log(this, "Data connection initializing.");
 
-                dataStream = new SslStream(dataClient.GetStream(), false, App_CertificateValidation);
+                dataStream = new SslStream(dataClient.GetStream(), false, CertificateValidation);
                 dataStream.AuthenticateAsServer(serverCert.ServerCertificate, true, SslProtocols.Tls12, true);
 
                 logger.Log(this, "Data connection has been successfully estamblished.");
@@ -112,18 +111,19 @@ namespace Premy.Chatovatko.Server.ClientListener
             }
         }
 
-        private bool App_CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private bool CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            if (sslPolicyErrors == SslPolicyErrors.None) { return true; }
-            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors) { return true; }
-            logger.Log(this, String.Format("***SSL Error: {1}", id, sslPolicyErrors.ToString()));
+            if(certificate == null || sslPolicyErrors.Equals(SslPolicyErrors.RemoteCertificateNotAvailable))
+            {
+                logger.Log(this, "Remote certificate is not available.");
+                return false;
+            }
             return true;
         }
 
 
         public void Dispose()
         {
-            conn.Dispose();
             sslStream.Dispose();
             client.Dispose();
         }

@@ -7,7 +7,6 @@ using Premy.Chatovatko.Client.Libs.Database;
 using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Client.Libs.ClientCommunication;
-using Premy.Chatovatko.Client.Configuration;
 using Premy.Chatovatko.Client.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -80,7 +79,7 @@ namespace Premy.Chatovatko.Client
                                     {                                        
                                         cert = X509Certificate2Generator.GenerateCACertificate(logger);
                                         WriteLine("Your certificate. Save it.");
-                                        WriteLine(Convert.ToBase64String(cert.GetRawCertData()));
+                                        WriteLine(Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12)));
                                         WriteLine("----------------------------------------------------------------");
                                         WriteLine("Enter your new unique username:");
                                         userName = ReadLine();
@@ -94,8 +93,9 @@ namespace Premy.Chatovatko.Client
                                     }
 
                                     InfoConnection infoConnection = new InfoConnection(serverAddress, logger);
-                                    WriteLine("\n");
+                                    WriteLine();
                                     ServerInfo info = infoConnection.DownloadInfo();
+                                    WriteServerInfo(info);
                                     Write("Do you trust this server (y/n):");
 
                                     string pushed = ReadLine();
@@ -104,6 +104,9 @@ namespace Premy.Chatovatko.Client
                                         break;
                                     }
 
+                                    IConnectionVerificator verificator = new InitConnectionVerificator(logger, info.PublicKey);
+                                    Connection conn = new Connection(logger, verificator, serverAddress, cert);
+                                    conn.Connect();
 
 
                                 }
@@ -150,8 +153,8 @@ namespace Premy.Chatovatko.Client
                                 switch (commandParts[1])
                                 {
                                     case "X509Certificate2":
-                                        X509Certificate2 cert = X509Certificate2Generator.GenerateCACertificate();
-                                        WriteLine(Convert.ToBase64String(cert.GetRawCertData()));
+                                        X509Certificate2 cert = X509Certificate2Generator.GenerateCACertificate(logger);
+                                        WriteLine(Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12)));
 
                                         break;
                                     default:

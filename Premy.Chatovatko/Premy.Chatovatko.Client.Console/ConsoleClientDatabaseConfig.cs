@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Premy.Chatovatko.Client.Libs.UserData;
 
-namespace Premy.Chatovatko.Client.Configuration
+namespace Premy.Chatovatko.Client
 {
     internal class ConsoleClientDatabaseConfig : IClientDatabaseConfig
     {

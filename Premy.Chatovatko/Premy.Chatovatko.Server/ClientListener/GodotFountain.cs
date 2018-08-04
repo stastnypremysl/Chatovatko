@@ -1,7 +1,6 @@
 ﻿using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
 using Premy.Chatovatko.Server.Cryptography;
-using Premy.Chatovatko.Server.Database;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -20,16 +19,16 @@ namespace Premy.Chatovatko.Server.ClientListener
         private readonly GodotCounter counter;
 
         private readonly Logger logger;
-        private readonly DBPool pool;
         private readonly ServerCert serverCert;
 
         private List<Godot> godotPool;
+        private ServerConfig config;
 
-        public GodotFountain(Logger logger, DBPool pool, ServerCert serverCert)
+        public GodotFountain(Logger logger, ServerConfig config, ServerCert serverCert)
         {
             this.counter = new GodotCounter();
             this.logger = logger;
-            this.pool = pool;
+            this.config = config;
             this.serverCert = serverCert;
         }
 
@@ -43,7 +42,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
             for(int i = 0; i != ReadyToExist; i++)
             {
-                godotPool.Add(new Godot(counter.Created, logger, pool, serverCert, counter));
+                godotPool.Add(new Godot(counter.Created, logger, config, serverCert, counter));
                 counter.IncreaseCreated();
             }
 
@@ -55,7 +54,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 TcpClient client = listener.AcceptTcpClient();
                 godotPool[ite].Run(client);
                 ite++;
-                godotPool.Add(new Godot(counter.Created, logger, pool, serverCert, counter));
+                godotPool.Add(new Godot(counter.Created, logger, config, serverCert, counter));
                 counter.IncreaseCreated();
             }
         }

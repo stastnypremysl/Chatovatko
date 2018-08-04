@@ -38,7 +38,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         {
             
             client = new TcpClient(serverAddress, ServerPort);
-            logger.Log(this,"Client connected.");
+            logger.Log(this, "Client connected.");
 
             stream = new SslStream(client.GetStream(), false, verificator.AppCertificateValidation);
             X509CertificateCollection clientCertificates = new X509CertificateCollection();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -49,7 +50,7 @@ namespace Premy.Chatovatko.Client.Cryptography
 
             // Valid For
             var notBefore = DateTime.UtcNow.Date;
-            var notAfter = notBefore.AddYears(2);
+            var notAfter = notBefore.AddYears(20);
 
             certificateGenerator.SetNotBefore(notBefore);
             certificateGenerator.SetNotAfter(notAfter);
@@ -68,9 +69,21 @@ namespace Premy.Chatovatko.Client.Cryptography
 
             // selfsign certificate
             var certificate = certificateGenerator.Generate(issuerKeyPair.Private, random);
-            var x509 = new System.Security.Cryptography.X509Certificates.X509Certificate2(certificate.GetEncoded());
-                        
-            return x509;
+
+            // in-memory PFX stream
+            var pkcs12Store = new Pkcs12Store();
+            var certEntry = new X509CertificateEntry(certificate);
+            pkcs12Store.SetCertificateEntry(subjectName, certEntry);
+            pkcs12Store.SetKeyEntry(subjectName, new AsymmetricKeyEntry(subjectKeyPair.Private), new[] { certEntry });
+            X509Certificate2 keyedCert;
+            using (MemoryStream pfxStream = new MemoryStream())
+            {
+                pkcs12Store.Save(pfxStream, new char[0], new SecureRandom());
+                pfxStream.Seek(0, SeekOrigin.Begin);
+                keyedCert = new X509Certificate2(pfxStream.ToArray(), string.Empty, X509KeyStorageFlags.Exportable);
+            }
+
+            return keyedCert;
 
         }
 

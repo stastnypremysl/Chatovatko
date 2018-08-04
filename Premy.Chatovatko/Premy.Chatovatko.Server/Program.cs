@@ -1,7 +1,6 @@
 ﻿using Premy.Chatovatko.Libs.Logging;
 using Premy.Chatovatko.Server.ClientListener;
 using Premy.Chatovatko.Server.Cryptography;
-using Premy.Chatovatko.Server.Database;
 using Premy.Chatovatko.Server.Logging;
 using System;
 
@@ -21,14 +20,13 @@ namespace Premy.Chatovatko.Server
                 ServerCert certificate = new ServerCert();
                 certificate.Load(config);
 
-                DBPool pool = new DBPool(logger, config);
                 logger.LoggerOutputs.Add(new DatabaseLoggerOutput(config));
                 logger.Log("Program", "Core", "First phase of booting up ended", false);
 
                 InfoService infoService = new InfoService(logger, config, certificate);
                 infoService.RunInBackground();
 
-                GodotFountain godotFountain = new GodotFountain(logger, pool, certificate);
+                GodotFountain godotFountain = new GodotFountain(logger, config, certificate);
                 godotFountain.Run();
             }
             catch(Exception ex)
