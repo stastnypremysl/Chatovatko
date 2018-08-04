@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs
@@ -17,6 +18,13 @@ namespace Premy.Chatovatko.Client.Libs
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        internal static byte[] GenerateRandomBytes(int lenght)
+        {
+            byte[] ret = new byte[lenght];
+            RNGCryptoServiceProvider.Create().GetBytes(ret);
+            return ret;
         }
     }
 }

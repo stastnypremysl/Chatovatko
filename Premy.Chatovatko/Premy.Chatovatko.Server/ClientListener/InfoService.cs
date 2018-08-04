@@ -15,7 +15,6 @@ namespace Premy.Chatovatko.Server.ClientListener
 {
     public class InfoService : ILoggable
     {
-        private Task backgroundWork = null;
         private readonly Logger logger;
         private readonly ServerConfig config;
         private readonly ServerCert cert;
@@ -75,9 +74,10 @@ namespace Premy.Chatovatko.Server.ClientListener
             return new ServerInfo(config.ServerName, publicKey);
         }
 
-        public void RunInBackground()
+        public async Task RunInBackground()
         {
-            backgroundWork = Task.Run(() => Run());
+            await Task.Run(() => Run());
+
         }
 
         public string GetLogSource()
