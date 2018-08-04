@@ -57,7 +57,9 @@ namespace Premy.Chatovatko.Client
                                     WriteNotEnoughParameters();
                                     break;
                                 }
+
                                 bool? newUser = null;
+                                string userName = null;
                                 string serverAddress = commandParts[2];
                                 switch (commandParts[1])
                                 {
@@ -75,20 +77,35 @@ namespace Premy.Chatovatko.Client
                                 {
                                     X509Certificate2 cert;
                                     if (newUser == true)
-                                    {
-                                        Log("Generating new X509 certificate.");
-                                        cert = X509Certificate2Generator.GenerateCACertificate();
+                                    {                                        
+                                        cert = X509Certificate2Generator.GenerateCACertificate(logger);
                                         WriteLine("Your certificate. Save it.");
                                         WriteLine(Convert.ToBase64String(cert.GetRawCertData()));
                                         WriteLine("----------------------------------------------------------------");
+                                        WriteLine("Enter your new unique username:");
+                                        userName = ReadLine();
 
                                     }
                                     else
                                     {
                                         WriteLine("Enter yours certificate please:");
                                         string base64Cert = ReadLine();
-
+                                        cert = new X509Certificate2(Convert.FromBase64String(base64Cert));
                                     }
+
+                                    InfoConnection infoConnection = new InfoConnection(serverAddress, logger);
+                                    WriteLine("\n");
+                                    ServerInfo info = infoConnection.DownloadInfo();
+                                    Write("Do you trust this server (y/n):");
+
+                                    string pushed = ReadLine();
+                                    if (!pushed.Equals("y"))
+                                    {
+                                        break;
+                                    }
+
+
+
                                 }
                                 break;
                             case "delete":
@@ -150,7 +167,7 @@ namespace Premy.Chatovatko.Client
                             case "":
                                 break;
                             case "status":
-                                WriteStatus(settings, config);
+                                WriteStatus(settings.Settings, config);
                                 break;
                             default:
                                 WriteSyntaxError(commandParts[0]);
@@ -188,6 +205,11 @@ namespace Premy.Chatovatko.Client
         {
             InfoConnection infoConnection = new InfoConnection(address, logger);
             ServerInfo info = infoConnection.DownloadInfo();
+            WriteServerInfo(info);
+        }
+
+        static void WriteServerInfo(ServerInfo info)
+        {
             WriteLine("Server name:");
             WriteLine(info.Name);
             WriteLine("Public key:");

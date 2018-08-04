@@ -9,9 +9,9 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Premy.Chatovatko.Client.ClientComunication
+namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
-    public class ClientConnection : ILoggable
+    public class Connection : ILoggable
     {
         private readonly int ServerPort = TcpConstants.MAIN_SERVER_PORT;
         private int dataPort = -1;
@@ -22,43 +22,42 @@ namespace Premy.Chatovatko.Client.ClientComunication
         private SslStream dataStream;
         private Logger logger;
 
-        public ClientConnection(Logger logger)
+        private readonly String serverAddress;
+        private readonly IConnectionVerificator verificator;
+        private readonly X509Certificate2 x509;
+
+        public Connection(Logger logger, IConnectionVerificator verificator, String serverAddress, X509Certificate2 x509)
         {
             this.logger = logger;
+            this.verificator = verificator;
+            this.serverAddress = serverAddress;
+            this.x509 = x509;
         }
 
         public void Connect()
         {
-            /*
-            client = new TcpClient(Config.serverAddress, ServerPort);
+            
+            client = new TcpClient(serverAddress, ServerPort);
             logger.Log(this,"Client connected.");
 
-            stream = new SslStream(client.GetStream(), false, App_CertificateValidation);
-            stream.AuthenticateAsClient(Config.serverName, ClientCertificate.clientCertificateCollection, SslProtocols.Tls12, false);
+            stream = new SslStream(client.GetStream(), false, verificator.AppCertificateValidation);
+            X509CertificateCollection clientCertificates = new X509CertificateCollection();
+            clientCertificates.Add(x509);
+
+            stream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
             logger.Log(this, "SSL authentication completed.");
 
-            dataPort = Int32.Parse(TextEncoder.ReadStringFromSSLStream(stream));
-            dataClient = new TcpClient(Config.serverAddress, dataPort);
-            dataStream = new SslStream(dataClient.GetStream(), false, App_CertificateValidation);
-            dataStream.AuthenticateAsClient(Config.serverName, ClientCertificate.clientCertificateCollection, SslProtocols.Tls12, false);
-            */
+            dataPort = TextEncoder.ReadInt(stream);
+            dataClient = new TcpClient(serverAddress, dataPort);
+            dataStream = new SslStream(dataClient.GetStream(), false, verificator.AppCertificateValidation);
+            dataStream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
+            
             logger.Log(this, "Data connection has been successfully estamblished.");
         }
 
         public string GetLogSource()
         {
             return "Connection";
-        }
-
-        private bool AppCertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            if(sslPolicyErrors == SslPolicyErrors.RemoteCertificateNotAvailable)
-            {
-                logger.Log(this, "*** SSL Error: " + sslPolicyErrors.ToString());
-                return false;
-            }
-            
-            return true;
         }
     }
 }

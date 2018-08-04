@@ -16,14 +16,16 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
+using Premy.Chatovatko.Libs.Logging;
 
 namespace Premy.Chatovatko.Client.Cryptography
 {
     public static class X509Certificate2Generator
     {
         
-        public static X509Certificate2 GenerateCACertificate(string subjectName = "CN=root ca", int keyStrength = 4096)
+        public static X509Certificate2 GenerateCACertificate(Logger logger, string subjectName = "CN=root ca", int keyStrength = 4096)
         {
+            logger.Log("X509Certificate2Generator", "X509 certificate generator", "Generating new X509 certificate.", false);
             // Generating Random Numbers
             var randomGenerator = new CryptoApiRandomGenerator();
             var random = new SecureRandom(randomGenerator);

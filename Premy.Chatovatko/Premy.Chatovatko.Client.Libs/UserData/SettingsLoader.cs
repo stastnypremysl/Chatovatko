@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Premy.Chatovatko.Client.Libs.UserData
 {
@@ -34,7 +35,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
             }
         }
 
-        public void Create()
+        public void Create(X509Certificate2 cert, int userId, String userName, String serverName, String serverAddress, String serverPublicKey)
         {
             if (Exists())
             {
