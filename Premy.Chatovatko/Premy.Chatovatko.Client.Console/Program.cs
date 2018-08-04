@@ -16,17 +16,22 @@ namespace Premy.Chatovatko.Client
     class Program
     {
         static Logger logger;
+        static IClientDatabaseConfig config;
+        static DBInitializator initializator;
+        static SettingsLoader settingsLoader;
+        static Settings settings = null;
+
         static void Main(string[] args)
         {
             logger = new Logger(new ConsoleLoggerOutput());
             WriteLine("Chatovatko client at your service!");
             try {
-                IClientDatabaseConfig config = new ConsoleClientDatabaseConfig();
-                DBInitializator initializator = new DBInitializator(config, logger);
+                config = new ConsoleClientDatabaseConfig();
+                initializator = new DBInitializator(config, logger);
                 initializator.DBEnsureCreated();
 
-                SettingsLoader settingsLoader = new SettingsLoader(config, logger);
-                Settings settings = null;
+                settingsLoader = new SettingsLoader(config, logger);
+                
                 if (settingsLoader.Exists())
                 {
                     Log("Settings exists and will be loaded.");
@@ -46,6 +51,19 @@ namespace Premy.Chatovatko.Client
 
                         switch (commandParts[0])
                         {
+                            case "init":
+                                if (commandParts.Length < 3)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                bool newUser = false;
+                                bool loadFromFile = false;
+                                switch (commandParts[1])
+                                {
+
+                                }
+                                break;
                             case "delete":
                                 if (commandParts.Length < 2)
                                 {
@@ -64,7 +82,7 @@ namespace Premy.Chatovatko.Client
                                 }
                                 break;
                             case "download":
-                                if (commandParts.Length < 2)
+                                if (commandParts.Length < 3)
                                 {
                                     WriteNotEnoughParameters();
                                     break;
@@ -72,8 +90,10 @@ namespace Premy.Chatovatko.Client
                                 switch (commandParts[1])
                                 {
                                     case "info":
-                                        InfoConnection infoConnection = new InfoConnection(commandParts[2], logger);
-                                        WriteServerInfo(infoConnection.DownloadInfo());
+                                        WriteServerInfo(commandParts[2]);
+                                        break;
+                                    default:
+                                        WriteSyntaxError(commandParts[1]);
                                         break;
                                 }
                                 break;
@@ -119,8 +139,10 @@ namespace Premy.Chatovatko.Client
             
         }
 
-        static void WriteServerInfo(ServerInfo info)
+        static void WriteServerInfo(String address)
         {
+            InfoConnection infoConnection = new InfoConnection(address, logger);
+            ServerInfo info = infoConnection.DownloadInfo();
             WriteLine("Server name:");
             WriteLine(info.Name);
             WriteLine("Public key:");

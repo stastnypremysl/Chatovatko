@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs
 {
-    internal static class Utils
+    public static class Utils
     {
         internal static string ReadResource(string resourceName)
         {

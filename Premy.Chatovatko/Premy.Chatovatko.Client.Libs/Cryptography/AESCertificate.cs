@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Premy.Chatovatko.Client.UserData
+namespace Premy.Chatovatko.Client.Libs.Cryptography
 {
-    class CertGen
+    class AESCertificate
     {
     }
 }
