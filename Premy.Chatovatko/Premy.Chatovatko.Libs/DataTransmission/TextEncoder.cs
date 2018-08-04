@@ -9,19 +9,10 @@ namespace Premy.Chatovatko.Libs.DataTransmission
 {
     public static class TextEncoder
     {
-        private static byte[] GetBytes(String text)
-        {
-            return Encoding.UTF8.GetBytes(text);
-        }
-
-        private static String GetText(byte[] bytes)
-        {
-            return Encoding.UTF8.GetString(bytes);
-        }
-
+        
         private static readonly string CONST_SURFIX = "<E42x?OF>";
 
-        public static String ReadStringFromStream(Stream stream)
+        public static String ReadString(Stream stream)
         {
             // Read the  message sent by the server.
             // The end of the message is signaled using the
@@ -47,27 +38,37 @@ namespace Premy.Chatovatko.Libs.DataTransmission
             return messageData.ToString().Substring(0, messageData.Length - CONST_SURFIX.Length);
         }
 
-        public static void SendStringToStream(Stream stream, String message)
+        public static void SendString(Stream stream, String message)
         {
-            byte[] bytes = GetBytes(message + CONST_SURFIX);
+            byte[] bytes = Utils.GetBytes(message + CONST_SURFIX);
             stream.Write(bytes, 0, bytes.Length);
+        }
+
+        public static int ReadInt(Stream stream)
+        {
+            return Int32.Parse(ReadString(stream));
+        }
+
+        public static void SendInt(Stream stream, int toSend)
+        {
+            SendString(stream, toSend.ToString());
         }
 
         public static void SendJson(Stream stream, object obj)
         {
             String json = JsonConvert.SerializeObject(obj);
-            SendStringToStream(stream, json);
+            SendString(stream, json);
         }
 
         public static ServerConnectionInfo ReadServerConnectionInfo(Stream stream)
         {
-            String json = ReadStringFromStream(stream);
+            String json = ReadString(stream);
             return JsonConvert.DeserializeObject<ServerConnectionInfo>(json);
         }
 
         public static ServerInfo ReadServerInfo(Stream stream)
         {
-            String json = ReadStringFromStream(stream);
+            String json = ReadString(stream);
             return JsonConvert.DeserializeObject<ServerInfo>(json);
         }
 

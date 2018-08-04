@@ -78,7 +78,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             try
             {
                 logger.Log(this, String.Format("Godot has been activated. Client IP address is {0}", 
-                    NetworkUtils.GetIpAddress(client)));
+                    Utils.GetIpAddress(client)));
                 godotCounter.IncreaseRunning();
 
                 sslStream = new SslStream(client.GetStream(), false, App_CertificateValidation);
@@ -86,7 +86,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
                 logger.Log(this, "Godot is sending data connection port and waiting for connection.");
 
-                TextEncoder.SendStringToStream(sslStream, ((IPEndPoint)dataListener.LocalEndpoint).Port.ToString());
+                TextEncoder.SendString(sslStream, ((IPEndPoint)dataListener.LocalEndpoint).Port.ToString());
                 dataClient = dataListener.AcceptTcpClient();
                 logger.Log(this, "Data connection initializing.");
 
