@@ -26,11 +26,11 @@ namespace Premy.Chatovatko.Client.Libs.UserData
             }
         }
 
-        public Settings GetSettings()
+        public SettingsCapsula GetSettingsCapsula()
         {
             using (Context context = new Context(config))
             {
-                return context.Settings.First();
+                return new SettingsCapsula(context.Settings.First());
             }
         }
 

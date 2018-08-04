@@ -8,6 +8,8 @@ using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Client.Libs.ClientCommunication;
 using Premy.Chatovatko.Client.Configuration;
+using Premy.Chatovatko.Client.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Premy.Chatovatko.Client
 {
@@ -17,7 +19,7 @@ namespace Premy.Chatovatko.Client
         static IClientDatabaseConfig config;
         static DBInitializator initializator;
         static SettingsLoader settingsLoader;
-        static Settings settings = null;
+        static SettingsCapsula settings = null;
 
         static void Main(string[] args)
         {
@@ -33,7 +35,7 @@ namespace Premy.Chatovatko.Client
                 if (settingsLoader.Exists())
                 {
                     Log("Settings exists and will be loaded.");
-                    settings = settingsLoader.GetSettings();
+                    settings = settingsLoader.GetSettingsCapsula();
                 }
                 else
                 {
@@ -55,11 +57,38 @@ namespace Premy.Chatovatko.Client
                                     WriteNotEnoughParameters();
                                     break;
                                 }
-                                bool newUser = false;
-                                bool loadFromFile = false;
+                                bool? newUser = null;
+                                string serverAddress = commandParts[2];
                                 switch (commandParts[1])
                                 {
+                                    case "new":
+                                        newUser = true;
+                                        break;
+                                    case "login":
+                                        newUser = false;
+                                        break;
+                                    default:
+                                        WriteSyntaxError(commandParts[1]);
+                                        break;
+                                }
+                                if(newUser != null)
+                                {
+                                    X509Certificate2 cert;
+                                    if (newUser == true)
+                                    {
+                                        Log("Generating new X509 certificate.");
+                                        cert = X509Certificate2Generator.GenerateCACertificate();
+                                        WriteLine("Your certificate. Save it.");
+                                        WriteLine(Convert.ToBase64String(cert.GetRawCertData()));
+                                        WriteLine("----------------------------------------------------------------");
 
+                                    }
+                                    else
+                                    {
+                                        WriteLine("Enter yours certificate please:");
+                                        string base64Cert = ReadLine();
+
+                                    }
                                 }
                                 break;
                             case "delete":
@@ -89,6 +118,24 @@ namespace Premy.Chatovatko.Client
                                 {
                                     case "info":
                                         WriteServerInfo(commandParts[2]);
+                                        break;
+                                    default:
+                                        WriteSyntaxError(commandParts[1]);
+                                        break;
+                                }
+                                break;
+                            case "generate":
+                                if (commandParts.Length < 2)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                switch (commandParts[1])
+                                {
+                                    case "X509Certificate2":
+                                        X509Certificate2 cert = X509Certificate2Generator.GenerateCACertificate();
+                                        WriteLine(Convert.ToBase64String(cert.GetRawCertData()));
+
                                         break;
                                     default:
                                         WriteSyntaxError(commandParts[1]);

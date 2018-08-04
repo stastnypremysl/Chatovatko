@@ -3,40 +3,74 @@ using System.Collections.Generic;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Prng;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities;
+using Org.BouncyCastle.X509;
 
 namespace Premy.Chatovatko.Client.Cryptography
 {
     public static class X509Certificate2Generator
     {
-        /*
-        private X509Certificate2 buildSelfSignedServerCertificate()
+        
+        public static X509Certificate2 GenerateCACertificate(string subjectName = "CN=root ca", int keyStrength = 4096)
         {
-            SubjectAlternativeNameBuilder sanBuilder = new SubjectAlternativeNameBuilder();
-            sanBuilder.AddIpAddress(IPAddress.Loopback);
-            sanBuilder.AddIpAddress(IPAddress.IPv6Loopback);
-            sanBuilder.AddDnsName("localhost");
-            sanBuilder.AddDnsName(Environment.MachineName);
+            // Generating Random Numbers
+            var randomGenerator = new CryptoApiRandomGenerator();
+            var random = new SecureRandom(randomGenerator);
 
-            X500DistinguishedName distinguishedName = new X500DistinguishedName($"CN={CertificateName}");
+            // The Certificate Generator
+            var certificateGenerator = new X509V3CertificateGenerator();
 
-            using (RSA rsa = RSA.Create(2048))
-            {
-                var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            // Serial Number
+            var serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), random);
+            certificateGenerator.SetSerialNumber(serialNumber);
 
-                request.CertificateExtensions.Add(
-                    new X509KeyUsageExtension(X509KeyUsageFlags.DataEncipherment | X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, false));
+            // Signature Algorithm
+            const string signatureAlgorithm = "SHA256WithRSA";
+            certificateGenerator.SetSignatureAlgorithm(signatureAlgorithm);
 
+            // Issuer and Subject Name
+            var subjectDN = new X509Name(subjectName);
+            var issuerDN = subjectDN;
+            certificateGenerator.SetIssuerDN(issuerDN);
+            certificateGenerator.SetSubjectDN(subjectDN);
 
-                request.CertificateExtensions.Add(
-                   new X509EnhancedKeyUsageExtension(
-                       new OidCollection { new Oid("1.3.6.1.5.5.7.3.1") }, false));
+            // Valid For
+            var notBefore = DateTime.UtcNow.Date;
+            var notAfter = notBefore.AddYears(2);
 
-                request.CertificateExtensions.Add(sanBuilder.Build());
+            certificateGenerator.SetNotBefore(notBefore);
+            certificateGenerator.SetNotAfter(notAfter);
 
-                var certificate = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
-                certificate.FriendlyName = CertificateName;
+            // Subject Public Key
+            AsymmetricCipherKeyPair subjectKeyPair;
+            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
+            var keyPairGenerator = new RsaKeyPairGenerator();
+            keyPairGenerator.Init(keyGenerationParameters);
+            subjectKeyPair = keyPairGenerator.GenerateKeyPair();
 
-                return new X509Certificate2(certificate.Export(X509ContentType.Pfx, "WeNeedASaf3rPassword"), "WeNeedASaf3rPassword", X509KeyStorageFlags.MachineKeySet);
-            }*/
+            certificateGenerator.SetPublicKey(subjectKeyPair.Public);
+
+            // Generating the Certificate
+            var issuerKeyPair = subjectKeyPair;
+
+            // selfsign certificate
+            var certificate = certificateGenerator.Generate(issuerKeyPair.Private, random);
+            var x509 = new System.Security.Cryptography.X509Certificates.X509Certificate2(certificate.GetEncoded());
+                        
+            return x509;
+
+        }
+
     }
 }
