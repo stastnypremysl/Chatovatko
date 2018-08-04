@@ -20,7 +20,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
 
         public bool Exists()
         {
-            using(SqlClientContext context = new SqlClientContext(config))
+            using(Context context = new Context(config))
             {
                 return context.Settings.Any(o => true);
             }
@@ -28,7 +28,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
 
         public Settings GetSettings()
         {
-            using (SqlClientContext context = new SqlClientContext(config))
+            using (Context context = new Context(config))
             {
                 return context.Settings.First();
             }

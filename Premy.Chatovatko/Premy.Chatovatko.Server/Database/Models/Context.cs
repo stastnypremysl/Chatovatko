@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Premy.Chatovatko.Server.chatovatkoDb
 {
-    public partial class SqlServerContext : DbContext
+    public partial class Context : DbContext
     {
         private ServerConfig config = null;
-        public SqlServerContext(ServerConfig config)
+        public Context(ServerConfig config)
         {
             this.config = config;
         }
 
-        public SqlServerContext(DbContextOptions<SqlServerContext> options)
+        public Context(DbContextOptions<Context> options)
             : base(options)
         {
         }

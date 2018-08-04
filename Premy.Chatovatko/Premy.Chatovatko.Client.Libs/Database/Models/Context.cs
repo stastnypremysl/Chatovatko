@@ -5,15 +5,15 @@ using Premy.Chatovatko.Client.Libs.UserData;
 
 namespace Premy.Chatovatko.Client.Libs.Database.Models
 {
-    public partial class SqlClientContext : DbContext
+    public partial class Context : DbContext
     {
         IClientDatabaseConfig config = null;
-        public SqlClientContext(IClientDatabaseConfig config)
+        public Context(IClientDatabaseConfig config)
         {
             this.config = config;
         }
 
-        public SqlClientContext(DbContextOptions<SqlClientContext> options)
+        public Context(DbContextOptions<Context> options)
             : base(options)
         {
         }

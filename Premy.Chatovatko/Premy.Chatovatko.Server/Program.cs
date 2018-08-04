@@ -22,6 +22,8 @@ namespace Premy.Chatovatko.Server
                 certificate.Load(config);
 
                 DBPool pool = new DBPool(logger, config);
+                logger.LoggerOutputs.Add(new DatabaseLoggerOutput(config));
+                logger.Log("Program", "Core", "First phase of booting up ended", false);
 
                 InfoService infoService = new InfoService(logger, config, certificate);
                 infoService.RunInBackground();

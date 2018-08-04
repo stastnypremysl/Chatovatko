@@ -35,7 +35,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                 DBDelete();
             }
 
-            using (var context = new SqlClientContext(config))
+            using (var context = new Context(config))
             {
                 try
                 {

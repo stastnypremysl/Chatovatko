@@ -74,9 +74,9 @@ namespace Premy.Chatovatko.Server.ClientListener
             return new ServerInfo(config.ServerName, publicKey);
         }
 
-        public async Task RunInBackground()
+        public void RunInBackground()
         {
-            await Task.Run(() => Run());
+            Task.Run(() => Run());
 
         }
 
