@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Premy.Chatovatko.Libs;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -10,7 +11,7 @@ namespace Premy.Chatovatko.Client.Libs.Cryptography
     {
         private static byte[] GetSalt()
         {
-            return CLUtils.GenerateRandomBytes(AESConstants.SALT_LENGHT);
+            return LUtils.GenerateRandomBytes(AESConstants.SALT_LENGHT);
         }
 
         public static byte[] Encrypt(byte[] bytesToBeEncrypted, byte[] passwordBytes)

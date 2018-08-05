@@ -10,11 +10,11 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
             BlobMessagesRecepient = new HashSet<BlobMessages>();
             BlobMessagesSender = new HashSet<BlobMessages>();
         }
-
+        
         public long PublicId { get; set; }
         public string UserName { get; set; }
-        public string PublicKey { get; set; }
-        public string SymmetricKey { get; set; }
+        public string PublicCertificate { get; set; }
+        public string AesKey { get; set; }
 
         public ContactsDetail ContactsDetail { get; set; }
         public ICollection<BlobMessages> BlobMessagesRecepient { get; set; }

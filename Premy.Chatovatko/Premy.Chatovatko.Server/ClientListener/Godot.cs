@@ -75,8 +75,8 @@ namespace Premy.Chatovatko.Server.ClientListener
                 sslStream.AuthenticateAsServer(serverCert, true, SslProtocols.Tls12, false);
 
                 logger.Log(this, "SSL authentication completed. Starting Handshake.");
-                UserCapsula user = Handshake.Run(sslStream, Log);
-                logger.Log(this, $"Handshake successeded. User {user.UserName} has loged in");
+                UserCapsula user = Handshake.Run(sslStream, Log, config);
+                
 
 
             }

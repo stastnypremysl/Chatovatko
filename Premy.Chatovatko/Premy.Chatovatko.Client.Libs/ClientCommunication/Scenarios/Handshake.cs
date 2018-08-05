@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Handshake;
@@ -27,6 +28,12 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
                 PemCertificate = X509Certificate2Utils.ExportToPem(cert),
                 UserName = userName
             };
+
+            if(userName.Length > DataConstants.USER_NAME_MAX_LENGHT)
+            {
+                throw new Exception("Username is too long.");
+            }
+
             TextEncoder.SendJson(stream, clientHandshake);
 
             byte[] encrypted = BinaryEncoder.ReceiveBytes(stream);

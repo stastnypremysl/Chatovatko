@@ -1,19 +1,18 @@
 CREATE TABLE `main`.`settings` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `user_public_id` INT NOT NULL, --user public id
-  `private_key` VARBINARY(2000) NOT NULL,
-  `public_key` VARBINARY(2000) NOT NULL,
-  `user_name` VARCHAR(45) NOT NULL,
-  `server_name` VARCHAR(200) NOT NULL,
-  `server_address` VARCHAR(200) NOT NULL,
-  `server_public_key` VARBINARY(2000) NOT NULL);
+  `private_certificate` VARCHAR NOT NULL,
+  `user_name` VARCHAR NOT NULL,
+  `server_name` VARCHAR NOT NULL,
+  `server_address` VARCHAR NOT NULL,
+  `server_public_certificate` VARCHAR NOT NULL);
 
   ---------------------------------------
   CREATE TABLE IF NOT EXISTS `main`.`contacts` (
   `public_id` INTEGER PRIMARY KEY,
-  `user_name` VARCHAR(45) NOT NULL,
-  `public_key` VARBINARY(2000) NOT NULL,
-  `symmetric_key` VARBINARY(2000) NOT NULL);
+  `user_name` VARCHAR NOT NULL,
+  `public_certificate` VARCHAR NOT NULL,
+  `aes_key` VARCHAR NOT NULL);
 
   ---------------------------------------
   CREATE TABLE IF NOT EXISTS `main`.`blob_messages` (
@@ -25,9 +24,9 @@ CREATE TABLE `main`.`settings` (
   `sender_id` INT NOT NULL REFERENCES contacts(public_id)
     ON DELETE NO ACTION
 	ON UPDATE NO ACTION,
-  `downloaded` BIT(1) NOT NULL,
-  `uploaded` BIT(1) NOT NULL,
-  `do_delete` BIT(1) NOT NULL DEFAULT 0,
+  `downloaded` TINYINT NOT NULL,
+  `uploaded` TINYINT NOT NULL,
+  `do_delete` TINYINT NOT NULL DEFAULT 0,
   `blob` BLOB NULL);
 
   CREATE INDEX `fk_blob_messages_contacts1_idx` ON blob_messages (`recepient_id` ASC);
@@ -42,9 +41,9 @@ CREATE TABLE `main`.`settings` (
   `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (`id`)
     ON DELETE CASCADE
 	ON UPDATE CASCADE,
-  `alarm_permission` BIT(1) NOT NULL DEFAULT 0,
-  `change_contacts_permission` BIT(1) NOT NULL,
-  `nick_name` VARCHAR(200) NOT NULL);
+  `alarm_permission` TINYINT NOT NULL DEFAULT 0,
+  `change_contacts_permission` TINYINT NOT NULL,
+  `nick_name` VARCHAR NOT NULL);
 
   CREATE UNIQUE INDEX `fk_contacts_detail_contacts_idx` ON contacts_detail (`contact_id` ASC);
   CREATE UNIQUE INDEX `fk_contacts_detail_blob_messages_id_idx` ON contacts_detail (`blob_messages_id` ASC);
@@ -63,10 +62,10 @@ CREATE TABLE `main`.`settings` (
   -------------------------------------
   CREATE TABLE IF NOT EXISTS `main`.`messages_thread` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR NOT NULL,
   `recepient_id` INT NOT NULL,
-  `onlive` BIT(1) NOT NULL,
-  `archived` BIT(1) NOT NULL,
+  `onlive` TINYINT NOT NULL,
+  `archived` TINYINT NOT NULL,
   `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (`id`)
     ON DELETE CASCADE
 	ON UPDATE CASCADE,

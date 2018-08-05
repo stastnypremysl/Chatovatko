@@ -13,8 +13,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public long RecepientId { get; set; }
-        public string Onlive { get; set; }
-        public string Archived { get; set; }
+        public long Onlive { get; set; }
+        public long Archived { get; set; }
         public long BlobMessagesId { get; set; }
         public long PublicId { get; set; }
 

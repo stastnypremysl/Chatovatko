@@ -88,15 +88,12 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                 entity.Property(e => e.Blob).HasColumnName("blob");
 
                 entity.Property(e => e.DoDelete)
-                    .IsRequired()
                     .HasColumnName("do_delete")
-                    .HasColumnType("BIT(1)")
-                    .HasDefaultValueSql("0");
+                    .HasColumnType("TINYINT");
 
                 entity.Property(e => e.Downloaded)
-                    .IsRequired()
                     .HasColumnName("downloaded")
-                    .HasColumnType("BIT(1)");
+                    .HasColumnType("TINYINT");
 
                 entity.Property(e => e.PublicId)
                     .HasColumnName("public_id")
@@ -111,9 +108,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnType("INT");
 
                 entity.Property(e => e.Uploaded)
-                    .IsRequired()
                     .HasColumnName("uploaded")
-                    .HasColumnType("BIT(1)");
+                    .HasColumnType("TINYINT");
 
                 entity.HasOne(d => d.Recepient)
                     .WithMany(p => p.BlobMessagesRecepient)
@@ -136,20 +132,20 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("public_id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.PublicKey)
+                entity.Property(e => e.AesKey)
                     .IsRequired()
-                    .HasColumnName("public_key")
-                    .HasColumnType("VARBINARY(2000)");
+                    .HasColumnName("aes_key")
+                    .HasColumnType("VARCHAR");
 
-                entity.Property(e => e.SymmetricKey)
+                entity.Property(e => e.PublicCertificate)
                     .IsRequired()
-                    .HasColumnName("symmetric_key")
-                    .HasColumnType("VARBINARY(2000)");
+                    .HasColumnName("public_certificate")
+                    .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasColumnName("user_name")
-                    .HasColumnType("VARCHAR(45)");
+                    .HasColumnType("VARCHAR");
             });
 
             modelBuilder.Entity<ContactsDetail>(entity =>
@@ -171,24 +167,21 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.AlarmPermission)
-                    .IsRequired()
                     .HasColumnName("alarm_permission")
-                    .HasColumnType("BIT(1)")
-                    .HasDefaultValueSql("0");
+                    .HasColumnType("TINYINT");
 
                 entity.Property(e => e.BlobMessagesId)
                     .HasColumnName("blob_messages_id")
                     .HasColumnType("INT");
 
                 entity.Property(e => e.ChangeContactsPermission)
-                    .IsRequired()
                     .HasColumnName("change_contacts_permission")
-                    .HasColumnType("BIT(1)");
+                    .HasColumnType("TINYINT");
 
                 entity.Property(e => e.NickName)
                     .IsRequired()
                     .HasColumnName("nick_name")
-                    .HasColumnType("VARCHAR(200)");
+                    .HasColumnType("VARCHAR");
 
                 entity.HasOne(d => d.BlobMessages)
                     .WithOne(p => p.ContactsDetail)
@@ -260,9 +253,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Archived)
-                    .IsRequired()
                     .HasColumnName("archived")
-                    .HasColumnType("BIT(1)");
+                    .HasColumnType("TINYINT");
 
                 entity.Property(e => e.BlobMessagesId)
                     .HasColumnName("blob_messages_id")
@@ -271,12 +263,11 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
-                    .HasColumnType("VARCHAR(45)");
+                    .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.Onlive)
-                    .IsRequired()
                     .HasColumnName("onlive")
-                    .HasColumnType("BIT(1)");
+                    .HasColumnType("TINYINT");
 
                 entity.Property(e => e.PublicId)
                     .HasColumnName("public_id")
@@ -299,35 +290,30 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.PrivateKey)
+                entity.Property(e => e.PrivateCertificate)
                     .IsRequired()
-                    .HasColumnName("private_key")
-                    .HasColumnType("VARBINARY(2000)");
-
-                entity.Property(e => e.PublicKey)
-                    .IsRequired()
-                    .HasColumnName("public_key")
-                    .HasColumnType("VARBINARY(2000)");
+                    .HasColumnName("private_certificate")
+                    .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.ServerAddress)
                     .IsRequired()
                     .HasColumnName("server_address")
-                    .HasColumnType("VARCHAR(200)");
+                    .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.ServerName)
                     .IsRequired()
                     .HasColumnName("server_name")
-                    .HasColumnType("VARCHAR(200)");
+                    .HasColumnType("VARCHAR");
 
-                entity.Property(e => e.ServerPublicKey)
+                entity.Property(e => e.ServerPublicCertificate)
                     .IsRequired()
-                    .HasColumnName("server_public_key")
-                    .HasColumnType("VARBINARY(2000)");
+                    .HasColumnName("server_public_certificate")
+                    .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasColumnName("user_name")
-                    .HasColumnType("VARCHAR(45)");
+                    .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.UserPublicId)
                     .HasColumnName("user_public_id")

@@ -11,17 +11,16 @@ namespace Premy.Chatovatko.Client.Libs.UserData
         public Settings Settings { get; }
         public X509Certificate2 Certificate { get; }
         public long UserPublicId => Settings.UserPublicId;
-        public string PrivateKey => Settings.PrivateKey;
-        public string PublicKey => Settings.PublicKey;
+        public string PrivateCertificate => Settings.PrivateCertificate;
         public string UserName => Settings.UserName;
         public string ServerName => Settings.ServerName;
         public string ServerAddress => Settings.ServerAddress;
-        public string ServerPublicKey => Settings.ServerPublicKey;
+        public string ServerPublicCertificate => Settings.ServerPublicCertificate;
 
         public SettingsCapsula(Settings settings)
         {
             Settings = settings;
-            Certificate = new X509Certificate2(Convert.FromBase64String(settings.PrivateKey));
+            Certificate = new X509Certificate2(Convert.FromBase64String(settings.PrivateCertificate));
         }
 
         

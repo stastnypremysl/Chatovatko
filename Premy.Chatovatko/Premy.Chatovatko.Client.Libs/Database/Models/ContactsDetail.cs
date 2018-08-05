@@ -7,8 +7,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
     {
         public long ContactId { get; set; }
         public long BlobMessagesId { get; set; }
-        public string AlarmPermission { get; set; }
-        public string ChangeContactsPermission { get; set; }
+        public long AlarmPermission { get; set; }
+        public long ChangeContactsPermission { get; set; }
         public string NickName { get; set; }
 
         public BlobMessages BlobMessages { get; set; }

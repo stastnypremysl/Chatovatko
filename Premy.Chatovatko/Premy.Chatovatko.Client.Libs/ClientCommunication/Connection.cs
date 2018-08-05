@@ -57,6 +57,6 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             return "Connection";
         }
 
-        s
+        
     }
 }
