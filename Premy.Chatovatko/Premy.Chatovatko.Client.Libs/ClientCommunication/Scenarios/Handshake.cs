@@ -29,7 +29,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
                 UserName = userName
             };
 
-            if(userName.Length > DataConstants.USER_NAME_MAX_LENGHT)
+            if(userName != null && userName.Length > DataConstants.USER_NAME_MAX_LENGHT)
             {
                 throw new Exception("Username is too long.");
             }
