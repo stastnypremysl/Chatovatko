@@ -10,6 +10,7 @@ using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Client.Libs.ClientCommunication;
 using Premy.Chatovatko.Client.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Premy.Chatovatko.Libs.Cryptography;
 
 namespace Premy.Chatovatko.Client
 {
@@ -77,20 +78,32 @@ namespace Premy.Chatovatko.Client
                                 {
                                     X509Certificate2 cert;
                                     if (newUser == true)
-                                    {                                        
+                                    {
+                                        WriteLine("Your certificate is being created. Please, be patient.");
                                         cert = X509Certificate2Generator.GenerateCACertificate(logger);
-                                        WriteLine("Your certificate. Save it.");
-                                        WriteLine(Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12)));
+
+                                        WriteLine("Your certificate has been generated. Enter path to save it: [default: ~/.chatovatko/mykey.p12]");
+                                        string path = ReadLine();
+                                        if (path.Equals(""))
+                                        {
+                                            path = $"{Utils.GetConfigDirectory()}/mykey.p12";
+                                        }
+                                        X509Certificate2Utils.ExportToPkcs12File(cert, path);
                                         WriteLine("----------------------------------------------------------------");
+
                                         WriteLine("Enter your new unique username:");
                                         userName = ReadLine();
 
                                     }
                                     else
                                     {
-                                        WriteLine("Enter yours certificate please:");
-                                        string base64Cert = ReadLine();
-                                        cert = new X509Certificate2(Convert.FromBase64String(base64Cert));
+                                        WriteLine("Enter path to your certificate please: [default: ~/.chatovatko/mykey.p12]");
+                                        string path = ReadLine();
+                                        if (path.Equals(""))
+                                        {
+                                            path = $"{Utils.GetConfigDirectory()}/mykey.p12";
+                                        }
+                                        cert = X509Certificate2Utils.ImportFromPkcs12File(path, true);
                                     }
 
                                     InfoConnection infoConnection = new InfoConnection(serverAddress, logger);
@@ -106,7 +119,7 @@ namespace Premy.Chatovatko.Client
                                     }
 
                                     IConnectionVerificator verificator = new InitConnectionVerificator(logger, info.PublicKey);
-                                    Connection conn = new Connection(logger, verificator, serverAddress, cert);
+                                    Connection conn = new Connection(logger, verificator, serverAddress, cert, userName);
                                     conn.Connect();
 
 
@@ -155,7 +168,7 @@ namespace Premy.Chatovatko.Client
                                 {
                                     case "X509Certificate2":
                                         X509Certificate2 cert = X509Certificate2Generator.GenerateCACertificate(logger);
-                                        WriteLine(Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12)));
+                                        WriteLine(X509Certificate2Utils.ExportToBase64(cert));
 
                                         break;
                                     default:

@@ -8,18 +8,18 @@ namespace Premy.Chatovatko.Libs.DataTransmission
 {
     public static class BinaryEncoder
     {
-        public static void SendBytes (Stream mainStream, Stream dataStream, byte[] toSend)
+        public static void SendBytes (Stream mainStream, byte[] toSend)
         {
             SendInt(mainStream, toSend.Length);
-            dataStream.Write(toSend, 0, toSend.Length);
+            mainStream.Write(toSend, 0, toSend.Length);
         }
 
-        public static byte[] ReceiveBytes(Stream mainStream, Stream dataStream)
+        public static byte[] ReceiveBytes(Stream mainStream)
         {
             int lenght = ReadInt(mainStream);
 
             byte[] buffer = new byte[lenght];
-            dataStream.Read(buffer, 0, lenght);
+            mainStream.Read(buffer, 0, lenght);
             return buffer;
 
         }

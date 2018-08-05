@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Premy.Chatovatko.Libs
@@ -40,6 +41,13 @@ namespace Premy.Chatovatko.Libs
                 fileStream.Read(ret, 0, (int)fileStream.Length);
                 return ret;
             }
+        }
+        
+        public static byte[] GenerateRandomBytes(int lenght)
+        {
+            byte[] ret = new byte[lenght];
+            RNGCryptoServiceProvider.Create().GetBytes(ret);
+            return ret;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Handshake;
 using System;
 using System.IO;
 using System.Net.Security;
@@ -12,7 +13,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
     {
         
         private static readonly string CONST_SURFIX = "<E42x?OF>";
-
+        
         public static String ReadString(Stream stream)
         {
             // Read the  message sent by the server.
@@ -67,10 +68,27 @@ namespace Premy.Chatovatko.Libs.DataTransmission
             return JsonConvert.DeserializeObject<ServerConnectionInfo>(json);
         }
 
+        
+        // ////////////////////////////////////////////////
+        // Json readers
+        // ////////////////////////////////////////////////
+
         public static ServerInfo ReadServerInfo(Stream stream)
         {
             String json = ReadString(stream);
             return JsonConvert.DeserializeObject<ServerInfo>(json);
+        }
+
+        public static ClientHandshake ReadClientHandshake(Stream stream)
+        {
+            String json = ReadString(stream);
+            return JsonConvert.DeserializeObject<ClientHandshake>(json);
+        }
+        
+        public static ServerHandshake ReadServerHandshake(Stream stream)
+        {
+            String json = ReadString(stream);
+            return JsonConvert.DeserializeObject<ServerHandshake>(json);
         }
 
     }

@@ -1,6 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Server.ClientListener.Scenarios;
+using Premy.Chatovatko.Server.Database;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -72,9 +74,9 @@ namespace Premy.Chatovatko.Server.ClientListener
                 sslStream = new SslStream(client.GetStream(), false, CertificateValidation);
                 sslStream.AuthenticateAsServer(serverCert, true, SslProtocols.Tls12, false);
 
-                logger.Log(this, "Godot is sending data connection port and waiting for connection.");
-
-                
+                logger.Log(this, "SSL authentication completed. Starting Handshake.");
+                UserCapsula user = Handshake.Run(sslStream, Log);
+                logger.Log(this, $"Handshake successeded. User {user.UserName} has loged in");
 
 
             }
@@ -101,6 +103,11 @@ namespace Premy.Chatovatko.Server.ClientListener
         public string GetLogSource()
         {
             return String.Format("Godot {0}", id);
+        }
+
+        private void Log(String message)
+        {
+            logger.Log(this, message);
         }
     }
 }

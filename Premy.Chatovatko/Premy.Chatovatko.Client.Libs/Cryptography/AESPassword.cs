@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Premy.Chatovatko.Libs;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -22,7 +23,7 @@ namespace Premy.Chatovatko.Client.Libs.Cryptography
 
         public static AESPassword GenerateAESPassword()
         {
-            return new AESPassword(CLUtils.GenerateRandomBytes(AESConstants.PASSWORD_LENGHT));
+            return new AESPassword(LUtils.GenerateRandomBytes(AESConstants.PASSWORD_LENGHT));
         }
 
         public String GetBitPassword()

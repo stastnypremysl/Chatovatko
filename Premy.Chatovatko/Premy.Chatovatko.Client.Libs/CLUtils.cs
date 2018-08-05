@@ -20,11 +20,5 @@ namespace Premy.Chatovatko.Client.Libs
             }
         }
 
-        internal static byte[] GenerateRandomBytes(int lenght)
-        {
-            byte[] ret = new byte[lenght];
-            RNGCryptoServiceProvider.Create().GetBytes(ret);
-            return ret;
-        }
     }
 }

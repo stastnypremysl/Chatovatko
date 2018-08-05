@@ -1,4 +1,5 @@
-﻿using Premy.Chatovatko.Libs.Logging;
+﻿using Premy.Chatovatko.Libs.Cryptography;
+using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Security;
@@ -24,9 +25,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 logger.Log(this, "Remote certificate not available.", true);
                 return false;
             }
-            if (!certificate.GetPublicKeyString().Equals(acceptedPublicKey))
+            if (!X509Certificate2Utils.ExportToPem(certificate).Equals(acceptedPublicKey))
             {
-                logger.Log(this, $"Remote certificate has other public key.\n{certificate.GetPublicKeyString()}", true);
+                logger.Log(this, $"Remote certificate has other public key.\n{X509Certificate2Utils.ExportToPem(certificate)}", true);
                 return false;
             }
             return true;
