@@ -19,7 +19,7 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
 
         public virtual DbSet<BlobMessages> BlobMessages { get; set; }
         public virtual DbSet<Logs> Logs { get; set; }
-        public virtual DbSet<PublicKeys> PublicKeys { get; set; }
+        public virtual DbSet<PublicCertificates> PublicCertificates { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -92,15 +92,13 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
                     .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.Error)
-                    .IsRequired()
                     .HasColumnName("error")
-                    .HasColumnType("bit(1)")
-                    .HasDefaultValueSql("'b\\'0\\''");
+                    .HasColumnType("bit(1)");
 
                 entity.Property(e => e.Message)
                     .IsRequired()
                     .HasColumnName("message")
-                    .HasColumnType("varchar(200)");
+                    .HasColumnType("mediumtext");
 
                 entity.Property(e => e.Source)
                     .HasColumnName("source")
@@ -111,16 +109,12 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
                     .HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<PublicKeys>(entity =>
+            modelBuilder.Entity<PublicCertificates>(entity =>
             {
-                entity.ToTable("public_keys");
-
-                entity.HasIndex(e => e.EncryptedSymKey)
-                    .HasName("public_key_UNIQUE")
-                    .IsUnique();
+                entity.ToTable("public_certificates");
 
                 entity.HasIndex(e => e.SenderId)
-                    .HasName("fk_public_keys_users2_idx");
+                    .HasName("fk_public_certificates_users2_idx");
 
                 entity.HasIndex(e => new { e.RecepientId, e.SenderId })
                     .HasName("user_id_keys")
@@ -130,10 +124,10 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.EncryptedSymKey)
+                entity.Property(e => e.EncryptedAesKey)
                     .IsRequired()
-                    .HasColumnName("encrypted_sym_key")
-                    .HasMaxLength(2000);
+                    .HasColumnName("encrypted_aes_key")
+                    .HasColumnType("varchar(2000)");
 
                 entity.Property(e => e.RecepientId)
                     .HasColumnName("recepient_id")
@@ -144,22 +138,20 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.Trusted)
-                    .IsRequired()
                     .HasColumnName("trusted")
-                    .HasColumnType("bit(1)")
-                    .HasDefaultValueSql("'b\\'0\\''");
+                    .HasColumnType("bit(1)");
 
                 entity.HasOne(d => d.Recepient)
-                    .WithMany(p => p.PublicKeysRecepient)
+                    .WithMany(p => p.PublicCertificatesRecepient)
                     .HasForeignKey(d => d.RecepientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_public_keys_users1");
 
                 entity.HasOne(d => d.Sender)
-                    .WithMany(p => p.PublicKeysSender)
+                    .WithMany(p => p.PublicCertificatesSender)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_public_keys_users2");
+                    .HasConstraintName("fk_public_certificates_users2");
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -170,8 +162,8 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
                     .HasName("id_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.PublicKey)
-                    .HasName("publicKey_UNIQUE")
+                entity.HasIndex(e => e.PublicCertificateSha1)
+                    .HasName("public_certificate_sha1_UNIQUE")
                     .IsUnique();
 
                 entity.HasIndex(e => e.UserName)
@@ -182,10 +174,15 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.PublicKey)
+                entity.Property(e => e.PublicCertificate)
                     .IsRequired()
-                    .HasColumnName("public_key")
-                    .HasMaxLength(2000);
+                    .HasColumnName("public_certificate")
+                    .HasColumnType("mediumtext");
+
+                entity.Property(e => e.PublicCertificateSha1)
+                    .IsRequired()
+                    .HasColumnName("public_certificate_sha1")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.UserName)
                     .IsRequired()

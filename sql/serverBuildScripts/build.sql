@@ -37,28 +37,28 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`logs` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `message` MEDIUMTEXT NOT NULL,
   `class` VARCHAR(50) NOT NULL,
-  `error` BIT(1) NOT NULL DEFAULT 0,
+  `error` BIT(1) NOT NULL,
   `time_of_creation` DATETIME NOT NULL,
   `source` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
 /*----------------------------------------------------------------------*/
-CREATE TABLE IF NOT EXISTS `chatovatko`.`public_keys` (
+CREATE TABLE IF NOT EXISTS `chatovatko`.`public_certificates` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `recepient_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
   `encrypted_aes_key` VARCHAR(2000) NOT NULL,
-  `trusted` BIT(1) NOT NULL DEFAULT 0,
+  `trusted` BIT(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_id_keys` (`recepient_id` ASC, `sender_id` ASC),
-  INDEX `fk_public_keys_users2_idx` (`sender_id` ASC),
+  INDEX `fk_public_certificates_users2_idx` (`sender_id` ASC),
   CONSTRAINT `fk_public_keys_users1`
     FOREIGN KEY (`recepient_id`)
     REFERENCES `chatovatko`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_public_keys_users2`
+  CONSTRAINT `fk_public_certificates_users2`
     FOREIGN KEY (`sender_id`)
     REFERENCES `chatovatko`.`users` (`id`)
     ON DELETE NO ACTION

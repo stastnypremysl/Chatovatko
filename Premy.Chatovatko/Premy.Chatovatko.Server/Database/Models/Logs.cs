@@ -8,7 +8,7 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
         public int Id { get; set; }
         public string Message { get; set; }
         public string Class { get; set; }
-        public bool? Error { get; set; }
+        public bool Error { get; set; }
         public DateTime TimeOfCreation { get; set; }
         public string Source { get; set; }
     }

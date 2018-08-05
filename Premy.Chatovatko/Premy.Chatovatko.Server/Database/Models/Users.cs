@@ -9,17 +9,18 @@ namespace Premy.Chatovatko.Server.chatovatkoDb
         {
             BlobMessagesRecepient = new HashSet<BlobMessages>();
             BlobMessagesSender = new HashSet<BlobMessages>();
-            PublicKeysRecepient = new HashSet<PublicKeys>();
-            PublicKeysSender = new HashSet<PublicKeys>();
+            PublicCertificatesRecepient = new HashSet<PublicCertificates>();
+            PublicCertificatesSender = new HashSet<PublicCertificates>();
         }
 
         public int Id { get; set; }
-        public byte[] PublicKey { get; set; }
+        public string PublicCertificate { get; set; }
+        public byte[] PublicCertificateSha1 { get; set; }
         public string UserName { get; set; }
 
         public ICollection<BlobMessages> BlobMessagesRecepient { get; set; }
         public ICollection<BlobMessages> BlobMessagesSender { get; set; }
-        public ICollection<PublicKeys> PublicKeysRecepient { get; set; }
-        public ICollection<PublicKeys> PublicKeysSender { get; set; }
+        public ICollection<PublicCertificates> PublicCertificatesRecepient { get; set; }
+        public ICollection<PublicCertificates> PublicCertificatesSender { get; set; }
     }
 }
