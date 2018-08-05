@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -21,6 +22,24 @@ namespace Premy.Chatovatko.Libs
         public static String GetText(byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
+        }
+
+        public static void WriteToFile(byte[] bytes, string fileName)
+        {
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+            {
+                fileStream.Write(bytes, 0, bytes.Length);
+            }
+        }
+
+        public static byte[] ReadFromFile(string fileName)
+        {
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Open))
+            {
+                byte[] ret = new byte[fileStream.Length];
+                fileStream.Read(ret, 0, (int)fileStream.Length);
+                return ret;
+            }
         }
     }
 }

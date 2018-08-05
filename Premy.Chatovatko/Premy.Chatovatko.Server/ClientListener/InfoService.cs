@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -70,7 +71,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         public ServerInfo GetServerInfo()
         {
-            String publicKey = cert.ServerCertificate.GetPublicKeyString();
+            String publicKey = Convert.ToBase64String(cert.ServerCertificate.Export(X509ContentType.Cert));
             return new ServerInfo(config.ServerName, publicKey);
         }
 

@@ -155,7 +155,7 @@ namespace Premy.Chatovatko.Client
                                 {
                                     case "X509Certificate2":
                                         X509Certificate2 cert = X509Certificate2Generator.GenerateCACertificate(logger);
-                                        WriteLine(Utils.GetText(cert.Export(X509ContentType.Pkcs12)));
+                                        WriteLine(Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12)));
 
                                         break;
                                     default:
