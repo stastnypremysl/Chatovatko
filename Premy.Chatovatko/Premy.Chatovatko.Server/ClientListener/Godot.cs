@@ -23,9 +23,7 @@ namespace Premy.Chatovatko.Server.ClientListener
         private Thread theLife;
         private TcpClient client;
         private bool readyForLife = false;
-
         private SslStream sslStream;
-        private TcpListener dataListener;
 
         private Logger logger;
         private readonly X509Certificate2 serverCert;
@@ -88,7 +86,6 @@ namespace Premy.Chatovatko.Server.ClientListener
             { 
                 sslStream.Close();
                 client.Close();
-                dataListener.Stop();
                 godotCounter.IncreaseDestroyed();
                 logger.Log(this, "Godot has died.");
             }

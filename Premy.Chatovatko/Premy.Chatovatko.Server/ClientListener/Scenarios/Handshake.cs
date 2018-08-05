@@ -19,8 +19,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
     {
         public static UserCapsula Run(Stream stream, Action<string> log, ServerConfig config)
         {
-            UserCapsula ret;
-
+            
             ClientHandshake clientHandshake = TextEncoder.ReadClientHandshake(stream);
             X509Certificate2 clientCertificate = X509Certificate2Utils.ImportFromPem(clientHandshake.PemCertificate);
             log($"Logging user sent username {clientHandshake.UserName}\n Certificate:\n {clientHandshake.PemCertificate}");
@@ -50,11 +49,12 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
 
             log("Certificate verification succeeded.");
 
-            using(Context context = new Context(config))
+            Users user;
+            using (Context context = new Context(config))
             {
                 SHA1 sha = new SHA1CryptoServiceProvider();
                 byte[] hash = sha.ComputeHash(clientCertificate.RawData);
-                Users user = context.Users.SingleOrDefault(u => u.PublicCertificateSha1.Equals(hash));
+                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha1.Equals(hash));
 
                 if (user == null){
                     log("User doesn't exist yet. I'll try to create him.");
@@ -85,10 +85,9 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 }
             }
 
+            UserCapsula ret = new UserCapsula(user, clientCertificate);
 
-
-
-            //log($"Handshake successeded. User {ret.UserName} has loged in");
+            log($"Handshake successeded. User {ret.UserName} with id {ret.UserId} has logged in");
             return null;
         }
     }

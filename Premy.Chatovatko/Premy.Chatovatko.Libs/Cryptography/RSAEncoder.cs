@@ -10,14 +10,14 @@ namespace Premy.Chatovatko.Libs.Cryptography
     {
         public static byte[] Encrypt(byte[] data, X509Certificate2 cert)
         {
-            RSACryptoServiceProvider publicKey = (RSACryptoServiceProvider)cert.PublicKey.Key;
-            return publicKey.Encrypt(data, true);
+            RSA publicKey = cert.GetRSAPublicKey();
+            return publicKey.Encrypt(data, RSAEncryptionPadding.OaepSHA1);
         }
 
         public static byte[] Decrypt(byte[] encrypted, X509Certificate2 cert)
         {
-            RSACryptoServiceProvider privateKey = (RSACryptoServiceProvider)cert.PrivateKey;
-            return privateKey.Decrypt(encrypted, true);
+            RSA privateKey = cert.GetRSAPrivateKey();
+            return privateKey.Decrypt(encrypted, RSAEncryptionPadding.OaepSHA1);
         }
     }
 }
