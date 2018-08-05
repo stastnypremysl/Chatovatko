@@ -39,7 +39,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     {
                         TcpClient client = listener.AcceptTcpClient();
                         logger.Log(this, String.Format("Client {0} has connected.",
-                            Utils.GetIpAddress(client)));
+                            LUtils.GetIpAddress(client)));
                         Task.Run(() =>
                         {
                             try

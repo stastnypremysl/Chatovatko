@@ -29,21 +29,5 @@ namespace Premy.Chatovatko.Client
 
         public static String GetDatabaseAddress() => GetConfigDirectory() + "/client.db";
 
-        /*
-        public static String GetConfigFile()
-        {
-            return GetConfigDirectory() + "/config.txt";
-        }
-
-        public static String GetClientCertificate()
-        {
-            return GetConfigDirectory() + "/client.crt";
-        }
-
-        public static String GetUserCertificate()
-        {
-            return GetConfigDirectory() + "/user.p12";
-        }
-        */
     }
 }

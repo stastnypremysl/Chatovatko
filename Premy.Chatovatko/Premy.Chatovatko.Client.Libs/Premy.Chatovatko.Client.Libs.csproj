@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientCommunication\Scenarios\" />
+  </ItemGroup>
+
 </Project>

@@ -41,7 +41,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
 
         public static void SendString(Stream stream, String message)
         {
-            byte[] bytes = Utils.GetBytes(message + CONST_SURFIX);
+            byte[] bytes = LUtils.GetBytes(message + CONST_SURFIX);
             stream.Write(bytes, 0, bytes.Length);
         }
 

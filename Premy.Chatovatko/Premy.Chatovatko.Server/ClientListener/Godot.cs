@@ -13,20 +13,19 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Premy.Chatovatko.Server.ClientListener
 {
-    public class Godot : IDisposable, ILoggable
+    public class Godot : ILoggable
     {
 
         private readonly ulong id;
         private Thread theLife;
         private TcpClient client;
-        TcpClient dataClient;
         private bool readyForLife = false;
 
         private SslStream sslStream;
-        private SslStream dataStream;
         private TcpListener dataListener;
 
         private Logger logger;
@@ -42,22 +41,15 @@ namespace Premy.Chatovatko.Server.ClientListener
             this.logger = logger;
             this.serverCert = serverCert;
             this.godotCounter = godotCounter;
-            Thread initLife = new Thread(() => Init());
             theLife = new Thread(() => MyJob());
-            initLife.Start();
+            Task.Run(() => Init());
         }
-
-        ~Godot()
-        {
-            Dispose();
-        }
-
-
+        
         private void Init()
         {
-            dataListener = new TcpListener(IPAddress.Any, 0);
-            dataListener.Start();
+            //Expensive init operations insert here
 
+            //-------------------------------------
             readyForLife = true;
             logger.Log(this, "Godot has been created.");
         }
@@ -77,7 +69,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             try
             {
                 logger.Log(this, String.Format("Godot has been activated. Client IP address is {0}", 
-                    Utils.GetIpAddress(client)));
+                    LUtils.GetIpAddress(client)));
                 godotCounter.IncreaseRunning();
 
                 sslStream = new SslStream(client.GetStream(), false, CertificateValidation);
@@ -85,14 +77,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
                 logger.Log(this, "Godot is sending data connection port and waiting for connection.");
 
-                TextEncoder.SendString(sslStream, ((IPEndPoint)dataListener.LocalEndpoint).Port.ToString());
-                dataClient = dataListener.AcceptTcpClient();
-                logger.Log(this, "Data connection initializing.");
-
-                dataStream = new SslStream(dataClient.GetStream(), false, CertificateValidation);
-                dataStream.AuthenticateAsServer(serverCert.ServerCertificate, true, SslProtocols.Tls12, true);
-
-                logger.Log(this, "Data connection has been successfully estamblished.");
+                
 
 
             }
@@ -106,7 +91,6 @@ namespace Premy.Chatovatko.Server.ClientListener
                 client.Close();
                 dataListener.Stop();
                 godotCounter.IncreaseDestroyed();
-                Dispose();
                 logger.Log(this, "Godot has died.");
             }
         }
@@ -116,13 +100,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             return true;
         }
 
-
-        public void Dispose()
-        {
-            sslStream.Dispose();
-            client.Dispose();
-        }
-
+        
         public string GetLogSource()
         {
             return String.Format("Godot {0}", id);

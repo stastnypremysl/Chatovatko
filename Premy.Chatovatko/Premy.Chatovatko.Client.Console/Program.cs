@@ -2,6 +2,7 @@
 using static System.Console;
 using Premy.Chatovatko.Server.Logging;
 using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Client.Libs.Database;
 using Premy.Chatovatko.Client.Libs.Database.Models;
@@ -154,7 +155,7 @@ namespace Premy.Chatovatko.Client
                                 {
                                     case "X509Certificate2":
                                         X509Certificate2 cert = X509Certificate2Generator.GenerateCACertificate(logger);
-                                        WriteLine(Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12)));
+                                        WriteLine(Utils.GetText(cert.Export(X509ContentType.Pkcs12)));
 
                                         break;
                                     default:

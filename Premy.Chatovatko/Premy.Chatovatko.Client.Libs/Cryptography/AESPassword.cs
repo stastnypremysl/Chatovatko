@@ -22,7 +22,7 @@ namespace Premy.Chatovatko.Client.Libs.Cryptography
 
         public static AESPassword GenerateAESPassword()
         {
-            return new AESPassword(Utils.GenerateRandomBytes(AESConstants.PASSWORD_LENGHT));
+            return new AESPassword(CLUtils.GenerateRandomBytes(AESConstants.PASSWORD_LENGHT));
         }
 
         public String GetBitPassword()

@@ -39,7 +39,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
             {
                 try
                 {
-                    string createScript = Utils.ReadResource("Premy.Chatovatko.Client.Libs.Database.SqlScripts.sqlBuild.sqll");
+                    string createScript = CLUtils.ReadResource("Premy.Chatovatko.Client.Libs.Database.SqlScripts.sqlBuild.sqll");
                     
                     context.Database.ExecuteSqlCommand(createScript);
                 }

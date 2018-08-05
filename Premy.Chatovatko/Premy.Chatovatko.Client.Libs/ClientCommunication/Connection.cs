@@ -14,12 +14,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
     public class Connection : ILoggable
     {
         private readonly int ServerPort = TcpConstants.MAIN_SERVER_PORT;
-        private int dataPort = -1;
         private TcpClient client;
-        private TcpClient dataClient;
 
         private SslStream stream;
-        private SslStream dataStream;
         private Logger logger;
 
         private readonly String serverAddress;
@@ -46,12 +43,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
             stream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
             logger.Log(this, "SSL authentication completed.");
-
-            dataPort = TextEncoder.ReadInt(stream);
-            dataClient = new TcpClient(serverAddress, dataPort);
-            dataStream = new SslStream(dataClient.GetStream(), false, verificator.AppCertificateValidation);
-            dataStream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
-            
+                        
             logger.Log(this, "Data connection has been successfully estamblished.");
         }
 

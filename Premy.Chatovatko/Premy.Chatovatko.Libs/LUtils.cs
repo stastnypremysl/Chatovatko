@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs
 {
-    public static class Utils
+    public static class LUtils
     {
         public static string GetIpAddress(TcpClient client)
         {
