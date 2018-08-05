@@ -1,9 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Premy.Chatovatko.Libs;
-using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
-using Premy.Chatovatko.Server.Cryptography;
-using Premy.Chatovatko.Server.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -29,13 +26,13 @@ namespace Premy.Chatovatko.Server.ClientListener
         private TcpListener dataListener;
 
         private Logger logger;
-        private readonly ServerCert serverCert;
+        private readonly X509Certificate2 serverCert;
         private readonly GodotCounter godotCounter;
 
         private readonly ServerConfig config;
 
 
-        public Godot(ulong id, Logger logger, ServerConfig config, ServerCert serverCert, GodotCounter godotCounter)
+        public Godot(ulong id, Logger logger, ServerConfig config, X509Certificate2 serverCert, GodotCounter godotCounter)
         {
             this.id = id;
             this.logger = logger;
@@ -73,7 +70,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 godotCounter.IncreaseRunning();
 
                 sslStream = new SslStream(client.GetStream(), false, CertificateValidation);
-                sslStream.AuthenticateAsServer(serverCert.ServerCertificate, true, SslProtocols.Tls12, false);
+                sslStream.AuthenticateAsServer(serverCert, true, SslProtocols.Tls12, false);
 
                 logger.Log(this, "Godot is sending data connection port and waiting for connection.");
 

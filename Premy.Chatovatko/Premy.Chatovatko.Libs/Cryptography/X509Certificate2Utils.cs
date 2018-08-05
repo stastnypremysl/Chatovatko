@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs.Cryptography
 {
-    public static class X509CertificateUtils
+    public static class X509Certificate2Utils
     {
         /// <summary>
         /// Exports the certificate without private key

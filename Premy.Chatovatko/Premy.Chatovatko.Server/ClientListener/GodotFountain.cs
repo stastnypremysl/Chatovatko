@@ -1,11 +1,11 @@
 ﻿using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
-using Premy.Chatovatko.Server.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Premy.Chatovatko.Server.ClientListener
@@ -19,12 +19,12 @@ namespace Premy.Chatovatko.Server.ClientListener
         private readonly GodotCounter counter;
 
         private readonly Logger logger;
-        private readonly ServerCert serverCert;
+        private readonly X509Certificate2 serverCert;
 
         private List<Godot> godotPool;
         private ServerConfig config;
 
-        public GodotFountain(Logger logger, ServerConfig config, ServerCert serverCert)
+        public GodotFountain(Logger logger, ServerConfig config, X509Certificate2 serverCert)
         {
             this.counter = new GodotCounter();
             this.logger = logger;

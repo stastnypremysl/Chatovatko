@@ -1,8 +1,8 @@
 ﻿using Premy.Chatovatko.Libs;
+using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Libs.Logging;
-using Premy.Chatovatko.Server.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,9 +18,9 @@ namespace Premy.Chatovatko.Server.ClientListener
     {
         private readonly Logger logger;
         private readonly ServerConfig config;
-        private readonly ServerCert cert;
+        private readonly X509Certificate2 cert;
 
-        public InfoService(Logger logger, ServerConfig config, ServerCert cert)
+        public InfoService(Logger logger, ServerConfig config, X509Certificate2 cert)
         {
             this.logger = logger;
             this.config = config;
@@ -71,7 +71,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         public ServerInfo GetServerInfo()
         {
-            String publicKey = Convert.ToBase64String(cert.ServerCertificate.Export(X509ContentType.Cert));
+            String publicKey = X509Certificate2Utils.ExportToPem(cert);
             return new ServerInfo(config.ServerName, publicKey);
         }
 
