@@ -2,7 +2,7 @@
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Handshake;
-using Premy.Chatovatko.Server.chatovatkoDb;
+using Premy.Chatovatko.Server.Database.Models;
 using Premy.Chatovatko.Server.Database;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Premy.Chatovatko.Server.ClientListener.Scenarios
 {
@@ -30,26 +31,61 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             log("Sending encrypted bytes");
             BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(randomBytes, clientCertificate));
 
+            ServerHandshake errorHandshake = new ServerHandshake()
+            {
+                Errors = "",
+                NewUser = false,
+                Succeeded = false,
+                UserId = -1,
+                UserName = ""
+            };
+
             if (!randomBytes.Equals(BinaryEncoder.ReceiveBytes(stream)))
             {
                 log("Sending error to client.");
-                TextEncoder.SendJson(stream, new ServerHandshake()
-                {
-                    Errors = "Client's certificate verification failed.",
-                    NewUser = false,
-                    Succeeded = false,
-                    UserId = -1,
-                    UserName = ""
-                });
-                throw new Exception("Client's certificate verification failed.");
+                errorHandshake.Errors = "Client's certificate verification failed.";
+                TextEncoder.SendJson(stream, errorHandshake);
+                throw new Exception(errorHandshake.Errors);
             }
 
             log("Certificate verification succeeded.");
 
             using(Context context = new Context(config))
             {
-                //context.Users.SingleOrDefault(u => u.PublicKey == clientHandshake.PemCertificate);
+                SHA1 sha = new SHA1CryptoServiceProvider();
+                byte[] hash = sha.ComputeHash(clientCertificate.RawData);
+                Users user = context.Users.SingleOrDefault(u => u.PublicCertificateSha1.Equals(hash));
+
+                if (user == null){
+                    log("User doesn't exist yet. I'll try to create him.");
+
+                    log("Checking the uniquity of username.");
+                    String userName = clientHandshake.UserName;
+                    if (context.Users.SingleOrDefault(u => u.UserName.Equals(userName)) != null)
+                    {
+                        log("Username isn't unique.");
+                        errorHandshake.Errors = "Username isn't unique.";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+
+                    log("Creating user.");
+                    user = new Users()
+                    {
+                        PublicCertificate = clientHandshake.PemCertificate,
+                        PublicCertificateSha1 = hash,
+                        UserName = clientHandshake.UserName
+                    };
+                    context.Users.Add(user);
+                    context.SaveChanges();
+                    log("User successfully created.");
+                }
+                else{
+                    log("User exists.");
+                }
             }
+
+
 
 
             //log($"Handshake successeded. User {ret.UserName} has loged in");

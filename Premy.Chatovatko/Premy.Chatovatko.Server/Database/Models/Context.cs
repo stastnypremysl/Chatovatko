@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Premy.Chatovatko.Server.chatovatkoDb
+namespace Premy.Chatovatko.Server.Database.Models
 {
     public partial class Context : DbContext
     {

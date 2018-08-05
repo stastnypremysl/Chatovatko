@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Premy.Chatovatko.Server.chatovatkoDb
+namespace Premy.Chatovatko.Server.Database.Models
 {
     public partial class Logs
     {

@@ -1,5 +1,5 @@
 ﻿using Premy.Chatovatko.Libs.Logging;
-using Premy.Chatovatko.Server.chatovatkoDb;
+using Premy.Chatovatko.Server.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
