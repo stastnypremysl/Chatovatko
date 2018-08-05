@@ -20,9 +20,6 @@ namespace Premy.Chatovatko.Server.ClientListener
     {
 
         private readonly ulong id;
-        private Thread theLife;
-        private TcpClient client;
-        private bool readyForLife = false;
         private SslStream sslStream;
 
         private Logger logger;
@@ -38,31 +35,15 @@ namespace Premy.Chatovatko.Server.ClientListener
             this.logger = logger;
             this.serverCert = serverCert;
             this.godotCounter = godotCounter;
-            theLife = new Thread(() => MyJob());
-            Task.Run(() => Init());
+            this.config = config;
+            godotCounter.IncreaseCreated();
+            logger.Log(this, "Godot has been created.");
+            
         }
         
-        private void Init()
-        {
-            //Expensive init operations insert here
-
-            //-------------------------------------
-            readyForLife = true;
-            logger.Log(this, "Godot has been created.");
-        }
-
+                
         public void Run(TcpClient client)
         {
-            this.client = client;
-            theLife.Start();
-        }
-        
-        private void MyJob()
-        {
-            while (!readyForLife)
-            {
-                Thread.Sleep(50);
-            }
             try
             {
                 logger.Log(this, String.Format("Godot has been activated. Client IP address is {0}", 

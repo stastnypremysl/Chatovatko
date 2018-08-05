@@ -39,7 +39,8 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 UserName = ""
             };
 
-            if (!randomBytes.Equals(BinaryEncoder.ReceiveBytes(stream)))
+            byte[] received = BinaryEncoder.ReceiveBytes(stream);
+            if (!randomBytes.SequenceEqual(received))
             {
                 log("Sending error to client.");
                 errorHandshake.Errors = "Client's certificate verification failed.";
@@ -50,14 +51,17 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             log("Certificate verification succeeded.");
 
             Users user;
+            String message;
+            bool newUser = false;
             using (Context context = new Context(config))
             {
                 SHA1 sha = new SHA1CryptoServiceProvider();
                 byte[] hash = sha.ComputeHash(clientCertificate.RawData);
-                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha1.Equals(hash));
+                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha1.SequenceEqual(hash));
 
                 if (user == null){
                     log("User doesn't exist yet. I'll try to create him.");
+                    newUser = true;
 
                     log("Checking the uniquity of username.");
                     String userName = clientHandshake.UserName;
@@ -76,17 +80,30 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                         PublicCertificateSha1 = hash,
                         UserName = clientHandshake.UserName
                     };
+
                     context.Users.Add(user);
                     context.SaveChanges();
+
+                    message = "User successfully created.";
                     log("User successfully created.");
                 }
                 else{
+                    message = "User exists.";
                     log("User exists.");
                 }
             }
 
-            UserCapsula ret = new UserCapsula(user, clientCertificate);
+            ServerHandshake toSend = new ServerHandshake()
+            {
+                Errors = message,
+                NewUser = newUser,
+                Succeeded = true,
+                UserId = user.Id,
+                UserName = user.UserName
+            };
+            TextEncoder.SendJson(stream, toSend);
 
+            UserCapsula ret = new UserCapsula(user, clientCertificate);
             log($"Handshake successeded. User {ret.UserName} with id {ret.UserId} has logged in");
             return null;
         }

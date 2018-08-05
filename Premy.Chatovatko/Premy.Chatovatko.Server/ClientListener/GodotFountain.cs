@@ -1,5 +1,6 @@
 ﻿using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Server.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Premy.Chatovatko.Server.ClientListener
 {
@@ -14,15 +16,11 @@ namespace Premy.Chatovatko.Server.ClientListener
     {
         private readonly int ServerPort = TcpConstants.MAIN_SERVER_PORT;
 
-        
-        private int readyToExist = 10;
         private readonly GodotCounter counter;
 
         private readonly Logger logger;
         private readonly X509Certificate2 serverCert;
-
-        private List<Godot> godotPool;
-        private ServerConfig config;
+        private readonly ServerConfig config;
 
         public GodotFountain(Logger logger, ServerConfig config, X509Certificate2 serverCert)
         {
@@ -32,30 +30,19 @@ namespace Premy.Chatovatko.Server.ClientListener
             this.serverCert = serverCert;
         }
 
-        public int ReadyToExist { get => readyToExist; set => readyToExist = value; }
-                
-
 
         public void Run()
         {
-            godotPool = new List<Godot>();
-
-            for(int i = 0; i != ReadyToExist; i++)
-            {
-                godotPool.Add(new Godot(counter.Created, logger, config, serverCert, counter));
-                counter.IncreaseCreated();
-            }
-
             TcpListener listener = new TcpListener(IPAddress.Any, ServerPort);
             listener.Start();
-            int ite = 0;
             while (true)
             {
                 TcpClient client = listener.AcceptTcpClient();
-                godotPool[ite].Run(client);
-                ite++;
-                godotPool.Add(new Godot(counter.Created, logger, config, serverCert, counter));
-                counter.IncreaseCreated();
+                Task.Run(() => 
+                {  
+                    new Godot(counter.Created, logger, config, serverCert, counter).Run(client);
+                    
+                });
             }
         }
     }
