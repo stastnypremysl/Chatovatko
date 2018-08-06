@@ -14,7 +14,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public long PublicId { get; set; }
         public string UserName { get; set; }
         public string PublicCertificate { get; set; }
-        public long? Uploaded { get; set; }
+        public long Trusted { get; set; }
         public string AesKey { get; set; }
 
         public ContactsDetail ContactsDetail { get; set; }

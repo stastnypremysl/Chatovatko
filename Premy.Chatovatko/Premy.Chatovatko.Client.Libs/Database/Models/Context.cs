@@ -133,8 +133,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("public_certificate")
                     .HasColumnType("VARCHAR");
 
-                entity.Property(e => e.Uploaded)
-                    .HasColumnName("uploaded")
+                entity.Property(e => e.Trusted)
+                    .HasColumnName("trusted")
                     .HasColumnType("TINYINT");
 
                 entity.Property(e => e.UserName)

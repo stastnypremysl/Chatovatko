@@ -12,7 +12,7 @@ CREATE TABLE `main`.`settings` (
   `public_id` INTEGER PRIMARY KEY,
   `user_name` VARCHAR NOT NULL,
   `public_certificate` VARCHAR NOT NULL,
-  `uploaded` TINYINT NULL,
+  `trusted` TINYINT NOT NULL,
   `aes_key` VARCHAR NULL);
 
   ---------------------------------------

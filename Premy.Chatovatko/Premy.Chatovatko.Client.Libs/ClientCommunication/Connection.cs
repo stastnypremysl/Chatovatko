@@ -122,6 +122,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Disconnect()
         {
+            Log("Sending END_CONNECTION command.");
             isConnected = false;
             TextEncoder.SendCommand(stream, ConnectionCommand.END_CONNECTION);
             stream.Close();
@@ -130,6 +131,8 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Push()
         {
+            Log("Sending PUSH command.");
+            TextEncoder.SendCommand(stream, ConnectionCommand.PUSH);
             using (Context context = new Context(config))
             {
 
@@ -138,27 +141,63 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Pull()
         {
+            Log("Sending PULL command.");
+            TextEncoder.SendCommand(stream, ConnectionCommand.PULL);
+
+            PullCapsula capsula = TextEncoder.ReadPullCapsula(stream);
+            Log("Received PullCapsula.");
             using (Context context = new Context(config))
             {
+                Log("Saving new users.");
+                foreach (PullUser user in capsula.Users)
+                {
+                    context.Contacts.Add(new Contacts
+                    {
+                        PublicId = user.UserId,
+                        PublicCertificate = user.PublicCertificate,
+                        UserName = user.UserName
+                    });
+                }
+                context.SaveChanges();
 
+                Log("Saving trusted contacts.");
+                context.Database.ExecuteSqlCommand("update CONTACTS set TRUSTED=0;");
+                context.SaveChanges();
+
+                foreach(var user in context.Contacts
+                    .Where(users => capsula.TrustedUserIds.Contains(users.PublicId)))
+                {
+                    user.Trusted = 1;
+                }
+                context.SaveChanges();
+
+                Log("Receiving and saving messages");
+                
             }
         }
 
 
         private void UntrustContact()
         {
-
+            Log("Sending UNTRUST_CONTACT command.");
+            TextEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
         }
 
         private void TrustContact()
         {
-
+            Log("Sending TRUST_CONTACT command.");
+            TextEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
         }
 
 
         public string GetLogSource()
         {
             return "Connection";
+        }
+
+        private void Log(String message)
+        {
+            logger.Log(this, message);
         }
 
         
