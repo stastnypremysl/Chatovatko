@@ -83,14 +83,31 @@ namespace Premy.Chatovatko.Server.ClientListener
                     ConnectionCommand command = TextEncoder.ReadCommand(stream);
                     switch (command)
                     {
-                        case ConnectionCommand.ADD_CONTACT:
+                        case ConnectionCommand.TRUST_CONTACT:
+                            Log("TRUST_CONTACT command received.");
+                            TrustContact();
                             break;
+
                         case ConnectionCommand.UNTRUST_CONTACT:
+                            Log("UNTRUST_CONTACT command received.");
+                            UntrustContact();
                             break;
+
+                        case ConnectionCommand.SEND_AES_KEY:
+                            Log("SEND_AES_KEY command received.");
+                            ReceiveAesKey();
+                            break;
+
                         case ConnectionCommand.PULL:
+                            Log("PULL command received.");
+                            Push();
                             break;
+
                         case ConnectionCommand.PUSH:
+                            Log("PUSH command received.");
+                            Pull();
                             break;
+
                         case ConnectionCommand.END_CONNECTION:
                             Log("END_CONNECTION command received.");
                             running = false;
@@ -130,7 +147,27 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         }
 
-        
+        private void Push()
+        {
+
+        }
+
+        private void ReceiveAesKey()
+        {
+
+        }
+
+        private void UntrustContact()
+        {
+
+        }
+
+        private void TrustContact()
+        {
+
+        }
+
+
 
         private bool CertificateValidation(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {

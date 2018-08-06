@@ -7,17 +7,22 @@ namespace Premy.Chatovatko.Libs.DataTransmission
     public enum ConnectionCommand
     {
         UNTRUST_CONTACT = 0,
-        ADD_CONTACT = 1,
+        TRUST_CONTACT = 1,
+
+        /// <summary>
+        /// Client wants to send aes key.
+        /// </summary>
+        SEND_AES_KEY = 3,
 
         /// <summary>
         /// Client wants to push.
         /// </summary>
-        PUSH = 2,
+        PUSH = 5,
         /// <summary>
         /// Client wants to pull.
         /// </summary>
-        PULL = 3,
+        PULL = 6,
 
-        END_CONNECTION = 4
+        END_CONNECTION = 10
     }
 }
