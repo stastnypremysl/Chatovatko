@@ -9,7 +9,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public long? PublicId { get; set; }
         public long RecepientId { get; set; }
         public long SenderId { get; set; }
-        public long Uploaded { get; set; }
         public long DoDelete { get; set; }
         public byte[] Blob { get; set; }
 

@@ -19,7 +19,7 @@ namespace Premy.Chatovatko.Server.Database.Models
 
         public virtual DbSet<BlobMessages> BlobMessages { get; set; }
         public virtual DbSet<Logs> Logs { get; set; }
-        public virtual DbSet<PublicCertificates> PublicCertificates { get; set; }
+        public virtual DbSet<UsersKeys> PublicCertificates { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -109,51 +109,6 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<PublicCertificates>(entity =>
-            {
-                entity.ToTable("public_certificates");
-
-                entity.HasIndex(e => e.SenderId)
-                    .HasName("fk_public_certificates_users2_idx");
-
-                entity.HasIndex(e => new { e.RecepientId, e.SenderId })
-                    .HasName("user_id_keys")
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.EncryptedAesKey)
-                    .IsRequired()
-                    .HasColumnName("encrypted_aes_key")
-                    .HasColumnType("varchar(2000)");
-
-                entity.Property(e => e.RecepientId)
-                    .HasColumnName("recepient_id")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.SenderId)
-                    .HasColumnName("sender_id")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.Trusted)
-                    .HasColumnName("trusted")
-                    .HasColumnType("bit(1)");
-
-                entity.HasOne(d => d.Recepient)
-                    .WithMany(p => p.PublicCertificatesRecepient)
-                    .HasForeignKey(d => d.RecepientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_public_keys_users1");
-
-                entity.HasOne(d => d.Sender)
-                    .WithMany(p => p.PublicCertificatesSender)
-                    .HasForeignKey(d => d.SenderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_public_certificates_users2");
-            });
-
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.ToTable("users");
@@ -188,6 +143,50 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .IsRequired()
                     .HasColumnName("user_name")
                     .HasColumnType("varchar(45)");
+            });
+
+            modelBuilder.Entity<UsersKeys>(entity =>
+            {
+                entity.ToTable("users_keys");
+
+                entity.HasIndex(e => e.SenderId)
+                    .HasName("fk_public_certificates_users2_idx");
+
+                entity.HasIndex(e => new { e.RecepientId, e.SenderId })
+                    .HasName("user_id_keys")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.EncryptedAesKey)
+                    .HasColumnName("encrypted_aes_key")
+                    .HasMaxLength(256);
+
+                entity.Property(e => e.RecepientId)
+                    .HasColumnName("recepient_id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SenderId)
+                    .HasColumnName("sender_id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Trusted)
+                    .HasColumnName("trusted")
+                    .HasColumnType("bit(1)");
+
+                entity.HasOne(d => d.Recepient)
+                    .WithMany(p => p.UsersKeysRecepient)
+                    .HasForeignKey(d => d.RecepientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_public_certificates_users1");
+
+                entity.HasOne(d => d.Sender)
+                    .WithMany(p => p.UsersKeysSender)
+                    .HasForeignKey(d => d.SenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_public_certificates_users2");
             });
         }
     }

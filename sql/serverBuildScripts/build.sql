@@ -44,16 +44,16 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`logs` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
 /*----------------------------------------------------------------------*/
-CREATE TABLE IF NOT EXISTS `chatovatko`.`public_certificates` (
+CREATE TABLE IF NOT EXISTS `chatovatko`.`users_keys` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `recepient_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
-  `encrypted_aes_key` VARCHAR(2000) NOT NULL,
+  `encrypted_aes_key` VARBINARY(256) NULL,
   `trusted` BIT(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_id_keys` (`recepient_id` ASC, `sender_id` ASC),
   INDEX `fk_public_certificates_users2_idx` (`sender_id` ASC),
-  CONSTRAINT `fk_public_keys_users1`
+  CONSTRAINT `fk_public_certificates_users1`
     FOREIGN KEY (`recepient_id`)
     REFERENCES `chatovatko`.`users` (`id`)
     ON DELETE NO ACTION

@@ -9,8 +9,8 @@ namespace Premy.Chatovatko.Server.Database.Models
         {
             BlobMessagesRecepient = new HashSet<BlobMessages>();
             BlobMessagesSender = new HashSet<BlobMessages>();
-            PublicCertificatesRecepient = new HashSet<PublicCertificates>();
-            PublicCertificatesSender = new HashSet<PublicCertificates>();
+            UsersKeysRecepient = new HashSet<UsersKeys>();
+            UsersKeysSender = new HashSet<UsersKeys>();
         }
 
         public int Id { get; set; }
@@ -20,7 +20,7 @@ namespace Premy.Chatovatko.Server.Database.Models
 
         public ICollection<BlobMessages> BlobMessagesRecepient { get; set; }
         public ICollection<BlobMessages> BlobMessagesSender { get; set; }
-        public ICollection<PublicCertificates> PublicCertificatesRecepient { get; set; }
-        public ICollection<PublicCertificates> PublicCertificatesSender { get; set; }
+        public ICollection<UsersKeys> UsersKeysRecepient { get; set; }
+        public ICollection<UsersKeys> UsersKeysSender { get; set; }
     }
 }

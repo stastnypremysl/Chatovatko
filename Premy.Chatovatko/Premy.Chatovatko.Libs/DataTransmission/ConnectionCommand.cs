@@ -6,13 +6,16 @@ namespace Premy.Chatovatko.Libs.DataTransmission
 {
     public enum ConnectionCommand
     {
-        UNTRUST_CONTACT = 0,
-        TRUST_CONTACT = 1,
-
         /// <summary>
-        /// Client wants to send aes key.
+        /// Client wants to delete contact from Trusted Contacts.
+        /// No AES key will be deleted.
         /// </summary>
-        SEND_AES_KEY = 3,
+        UNTRUST_CONTACT = 0,
+        /// <summary>
+        /// The client wants to add a contact to Trusted Contacts. 
+        /// If no AES key has been created already, it will be created.
+        /// </summary>
+        TRUST_CONTACT = 1,
 
         /// <summary>
         /// Client wants to push.

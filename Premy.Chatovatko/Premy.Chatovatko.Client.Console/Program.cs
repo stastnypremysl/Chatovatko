@@ -126,7 +126,7 @@ namespace Premy.Chatovatko.Client
                                     }
 
                                     IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicKey);
-                                    Connection conn = new Connection(logger, verificator, serverAddress, clientCert, userName);
+                                    Connection conn = new Connection(logger, verificator, serverAddress, clientCert, config, userName);
                                     conn.Connect();
 
                                     Log("Saving settings.");
@@ -139,12 +139,29 @@ namespace Premy.Chatovatko.Client
                             case "connect":
                                 CreateOpenedConnection(true);
                                 break;
+
                             case "disconnect":
                                 if (!VerifyConnectionOpened(true))
                                 {
                                     break;
                                 }
                                 connection.Disconnect();
+                                break;
+
+                            case "push":
+                                if (!VerifyConnectionOpened(true))
+                                {
+                                    break;
+                                }
+                                connection.Push();
+                                break;
+
+                            case "pull":
+                                if (!VerifyConnectionOpened(true))
+                                {
+                                    break;
+                                }
+                                connection.Pull();
                                 break;
 
                             case "delete":
@@ -266,6 +283,7 @@ namespace Premy.Chatovatko.Client
             {
                 VerifySettingsExist(false);
                 connection = new Connection(logger, settings);
+                connection.Connect();
             }
             else if (log)
             {
@@ -321,7 +339,7 @@ namespace Premy.Chatovatko.Client
 
         static void Log(String message)
         {
-            logger.Log("Program", "Core", "Settings doesn't exist yet.", false);
+            logger.Log("Program", "Core", message, false);
         }
     }
 }

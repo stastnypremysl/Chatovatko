@@ -24,7 +24,8 @@ namespace Premy.Chatovatko.Client.Libs.UserData
         {
             using(Context context = new Context(config))
             {
-                return context.Settings.Any(o => true);
+                var loaded = context.Settings.FirstOrDefault();
+                return loaded != null;
             }
         }
 
@@ -32,7 +33,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
         {
             using (Context context = new Context(config))
             {
-                return new SettingsCapsula(context.Settings.First());
+                return new SettingsCapsula(context.Settings.First(), config);
             }
         }
 

@@ -34,17 +34,17 @@ namespace Premy.Chatovatko.Server.ClientListener
         /// <summary>
         /// Already uploaded users. (independetly on aes keys)
         /// </summary>
-        private List<int> userIdsUploaded;
+        private IList<long> userIdsUploaded;
 
         /// <summary>
         /// Already uploaded blob messages.
         /// </summary>
-        private List<int> messagesIdsUploaded;
+        private IList<long?> messagesIdsUploaded;
 
         /// <summary>
         /// Already uploaded aes keys.
         /// </summary>
-        private List<int> aesKesUserIdsUploaded;
+        private IList<long> aesKesUserIdsUploaded;
 
 
         public Godot(ulong id, Logger logger, ServerConfig config, X509Certificate2 serverCert, GodotCounter godotCounter)
@@ -93,11 +93,6 @@ namespace Premy.Chatovatko.Server.ClientListener
                             UntrustContact();
                             break;
 
-                        case ConnectionCommand.SEND_AES_KEY:
-                            Log("SEND_AES_KEY command received.");
-                            ReceiveAesKey();
-                            break;
-
                         case ConnectionCommand.PULL:
                             Log("PULL command received.");
                             Push();
@@ -139,7 +134,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             messagesIdsUploaded = initClientSync.PublicBlobMessagesIds;
             aesKesUserIdsUploaded = initClientSync.AesKeysUserIds;
 
-            Log("Downloading done.");
+            Log($"Downloading done.\nUserIds: {userIdsUploaded.Count}\nMessagesIds: {messagesIdsUploaded.Count}\nAESKeys: {aesKesUserIdsUploaded.Count}");
         }
 
         private void Pull()

@@ -103,10 +103,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("sender_id")
                     .HasColumnType("INT");
 
-                entity.Property(e => e.Uploaded)
-                    .HasColumnName("uploaded")
-                    .HasColumnType("TINYINT");
-
                 entity.HasOne(d => d.Recepient)
                     .WithMany(p => p.BlobMessagesRecepient)
                     .HasForeignKey(d => d.RecepientId)
@@ -136,6 +132,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .IsRequired()
                     .HasColumnName("public_certificate")
                     .HasColumnType("VARCHAR");
+
+                entity.Property(e => e.Uploaded)
+                    .HasColumnName("uploaded")
+                    .HasColumnType("TINYINT");
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
