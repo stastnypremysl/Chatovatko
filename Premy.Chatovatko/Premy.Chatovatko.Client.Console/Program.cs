@@ -21,6 +21,7 @@ namespace Premy.Chatovatko.Client
         static DBInitializator initializator;
         static SettingsLoader settingsLoader;
         static SettingsCapsula settings = null;
+        static Connection connection = null;
 
         static void Main(string[] args)
         {
@@ -59,6 +60,12 @@ namespace Premy.Chatovatko.Client
                                     break;
                                 }
 
+                                if(settings != null)
+                                {
+                                    WriteLine("Chatovatko is initialized already.");
+                                    break;
+                                }
+
                                 bool? newUser = null;
                                 string userName = null;
                                 string serverAddress = commandParts[2];
@@ -76,11 +83,11 @@ namespace Premy.Chatovatko.Client
                                 }
                                 if(newUser != null)
                                 {
-                                    X509Certificate2 cert;
+                                    X509Certificate2 clientCert;
                                     if (newUser == true)
                                     {
                                         WriteLine("Your certificate is being created. Please, be patient.");
-                                        cert = X509Certificate2Generator.GenerateCACertificate(logger);
+                                        clientCert = X509Certificate2Generator.GenerateCACertificate(logger);
 
                                         WriteLine("Your certificate has been generated. Enter path to save it: [default: ~/.chatovatko/mykey.p12]");
                                         string path = ReadLine();
@@ -88,7 +95,7 @@ namespace Premy.Chatovatko.Client
                                         {
                                             path = $"{Utils.GetConfigDirectory()}/mykey.p12";
                                         }
-                                        X509Certificate2Utils.ExportToPkcs12File(cert, path);
+                                        X509Certificate2Utils.ExportToPkcs12File(clientCert, path);
                                         WriteLine("----------------------------------------------------------------");
 
                                         WriteLine("Enter your new unique username:");
@@ -103,7 +110,7 @@ namespace Premy.Chatovatko.Client
                                         {
                                             path = $"{Utils.GetConfigDirectory()}/mykey.p12";
                                         }
-                                        cert = X509Certificate2Utils.ImportFromPkcs12File(path, true);
+                                        clientCert = X509Certificate2Utils.ImportFromPkcs12File(path, true);
                                     }
 
                                     InfoConnection infoConnection = new InfoConnection(serverAddress, logger);
@@ -118,13 +125,28 @@ namespace Premy.Chatovatko.Client
                                         break;
                                     }
 
-                                    IConnectionVerificator verificator = new InitConnectionVerificator(logger, info.PublicKey);
-                                    Connection conn = new Connection(logger, verificator, serverAddress, cert, userName);
+                                    IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicKey);
+                                    Connection conn = new Connection(logger, verificator, serverAddress, clientCert, userName);
                                     conn.Connect();
 
+                                    Log("Saving settings.");
+                                    settingsLoader.Create(clientCert, conn.UserId, conn.UserName, info.Name, serverAddress, info.PublicKey);
+                                    settings = settingsLoader.GetSettingsCapsula();
 
                                 }
                                 break;
+
+                            case "connect":
+                                CreateOpenedConnection(true);
+                                break;
+                            case "disconnect":
+                                if (!VerifyConnectionOpened(true))
+                                {
+                                    break;
+                                }
+                                connection.Disconnect();
+                                break;
+
                             case "delete":
                                 if (commandParts.Length < 2)
                                 {
@@ -216,6 +238,45 @@ namespace Premy.Chatovatko.Client
                 logger.Close();
             }
             
+        }
+
+        static bool VerifyConnectionOpened(bool log = false)
+        {
+            bool ret = connection != null && connection.IsConnected();
+            if(ret == false && log)
+            {
+                Log("Connection isn't opened.");
+            }
+            return ret;
+        }
+
+        static bool VerifySettingsExist(bool log = false)
+        {
+            bool ret = settings != null;
+            if (ret == false && log)
+            {
+                Log("Settings doesn't exist.");
+            }
+            return ret;
+        }
+
+        static void CreateOpenedConnection(bool log = false)
+        {
+            if (!VerifyConnectionOpened())
+            {
+                VerifySettingsExist(false);
+                connection = new Connection(logger, settings);
+            }
+            else if (log)
+            {
+                Log("Connection already opened.");
+            }
+        }
+
+        static void CreateIfNotOpenedConnection(bool log = false)
+        {
+            VerifySettingsExist(true);
+            CreateOpenedConnection(false);
         }
 
         static void WriteServerInfo(String address)

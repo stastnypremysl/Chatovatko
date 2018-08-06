@@ -9,7 +9,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
     public class SettingsCapsula
     {
         public Settings Settings { get; }
-        public X509Certificate2 Certificate { get; }
+        public X509Certificate2 ClientCertificate { get; }
         public long UserPublicId => Settings.UserPublicId;
         public string PrivateCertificate => Settings.PrivateCertificate;
         public string UserName => Settings.UserName;
@@ -20,7 +20,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
         public SettingsCapsula(Settings settings)
         {
             Settings = settings;
-            Certificate = new X509Certificate2(Convert.FromBase64String(settings.PrivateCertificate));
+            ClientCertificate = new X509Certificate2(Convert.FromBase64String(settings.PrivateCertificate));
         }
 
         

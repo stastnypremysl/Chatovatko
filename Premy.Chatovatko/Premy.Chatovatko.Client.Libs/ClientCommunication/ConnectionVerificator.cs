@@ -8,12 +8,12 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
-    public class InitConnectionVerificator : IConnectionVerificator, ILoggable
+    public class ConnectionVerificator : IConnectionVerificator, ILoggable
     {
         private readonly String acceptedPublicKey;
         private readonly Logger logger;
 
-        public InitConnectionVerificator(Logger logger, String acceptedPublicKey)
+        public ConnectionVerificator(Logger logger, String acceptedPublicKey)
         {
             this.acceptedPublicKey = acceptedPublicKey;
             this.logger = logger;
