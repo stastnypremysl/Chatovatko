@@ -130,18 +130,20 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Push()
         {
+            using (Context context = new Context(config))
+            {
 
+            }
         }
 
         public void Pull()
         {
+            using (Context context = new Context(config))
+            {
 
+            }
         }
 
-        private void ReceiveAesKey()
-        {
-
-        }
 
         private void UntrustContact()
         {

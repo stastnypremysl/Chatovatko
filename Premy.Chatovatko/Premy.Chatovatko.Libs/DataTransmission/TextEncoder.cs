@@ -106,5 +106,11 @@ namespace Premy.Chatovatko.Libs.DataTransmission
             return JsonConvert.DeserializeObject<InitClientSync>(json);
         }
 
+        public static PullCapsula ReadPullCapsula(Stream stream)
+        {
+            String json = ReadString(stream);
+            return JsonConvert.DeserializeObject<PullCapsula>(json);
+        }
+
     }
 }

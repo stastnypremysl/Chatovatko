@@ -5,6 +5,7 @@ using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization;
 using Premy.Chatovatko.Libs.Logging;
 using Premy.Chatovatko.Server.ClientListener.Scenarios;
 using Premy.Chatovatko.Server.Database;
+using Premy.Chatovatko.Server.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -13,8 +14,9 @@ using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace Premy.Chatovatko.Server.ClientListener
 {
@@ -144,13 +146,94 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private void Push()
         {
+            Log("Pushing started.");
+            using (Context context = new Context(config))
+            {
+                PullCapsula capsula = new PullCapsula();
 
+                List<PullUser> pullUsers = new List<PullUser>();
+                foreach(Users user in context.Users.Where(u => !userIdsUploaded.Contains(u.Id)))
+                {
+                    PullUser pullUser = new PullUser()
+                    {
+                        PublicCertificate = user.PublicCertificate,
+                        UserId = user.Id,
+                        UserName = user.UserName
+                    };
+                    pullUsers.Add(pullUser);
+                    userIdsUploaded.Add(user.Id);
+                }
+                capsula.Users = pullUsers;
+                Log($"{pullUsers.Count} users will be pushed.");
+
+                capsula.TrustedUserIds = new List<long>();                
+                foreach(var userId in from userKeys in context.UsersKeys
+                    where userKeys.Trusted == true
+                    where userKeys.SenderId == user.UserId
+                    select new { userKeys.RecepientId })
+                {
+                    capsula.TrustedUserIds.Add(userId.RecepientId);
+                }
+                Log($"{capsula.TrustedUserIds.Count} users is trusted by host.");
+
+
+                List<byte[]> messagesBlobsToSend = new List<byte[]>();
+                List<byte[]> aesBlobsToSend = new List<byte[]>();
+
+                List<PullMessage> pullMessages = new List<PullMessage>();
+                foreach (var message in 
+                    from messages in context.BlobMessages
+                    where messages.RecepientId == user.UserId //Messages of connected user
+                    where !messagesIdsUploaded.Contains(messages.Id) //New messages
+
+                    join keys in context.UsersKeys on messages.RecepientId equals keys.SenderId //Keys sended by connected user
+                    where keys.Trusted == true //Only trusted
+                    where messages.SenderId == keys.RecepientId //Trusted information just only about sending user
+                    select new {messages.SenderId, messages.Content, messages.Id}
+                    )
+                {
+                    pullMessages.Add(new PullMessage()
+                    {
+                        PublicId = message.Id,
+                        SenderId = message.SenderId
+                    });
+                    messagesBlobsToSend.Add(message.Content);
+                    messagesIdsUploaded.Add(message.Id);
+                }
+                Log($"{messagesBlobsToSend.Count} messageBlobs will be pushed.");
+
+                capsula.AesKeysUserIds = new List<long>();
+                foreach (var user in 
+                    from userKeys in context.UsersKeys
+                    where userKeys.RecepientId == user.UserId
+                    where !aesKesUserIdsUploaded.Contains(userKeys.SenderId)
+                    select new { userKeys.SenderId, userKeys.EncryptedAesKey })
+                {
+                    capsula.AesKeysUserIds.Add(user.SenderId);
+                    aesKesUserIdsUploaded.Add(user.SenderId);
+                    aesBlobsToSend.Add(user.EncryptedAesKey);
+                }
+                Log($"{capsula.AesKeysUserIds.Count} AES keys will be pushed.");
+
+                Log($"Sending PullCapsula.");
+                TextEncoder.SendJson(stream, capsula);
+
+                Log($"Sending Messages content.");
+                foreach(byte[] data in messagesBlobsToSend)
+                {
+                    BinaryEncoder.SendBytes(stream, data);
+                }
+
+                Log($"Sending AES keys.");
+                foreach(byte[] data in aesBlobsToSend)
+                {
+                    BinaryEncoder.SendBytes(stream, data);
+                }
+
+            }
+            Log("Pushing completed.");
         }
 
-        private void ReceiveAesKey()
-        {
-
-        }
 
         private void UntrustContact()
         {

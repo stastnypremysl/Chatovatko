@@ -19,7 +19,7 @@ namespace Premy.Chatovatko.Server.Database.Models
 
         public virtual DbSet<BlobMessages> BlobMessages { get; set; }
         public virtual DbSet<Logs> Logs { get; set; }
-        public virtual DbSet<UsersKeys> PublicCertificates { get; set; }
+        public virtual DbSet<UsersKeys> UsersKeys { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
