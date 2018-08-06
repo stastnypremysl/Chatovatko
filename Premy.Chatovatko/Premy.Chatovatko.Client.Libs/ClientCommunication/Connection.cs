@@ -22,16 +22,18 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         private readonly String serverAddress;
         private readonly IConnectionVerificator verificator;
-        private readonly X509Certificate2 x509;
-        private readonly String userName;
+
+        public int UserId { get; private set; }
+        public string UserName { get; private set; }
+        public X509Certificate2 X509 { get; }
 
         public Connection(Logger logger, IConnectionVerificator verificator, String serverAddress, X509Certificate2 x509, String userName = null)
         {
             this.logger = logger;
             this.verificator = verificator;
             this.serverAddress = serverAddress;
-            this.x509 = x509;
-            this.userName = userName;
+            this.X509 = x509;
+            this.UserName = userName;
         }
 
         public void Connect()
@@ -42,14 +44,20 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
             stream = new SslStream(client.GetStream(), false, verificator.AppCertificateValidation);
             X509CertificateCollection clientCertificates = new X509CertificateCollection();
-            clientCertificates.Add(x509);
+            clientCertificates.Add(X509);
 
             stream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
             logger.Log(this, "SSL authentication completed.");
 
+
             logger.Log(this, "Handshake started.");
-            Handshake.Login(logger, stream, x509, userName);
+            var handshake = Handshake.Login(logger, stream, X509, UserName);
             logger.Log(this, "Handshake successeded.");
+
+            UserName = handshake.UserName;
+            UserId = handshake.UserId;
+            logger.Log(this, $"User {UserName} has id {UserId}");
+
         }
 
         public string GetLogSource()
