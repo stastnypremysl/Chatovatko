@@ -56,7 +56,15 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
             UserName = handshake.UserName;
             UserId = handshake.UserId;
-            logger.Log(this, $"User {UserName} has id {UserId}");
+            logger.Log(this, $"User {UserName} has id {UserId}.");
+
+            InitSync();
+
+        }
+
+        private void InitSync()
+        {
+            logger.Log(this, "Initializating synchronization");
 
         }
 

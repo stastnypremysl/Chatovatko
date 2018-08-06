@@ -91,10 +91,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("do_delete")
                     .HasColumnType("TINYINT");
 
-                entity.Property(e => e.Downloaded)
-                    .HasColumnName("downloaded")
-                    .HasColumnType("TINYINT");
-
                 entity.Property(e => e.PublicId)
                     .HasColumnName("public_id")
                     .HasColumnType("INT");
@@ -133,7 +129,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.AesKey)
-                    .IsRequired()
                     .HasColumnName("aes_key")
                     .HasColumnType("VARCHAR");
 

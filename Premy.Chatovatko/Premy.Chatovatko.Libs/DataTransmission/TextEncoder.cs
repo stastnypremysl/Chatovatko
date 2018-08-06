@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Handshake;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization;
 using System;
 using System.IO;
 using System.Net.Security;
@@ -16,9 +17,6 @@ namespace Premy.Chatovatko.Libs.DataTransmission
         
         public static String ReadString(Stream stream)
         {
-            // Read the  message sent by the server.
-            // The end of the message is signaled using the
-            // "<EOF>" marker.
             byte[] buffer = new byte[2048];
             StringBuilder messageData = new StringBuilder();
             int bytes = -1;
@@ -56,11 +54,26 @@ namespace Premy.Chatovatko.Libs.DataTransmission
             SendString(stream, toSend.ToString());
         }
 
+        public static void SendCommand(Stream stream, ConnectionCommand command)
+        {
+            SendInt(stream, (int)command);
+        }
+
+        public static ConnectionCommand ReadCommand(Stream stream)
+        {
+            int readed = ReadInt(stream);
+            return (ConnectionCommand)readed;
+        }
+
         public static void SendJson(Stream stream, object obj)
         {
             String json = JsonConvert.SerializeObject(obj);
             SendString(stream, json);
         }
+
+        // ////////////////////////////////////////////////
+        // Json readers
+        // ////////////////////////////////////////////////
 
         public static ServerConnectionInfo ReadServerConnectionInfo(Stream stream)
         {
@@ -68,10 +81,6 @@ namespace Premy.Chatovatko.Libs.DataTransmission
             return JsonConvert.DeserializeObject<ServerConnectionInfo>(json);
         }
 
-        
-        // ////////////////////////////////////////////////
-        // Json readers
-        // ////////////////////////////////////////////////
 
         public static ServerInfo ReadServerInfo(Stream stream)
         {
@@ -89,6 +98,12 @@ namespace Premy.Chatovatko.Libs.DataTransmission
         {
             String json = ReadString(stream);
             return JsonConvert.DeserializeObject<ServerHandshake>(json);
+        }
+
+        public static InitClientSync ReadInitClientSync(Stream stream)
+        {
+            String json = ReadString(stream);
+            return JsonConvert.DeserializeObject<InitClientSync>(json);
         }
 
     }

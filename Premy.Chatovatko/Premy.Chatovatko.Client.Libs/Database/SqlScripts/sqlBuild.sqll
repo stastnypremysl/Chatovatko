@@ -12,7 +12,7 @@ CREATE TABLE `main`.`settings` (
   `public_id` INTEGER PRIMARY KEY,
   `user_name` VARCHAR NOT NULL,
   `public_certificate` VARCHAR NOT NULL,
-  `aes_key` VARCHAR NOT NULL);
+  `aes_key` VARCHAR);
 
   ---------------------------------------
   CREATE TABLE IF NOT EXISTS `main`.`blob_messages` (
@@ -24,7 +24,6 @@ CREATE TABLE `main`.`settings` (
   `sender_id` INT NOT NULL REFERENCES contacts(public_id)
     ON DELETE NO ACTION
 	ON UPDATE NO ACTION,
-  `downloaded` TINYINT NOT NULL,
   `uploaded` TINYINT NOT NULL,
   `do_delete` TINYINT NOT NULL DEFAULT 0,
   `blob` BLOB NULL);
