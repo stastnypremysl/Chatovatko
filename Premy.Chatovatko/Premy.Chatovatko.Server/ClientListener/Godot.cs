@@ -141,7 +141,40 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private void Pull()
         {
+            Log("Pulling started.");
+            Log("Receiving PushCapsula.");
+            PushCapsula capsula = TextEncoder.ReadJson<PushCapsula>(stream);
 
+            Log($"Receiving and saving {capsula.recepientIds.Count} blobs.");
+            PushResponse response = new PushResponse()
+            {
+                MessageIds = new List<long>()
+            };
+
+            using(Context context = new Context(config))
+            {
+                foreach(var messageRecepientId in capsula.recepientIds)
+                {
+                    BlobMessages blobMessage = new BlobMessages()
+                    {
+                        Content = BinaryEncoder.ReceiveBytes(stream),
+                        RecepientId = (int)messageRecepientId,
+                        SenderId = user.UserId
+                    };
+                    context.BlobMessages.Add(blobMessage);
+                    context.SaveChanges();
+
+                    if(messageRecepientId == user.UserId)
+                    {
+                        response.MessageIds.Add(blobMessage.Id);
+                    }
+                }
+                
+            }
+
+            Log("Sending push response.");
+            TextEncoder.SendJson(stream, response);
+            Log("Pulling ended.");
         }
 
         private void Push()

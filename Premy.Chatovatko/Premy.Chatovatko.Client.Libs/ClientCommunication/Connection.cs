@@ -148,8 +148,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 {
                     if(message.RecepientId == UserId)
                     {
-                        //selfMessages.Add(message.)
+                        selfMessages.Add((long)message.BlobMessagesId);
                     }
+                    capsula.recepientIds.Add(message.RecepientId);
                 }
 
                 Log($"Sending capsula with {toSend.Count} messages.");
@@ -158,8 +159,22 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 Log($"Sending message blobs.");
                 foreach(var message in toSend)
                 {
-                    //BinaryEncoder.
+                    BinaryEncoder.SendBytes(stream, message.Blob);
                 }
+
+                Log($"Receiving PushResponse");
+                PushResponse response = TextEncoder.ReadJson<PushResponse>(stream);
+                var selfMessagesZip = selfMessages.Zip(response.MessageIds, (u, v) => 
+                    new { PrivateId = u, PublicId = v});
+
+                foreach(var message in selfMessagesZip)
+                {
+                    context.BlobMessages.Where(u => u.Id == message.PrivateId)
+                        .SingleOrDefault().PublicId = message.PublicId;
+                }
+
+                Log("Saving new public ids.");
+                context.SaveChanges();
 
                 Log("Cleaning queue.");
                 context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
