@@ -62,6 +62,12 @@ namespace Premy.Chatovatko.Libs.DataTransmission
         // Json readers
         // ////////////////////////////////////////////////
 
+        public static T ReadJson<T>(Stream stream)
+        {
+            String json = ReadString(stream);
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
         public static ServerConnectionInfo ReadServerConnectionInfo(Stream stream)
         {
             String json = ReadString(stream);

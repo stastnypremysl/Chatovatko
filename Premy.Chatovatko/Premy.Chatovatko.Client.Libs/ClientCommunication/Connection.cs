@@ -136,8 +136,38 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             TextEncoder.SendCommand(stream, ConnectionCommand.PUSH);
             using (Context context = new Context(config))
             {
+                List<long> selfMessages = new List<long>();
+                var toSend = context.ToSendMessages.ToList();
+
+                PushCapsula capsula = new PushCapsula()
+                {
+                    recepientIds = new List<long>()
+                };
+
+                foreach(var message in toSend)
+                {
+                    if(message.RecepientId == UserId)
+                    {
+                        //selfMessages.Add(message.)
+                    }
+                }
+
+                Log($"Sending capsula with {toSend.Count} messages.");
+                TextEncoder.SendJson(stream, capsula);
+
+                Log($"Sending message blobs.");
+                foreach(var message in toSend)
+                {
+                    //BinaryEncoder.
+                }
+
+                Log("Cleaning queue.");
+                context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
+                context.SaveChanges();
 
             }
+
+            Log("Push have been done.");
         }
 
         public void Pull()
@@ -218,6 +248,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     }
                 }
             }
+            Log("Pull have been done.");
         }
 
 

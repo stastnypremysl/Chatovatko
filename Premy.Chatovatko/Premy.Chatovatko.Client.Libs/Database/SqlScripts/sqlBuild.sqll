@@ -34,7 +34,7 @@ CREATE TABLE `main`.`settings` (
   `contact_id` INTEGER PRIMARY KEY REFERENCES `contacts` (`public_id`)
     ON DELETE RESTRICT
 	ON UPDATE CASCADE,
-  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (`id`)
+  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (id)
     ON DELETE CASCADE
 	ON UPDATE CASCADE,
   `alarm_permission` TINYINT NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `main`.`settings` (
   `id` INTEGER PRIMARY KEY,
   `time` DATETIME NOT NULL,
   `text` MEDIUMTEXT NOT NULL,
-  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (`id`)
+  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (id)
     ON DELETE CASCADE
 	ON UPDATE CASCADE);
 
@@ -62,7 +62,7 @@ CREATE TABLE `main`.`settings` (
   `onlive` TINYINT NOT NULL,
   `archived` TINYINT NOT NULL,
   `with_user` INT NOT NULL REFERENCES `contacts` (`public_id`),
-  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (`id`)
+  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (id)
     ON DELETE CASCADE
 	ON UPDATE CASCADE,
   `public_id` BIGINT NOT NULL);
@@ -79,7 +79,7 @@ CREATE TABLE `main`.`settings` (
 	ON UPDATE CASCADE,
   `text` MEDIUMTEXT NOT NULL,
   `date` DATETIME NOT NULL,
-  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (`id`)
+  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (id)
     ON DELETE CASCADE
 	ON UPDATE CASCADE);
 
@@ -90,4 +90,5 @@ CREATE TABLE `main`.`settings` (
   CREATE TABLE IF NOT EXISTS `main`.`to_send_messages` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `recepient_id` INT NOT NULL REFERENCES `contacts` (`public_id`),
-  `blob` BLOB);
+  `blob` BLOB NOT NULL,
+  `blob_messages_id` INT NULL REFERENCES `blob_messages` (id));

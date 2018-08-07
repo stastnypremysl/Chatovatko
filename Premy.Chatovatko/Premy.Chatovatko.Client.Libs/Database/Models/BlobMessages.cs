@@ -5,6 +5,11 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 {
     public partial class BlobMessages
     {
+        public BlobMessages()
+        {
+            ToSendMessages = new HashSet<ToSendMessages>();
+        }
+
         public long Id { get; set; }
         public long? PublicId { get; set; }
         public long SenderId { get; set; }
@@ -16,5 +21,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public ContactsDetail ContactsDetail { get; set; }
         public Messages Messages { get; set; }
         public MessagesThread MessagesThread { get; set; }
+        public ICollection<ToSendMessages> ToSendMessages { get; set; }
     }
 }

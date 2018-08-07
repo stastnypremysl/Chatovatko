@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.Database
 {
-    public class PushMessageParser
+    public class Operations
     {
+
     }
 }

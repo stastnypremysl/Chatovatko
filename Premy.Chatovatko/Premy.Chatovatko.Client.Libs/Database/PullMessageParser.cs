@@ -13,6 +13,11 @@ namespace Premy.Chatovatko.Client.Libs.Database
         public static void ParseEncryptedMessage(Context context, byte[] message, long senderId, long messageId)
         {
             IJType decoded = JsonEncoder.GetJsonDecoded(context, message, senderId);
+            ParseIJTypeMessage(context, decoded, senderId, messageId);    
+        }
+
+        public static void ParseIJTypeMessage(Context context, IJType decoded, long senderId, long messageId)
+        {
             switch (decoded.GetJsonType())
             {
                 case JsonTypes.ALARM:
@@ -62,4 +67,6 @@ namespace Premy.Chatovatko.Client.Libs.Database
             }
         }
     }
+
+    
 }

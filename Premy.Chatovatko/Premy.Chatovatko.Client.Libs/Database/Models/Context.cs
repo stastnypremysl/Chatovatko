@@ -325,11 +325,21 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Blob).HasColumnName("blob");
+                entity.Property(e => e.Blob)
+                    .IsRequired()
+                    .HasColumnName("blob");
+
+                entity.Property(e => e.BlobMessagesId)
+                    .HasColumnName("blob_messages_id")
+                    .HasColumnType("INT");
 
                 entity.Property(e => e.RecepientId)
                     .HasColumnName("recepient_id")
                     .HasColumnType("INT");
+
+                entity.HasOne(d => d.BlobMessages)
+                    .WithMany(p => p.ToSendMessages)
+                    .HasForeignKey(d => d.BlobMessagesId);
 
                 entity.HasOne(d => d.Recepient)
                     .WithMany(p => p.ToSendMessages)
