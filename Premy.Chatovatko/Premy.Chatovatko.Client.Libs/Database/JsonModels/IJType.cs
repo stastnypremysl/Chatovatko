@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
 {
-    public class JsonDecoded
+    public interface IJType
     {
-        public object TheObject { get; set; }
-        public JsonTypes TheType { get; set; }
+        JsonTypes GetJsonType();
     }
 }

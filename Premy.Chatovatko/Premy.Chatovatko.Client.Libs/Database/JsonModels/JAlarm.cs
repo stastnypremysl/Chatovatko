@@ -4,9 +4,14 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
 {
-    public class JAlarm
+    public class JAlarm : IJType
     {
         public DateTime Date { get; set; }
         public String Text { get; set; }
+
+        public JsonTypes GetJsonType()
+        {
+            return JsonTypes.ALARM;
+        }
     }
 }

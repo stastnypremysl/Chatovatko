@@ -4,12 +4,17 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
 {
-    public class JMessageThread
+    public class JMessageThread : IJType
     {
         public string Name { get; set; }
         public bool Onlive { get; set; }
         public bool Archived { get; set; }
         public long WithUserId { get; set; }
         public long PublicId { get; set; }
+
+        public JsonTypes GetJsonType()
+        {
+            return JsonTypes.MESSAGES_THREAD;
+        }
     }
 }

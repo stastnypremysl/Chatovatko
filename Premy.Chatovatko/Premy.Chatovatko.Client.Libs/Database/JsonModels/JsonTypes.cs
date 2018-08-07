@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
 {
-    public enum JsonTypes
+    public enum JsonTypes : byte
     {
         ALARM = 1,
         CONTACT_DETAIL = 2,

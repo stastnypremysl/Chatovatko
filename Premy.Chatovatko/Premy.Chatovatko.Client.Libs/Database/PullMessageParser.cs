@@ -7,33 +7,11 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.Database
 {
-    public class PullMessageParser : ILoggable
+    public static class PullMessageParser
     {
-        private readonly Logger logger;
-        private readonly long clientUserId;
-
-        public PullMessageParser(Logger logger, long clientUserId)
+        public static void ParseEncryptedMessage(Context context, byte[] message, long senderId, long publicId)
         {
-            this.logger = logger;
-            this.clientUserId = clientUserId;
-        }
-
-        public string GetLogSource()
-        {
-            return "Pull message parser";
-        }
-
-        private void Log(String message)
-        {
-            logger.Log(this, message);
-        }
-
-        /// <summary>
-        /// If successful, returns true.
-        /// </summary>
-        public bool ParseEncryptedMessage(Context context, byte[] message, long senderId, long publicId)
-        {
-            throw new NotImplementedException();
+            
         }
     }
 }
