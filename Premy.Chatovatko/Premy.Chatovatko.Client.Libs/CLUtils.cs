@@ -20,5 +20,10 @@ namespace Premy.Chatovatko.Client.Libs
             }
         }
 
+        public static string GetChatovatkoString(this DateTime time)
+        {
+            return String.Format("{0:G}", time);
+        }
+
     }
 }
