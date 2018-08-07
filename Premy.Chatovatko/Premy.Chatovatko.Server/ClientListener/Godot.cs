@@ -1,4 +1,7 @@
-﻿using MySql.Data.MySqlClient;
+﻿//#define DEBUG
+#undef  DEBUG
+
+using MySql.Data.MySqlClient;
 using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.DataTransmission;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization;
@@ -22,7 +25,6 @@ namespace Premy.Chatovatko.Server.ClientListener
 {
     public class Godot : ILoggable
     {
-
         private readonly ulong id;
         private SslStream stream;
 
@@ -141,11 +143,16 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private void Pull()
         {
+#if (DEBUG)
             Log("Pulling started.");
             Log("Receiving PushCapsula.");
+#endif
+
             PushCapsula capsula = TextEncoder.ReadJson<PushCapsula>(stream);
 
+#if (DEBUG)
             Log($"Receiving and saving {capsula.recepientIds.Count} blobs.");
+#endif
             PushResponse response = new PushResponse()
             {
                 MessageIds = new List<long>()
@@ -171,15 +178,20 @@ namespace Premy.Chatovatko.Server.ClientListener
                 }
                 
             }
-
+#if (DEBUG)
             Log("Sending push response.");
+#endif
             TextEncoder.SendJson(stream, response);
+#if (DEBUG)
             Log("Pulling ended.");
+#endif
         }
 
         private void Push()
         {
+#if (DEBUG)
             Log("Pushing started.");
+#endif
             using (Context context = new Context(config))
             {
                 PullCapsula capsula = new PullCapsula();
@@ -197,7 +209,9 @@ namespace Premy.Chatovatko.Server.ClientListener
                     userIdsUploaded.Add(user.Id);
                 }
                 capsula.Users = pullUsers;
+#if (DEBUG)
                 Log($"{pullUsers.Count} users will be pushed.");
+#endif
 
                 capsula.TrustedUserIds = new List<long>();                
                 foreach(var userId in (
@@ -207,8 +221,9 @@ namespace Premy.Chatovatko.Server.ClientListener
                 {
                     capsula.TrustedUserIds.Add(userId.RecepientId);
                 }
+#if (DEBUG)
                 Log($"{capsula.TrustedUserIds.Count} users is trusted by host.");
-
+#endif
 
                 List<byte[]> messagesBlobsToSend = new List<byte[]>();
                 List<byte[]> aesBlobsToSend = new List<byte[]>();
@@ -234,8 +249,9 @@ namespace Premy.Chatovatko.Server.ClientListener
                     messagesIdsUploaded.Add(message.Id);
                 }
                 capsula.Messages = pullMessages;
+#if (DEBUG)
                 Log($"{messagesBlobsToSend.Count} messageBlobs will be pushed.");
-
+#endif
                 capsula.AesKeysUserIds = new List<long>();
                 foreach (var user in 
                     from userKeys in context.UsersKeys
@@ -247,25 +263,30 @@ namespace Premy.Chatovatko.Server.ClientListener
                     aesKesUserIdsUploaded.Add(user.SenderId);
                     aesBlobsToSend.Add(user.EncryptedAesKey);
                 }
+#if (DEBUG)
                 Log($"{capsula.AesKeysUserIds.Count} AES keys will be pushed.");
-
                 Log($"Sending PullCapsula.");
+#endif
                 TextEncoder.SendJson(stream, capsula);
-
+#if (DEBUG)
                 Log($"Sending AES keys.");
+#endif
                 foreach (byte[] data in aesBlobsToSend)
                 {
                     BinaryEncoder.SendBytes(stream, data);
                 }
-
+#if (DEBUG)
                 Log($"Sending Messages content.");
-                foreach(byte[] data in messagesBlobsToSend)
+#endif
+                foreach (byte[] data in messagesBlobsToSend)
                 {
                     BinaryEncoder.SendBytes(stream, data);
                 }             
 
             }
+#if (DEBUG)
             Log("Pushing completed.");
+#endif
         }
 
 

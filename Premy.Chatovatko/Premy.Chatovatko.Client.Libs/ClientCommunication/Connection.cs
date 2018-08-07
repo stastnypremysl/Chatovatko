@@ -1,4 +1,6 @@
-﻿using Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios;
+﻿#undef DEBUG
+
+using Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios;
 using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Libs;
@@ -152,17 +154,20 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     }
                     capsula.recepientIds.Add(message.RecepientId);
                 }
-
+#if (DEBUG)
                 Log($"Sending capsula with {toSend.Count} messages.");
+#endif
                 TextEncoder.SendJson(stream, capsula);
-
+#if (DEBUG)
                 Log($"Sending message blobs.");
+#endif
                 foreach(var message in toSend)
                 {
                     BinaryEncoder.SendBytes(stream, message.Blob);
                 }
-
+#if (DEBUG)
                 Log($"Receiving PushResponse");
+#endif
                 PushResponse response = TextEncoder.ReadJson<PushResponse>(stream);
                 var selfMessagesZip = selfMessages.Zip(response.MessageIds, (u, v) => 
                     new { PrivateId = u, PublicId = v});
@@ -172,11 +177,13 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     context.BlobMessages.Where(u => u.Id == message.PrivateId)
                         .SingleOrDefault().PublicId = message.PublicId;
                 }
-
+#if (DEBUG)
                 Log("Saving new public ids.");
+#endif
                 context.SaveChanges();
-
+#if (DEBUG)
                 Log("Cleaning queue.");
+#endif
                 context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
                 context.SaveChanges();
 
@@ -191,10 +198,14 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             TextEncoder.SendCommand(stream, ConnectionCommand.PULL);
 
             PullCapsula capsula = TextEncoder.ReadPullCapsula(stream);
+#if (DEBUG)
             Log("Received PullCapsula.");
+#endif
             using (Context context = new Context(config))
             {
+#if (DEBUG)
                 Log("Saving new users.");
+#endif
                 foreach (PullUser user in capsula.Users)
                 {
                     context.Contacts.Add(new Contacts
@@ -206,7 +217,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 }
                 context.SaveChanges();
 
+#if (DEBUG)
                 Log("Saving trusted contacts.");
+#endif
                 context.Database.ExecuteSqlCommand("update CONTACTS set TRUSTED=0;");
                 context.SaveChanges();
 
@@ -216,17 +229,19 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     user.Trusted = 1;
                 }
                 context.SaveChanges();
-
+#if (DEBUG)
                 Log("Receiving and saving AES keys.");
-                foreach(var id in capsula.AesKeysUserIds)
+#endif
+                foreach (var id in capsula.AesKeysUserIds)
                 {
                     var user = context.Contacts.Where(con => con.PublicId == id).SingleOrDefault();
                     user.ReceiveAesKey = BinaryEncoder.ReceiveBytes(stream);
                 }
                 context.SaveChanges();
-
+#if (DEBUG)
                 Log("Receiving and saving messages.");
-                foreach(PullMessage metaMessage in capsula.Messages)
+#endif
+                foreach (PullMessage metaMessage in capsula.Messages)
                 {
                     using (var transaction = context.Database.BeginTransaction())
                     {
@@ -263,7 +278,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     }
                 }
             }
+#if (DEBUG)
             Log("Pull have been done.");
+#endif
         }
 
 
