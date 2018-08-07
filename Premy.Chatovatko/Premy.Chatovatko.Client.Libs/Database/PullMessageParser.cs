@@ -8,6 +8,9 @@ namespace Premy.Chatovatko.Client.Libs.Database
 {
     public class PullMessageParser
     {
+        private readonly Logger logger;
+        private readonly SettingsCapsula settings;
+
         public PullMessageParser(Logger logger, SettingsCapsula settings)
         {
 
@@ -15,7 +18,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
         public void ParseEncryptedMessage(byte[] message, long senderId)
         {
-
+            //byte[] decrypted =  settings
         }
     }
 }

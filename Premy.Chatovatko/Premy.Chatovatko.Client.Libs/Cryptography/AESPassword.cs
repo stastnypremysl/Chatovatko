@@ -9,11 +9,7 @@ namespace Premy.Chatovatko.Client.Libs.Cryptography
     public class AESPassword
     {
         private readonly byte[] password;
-        public AESPassword(String bitPassword)
-        {
-            this.password = Convert.FromBase64String(bitPassword);
-        }
-
+        
         public AESPassword(byte[] password)
         {
             this.password = password;
@@ -26,9 +22,14 @@ namespace Premy.Chatovatko.Client.Libs.Cryptography
             return new AESPassword(LUtils.GenerateRandomBytes(AESConstants.PASSWORD_LENGHT));
         }
 
-        public String GetBitPassword()
+        public byte[] Encrypt (byte[] data)
         {
-            return Convert.ToBase64String(password);
+            return AESEncoder.Encrypt(data, password);
+        }
+
+        public byte[] Decrypt (byte[] data)
+        {
+            return AESEncoder.Decrypt(data, password);
         }
 
 

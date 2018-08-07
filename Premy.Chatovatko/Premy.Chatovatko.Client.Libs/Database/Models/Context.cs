@@ -124,14 +124,14 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("public_id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.AesKey)
-                    .HasColumnName("aes_key")
-                    .HasColumnType("VARCHAR");
-
                 entity.Property(e => e.PublicCertificate)
                     .IsRequired()
                     .HasColumnName("public_certificate")
                     .HasColumnType("VARCHAR");
+
+                entity.Property(e => e.ReceiveAesKey).HasColumnName("receive_aes_key");
+
+                entity.Property(e => e.SendAesKey).HasColumnName("send_aes_key");
 
                 entity.Property(e => e.Trusted)
                     .HasColumnName("trusted")

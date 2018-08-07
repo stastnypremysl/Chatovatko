@@ -13,45 +13,32 @@ namespace Premy.Chatovatko.Libs.DataTransmission
     public static class TextEncoder
     {
         
-        private static readonly string CONST_SURFIX = "<E42x?OF>";
-        
         public static String ReadString(Stream stream)
         {
-            byte[] buffer = new byte[2048];
-            StringBuilder messageData = new StringBuilder();
-            int bytes = -1;
-            do
-            {
-                bytes = stream.Read(buffer, 0, buffer.Length);
-
-                Decoder decoder = Encoding.UTF8.GetDecoder();
-                char[] chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
-                decoder.GetChars(buffer, 0, bytes, chars, 0);
-                messageData.Append(chars);
-               
-                if (messageData.ToString().IndexOf(CONST_SURFIX) != -1)
-                {
-                    break;
-                }
-            } while (bytes != 0);
-
-            return messageData.ToString().Substring(0, messageData.Length - CONST_SURFIX.Length);
+            int lenght = ReadInt(stream);
+            byte[] buffer = new byte[lenght];
+            stream.Read(buffer, 0, lenght);
+            return LUtils.GetText(buffer);
         }
 
         public static void SendString(Stream stream, String message)
         {
-            byte[] bytes = LUtils.GetBytes(message + CONST_SURFIX);
-            stream.Write(bytes, 0, bytes.Length);
+            byte[] byteStr = LUtils.GetBytes(message);
+            SendInt(stream, byteStr.Length);
+            stream.Write(byteStr, 0, byteStr.Length);
         }
 
         public static int ReadInt(Stream stream)
         {
-            return Int32.Parse(ReadString(stream));
+            byte[] readed = new byte[4];
+            stream.Read(readed, 0, 4);
+            return BitConverter.ToInt32(readed, 0);
         }
 
         public static void SendInt(Stream stream, int toSend)
         {
-            SendString(stream, toSend.ToString());
+            byte[] data = BitConverter.GetBytes(toSend);
+            stream.Write(data, 0, 4);
         }
 
         public static void SendCommand(Stream stream, ConnectionCommand command)

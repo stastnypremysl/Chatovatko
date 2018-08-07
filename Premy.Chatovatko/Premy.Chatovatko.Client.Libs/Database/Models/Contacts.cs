@@ -15,7 +15,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public string UserName { get; set; }
         public string PublicCertificate { get; set; }
         public long Trusted { get; set; }
-        public string AesKey { get; set; }
+        public byte[] SendAesKey { get; set; }
+        public byte[] ReceiveAesKey { get; set; }
 
         public ContactsDetail ContactsDetail { get; set; }
         public ICollection<BlobMessages> BlobMessagesRecepient { get; set; }
