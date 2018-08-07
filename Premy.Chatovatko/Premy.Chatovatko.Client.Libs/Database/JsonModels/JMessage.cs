@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
+{
+    public class JMessage
+    {
+        public long MessageThreadId { get; set; }
+        public string Text { get; set; }
+        public DateTime Time { get; set; }
+    }
+}

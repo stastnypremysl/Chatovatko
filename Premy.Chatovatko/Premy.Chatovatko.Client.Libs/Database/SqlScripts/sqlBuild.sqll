@@ -23,7 +23,8 @@ CREATE TABLE `main`.`settings` (
   `sender_id` INT NOT NULL REFERENCES contacts(public_id)
     ON DELETE NO ACTION
 	ON UPDATE NO ACTION,
-  `do_delete` TINYINT NOT NULL DEFAULT 0);
+  `do_delete` TINYINT NOT NULL,
+  `failed` TINYINT NOT NULL);
 
   CREATE INDEX `fk_blob_messages_contacts2_idx` ON blob_messages (`sender_id` ASC);
   CREATE UNIQUE INDEX `fk_blob_messages_public_id_idx` ON blob_messages (`public_id` ASC);
@@ -64,15 +65,16 @@ CREATE TABLE `main`.`settings` (
   `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (`id`)
     ON DELETE CASCADE
 	ON UPDATE CASCADE,
-  `public_id` INT NOT NULL);
+  `public_id` BIGINT NOT NULL);
 
   CREATE UNIQUE INDEX `fk_mess_thr_blob_mess_id_idx` ON messages_thread (`blob_messages_id` ASC);
   CREATE UNIQUE INDEX `fk_mess_thr_with_user_id_idx` ON messages_thread (`with_user` ASC, `name`);
+  CREATE UNIQUE INDEX `fk_mess_thr_public_id_idx` ON messages_thread (`public_ids`);
   
   --------------------------------------
   CREATE TABLE IF NOT EXISTS `main`.`messages` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-  `id_messages_thread` INT NOT NULL REFERENCES `messages_thread` (id)
+  `id_messages_thread` INT NOT NULL REFERENCES `messages_thread` (public_id)
     ON DELETE RESTRICT
 	ON UPDATE CASCADE,
   `text` MEDIUMTEXT NOT NULL,

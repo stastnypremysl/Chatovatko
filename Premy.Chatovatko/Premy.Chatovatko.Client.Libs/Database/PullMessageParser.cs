@@ -33,9 +33,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
         /// </summary>
         public bool ParseEncryptedMessage(Context context, byte[] message, long senderId, long publicId)
         {
-
-            //byte[] decrypted =  settings
-            return false;
+            throw new NotImplementedException();
         }
     }
 }
