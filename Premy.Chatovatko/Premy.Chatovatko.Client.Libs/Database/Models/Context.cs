@@ -31,6 +31,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+                optionsBuilder.EnableSensitiveDataLogging();
                 optionsBuilder.UseSqlite(String.Format("Data Source={0}", config.DatabaseAddress));
             }
         }

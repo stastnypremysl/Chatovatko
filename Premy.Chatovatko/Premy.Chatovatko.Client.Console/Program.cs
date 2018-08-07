@@ -126,11 +126,11 @@ namespace Premy.Chatovatko.Client
                                     }
 
                                     IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicKey);
-                                    Connection conn = new Connection(logger, verificator, serverAddress, clientCert, config, userName);
-                                    conn.Connect();
+                                    connection = new Connection(logger, verificator, serverAddress, clientCert, config, userName);
+                                    connection.Connect();
 
                                     Log("Saving settings.");
-                                    settingsLoader.Create(clientCert, conn.UserId, conn.UserName, info.Name, serverAddress, info.PublicKey);
+                                    settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicKey);
                                     settings = settingsLoader.GetSettingsCapsula();
 
                                 }

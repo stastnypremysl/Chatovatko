@@ -26,6 +26,7 @@ namespace Premy.Chatovatko.Server.Database.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+                optionsBuilder.EnableSensitiveDataLogging();
                 optionsBuilder.UseMySql(config.ConnectionString);
             }
         }

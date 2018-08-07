@@ -115,7 +115,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             }
             catch(Exception ex)
             {
-                logger.Log(this, String.Format("Godot has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace));
+                logger.Log(this, String.Format("Godot has crashed. Exception:\n{0}\n{1}\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace));
             }
             finally
             { 
@@ -167,10 +167,10 @@ namespace Premy.Chatovatko.Server.ClientListener
                 Log($"{pullUsers.Count} users will be pushed.");
 
                 capsula.TrustedUserIds = new List<long>();                
-                foreach(var userId in from userKeys in context.UsersKeys
-                    where userKeys.Trusted == true
-                    where userKeys.SenderId == user.UserId
-                    select new { userKeys.RecepientId })
+                foreach(var userId in (
+                    from userKeys in context.UsersKeys
+                    where userKeys.Trusted == true && userKeys.SenderId == user.UserId
+                    select new { userKeys.RecepientId }))
                 {
                     capsula.TrustedUserIds.Add(userId.RecepientId);
                 }
@@ -200,6 +200,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     messagesBlobsToSend.Add(message.Content);
                     messagesIdsUploaded.Add(message.Id);
                 }
+                capsula.Messages = pullMessages;
                 Log($"{messagesBlobsToSend.Count} messageBlobs will be pushed.");
 
                 capsula.AesKeysUserIds = new List<long>();

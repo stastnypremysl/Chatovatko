@@ -105,7 +105,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
 
             UserCapsula ret = new UserCapsula(user, clientCertificate);
             log($"Handshake successeded. User {ret.UserName} with id {ret.UserId} has logged in");
-            return null;
+            return ret;
         }
     }
 }

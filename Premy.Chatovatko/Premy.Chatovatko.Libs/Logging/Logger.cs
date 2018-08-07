@@ -63,6 +63,8 @@ namespace Premy.Chatovatko.Libs.Logging
         public void LogException(ILoggable me, Exception exception)
         {
             StringBuilder builder = new StringBuilder();
+            builder.Append(exception.GetType().Name);
+            builder.Append("\n");
             builder.Append(exception.Message);
             builder.Append("\n");
             builder.Append(exception.StackTrace);
@@ -73,6 +75,8 @@ namespace Premy.Chatovatko.Libs.Logging
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(me.GetMessage());
+            builder.Append("\n");
+            builder.Append(exception.GetType().Name);
             builder.Append("\n");
             builder.Append(exception.Message);
             builder.Append("\n");

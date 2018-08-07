@@ -181,13 +181,41 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 context.SaveChanges();
 
                 Log("Receiving and saving messages.");
-                PullMessageParser parser = new PullMessageParser(logger, UserId);
                 foreach(PullMessage metaMessage in capsula.Messages)
                 {
-                    context.BlobMessages.Add(new BlobMessages()
+                    using (var transaction = context.Database.BeginTransaction())
                     {
-                        PublicId = metaMessage.PublicId
-                    });
+                        try
+                        {
+                            BlobMessages metaBlob = new BlobMessages()
+                            {
+                                PublicId = metaMessage.PublicId,
+                                Failed = 0,
+                                DoDelete = 0
+                            };
+                            context.BlobMessages.Add(metaBlob);
+                            context.SaveChanges();
+
+                            try
+                            {
+                                PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id);
+                            }
+                            catch
+                            {
+                                Log($"Loading of message {metaMessage.PublicId} has failed.");
+                                metaBlob.Failed = 1;
+                            }
+                        }
+                        catch
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                        finally
+                        {
+                            transaction.Commit();
+                        }
+                    }
                 }
             }
         }
