@@ -218,17 +218,17 @@ namespace Premy.Chatovatko.Server.ClientListener
                 Log($"Sending PullCapsula.");
                 TextEncoder.SendJson(stream, capsula);
 
-                Log($"Sending Messages content.");
-                foreach(byte[] data in messagesBlobsToSend)
+                Log($"Sending AES keys.");
+                foreach (byte[] data in aesBlobsToSend)
                 {
                     BinaryEncoder.SendBytes(stream, data);
                 }
 
-                Log($"Sending AES keys.");
-                foreach(byte[] data in aesBlobsToSend)
+                Log($"Sending Messages content.");
+                foreach(byte[] data in messagesBlobsToSend)
                 {
                     BinaryEncoder.SendBytes(stream, data);
-                }
+                }             
 
             }
             Log("Pushing completed.");

@@ -14,6 +14,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Premy.Chatovatko.Client.Libs.Database;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
@@ -110,7 +111,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 toSend = new InitClientSync()
                 {
                     UserIds = context.Contacts.Select(c => c.PublicId).ToList(),
-                    AesKeysUserIds = context.Contacts.Where(c => c.AesKey != null).Select(c => c.PublicId).ToList(),
+                    AesKeysUserIds = context.Contacts.Where(c => c.ReceiveAesKey != null).Select(c => c.PublicId).ToList(),
                     PublicBlobMessagesIds = context.BlobMessages.Where(bm => bm.PublicId != null).Select(bm => bm.PublicId).ToList()
                 };
 
@@ -171,8 +172,23 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 }
                 context.SaveChanges();
 
-                Log("Receiving and saving messages");
-                
+                Log("Receiving and saving AES keys.");
+                foreach(var id in capsula.AesKeysUserIds)
+                {
+                    var user = context.Contacts.Where(con => con.PublicId == id).SingleOrDefault();
+                    user.ReceiveAesKey = BinaryEncoder.ReceiveBytes(stream);
+                }
+                context.SaveChanges();
+
+                Log("Receiving and saving messages.");
+                PullMessageParser parser = new PullMessageParser(logger, UserId);
+                foreach(PullMessage metaMessage in capsula.Messages)
+                {
+                    context.BlobMessages.Add(new BlobMessages()
+                    {
+                        PublicId = metaMessage.PublicId
+                    });
+                }
             }
         }
 

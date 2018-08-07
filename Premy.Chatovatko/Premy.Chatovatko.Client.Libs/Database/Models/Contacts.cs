@@ -7,8 +7,9 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
     {
         public Contacts()
         {
-            BlobMessagesRecepient = new HashSet<BlobMessages>();
-            BlobMessagesSender = new HashSet<BlobMessages>();
+            BlobMessages = new HashSet<BlobMessages>();
+            MessagesThread = new HashSet<MessagesThread>();
+            ToSendMessages = new HashSet<ToSendMessages>();
         }
 
         public long PublicId { get; set; }
@@ -19,7 +20,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public byte[] ReceiveAesKey { get; set; }
 
         public ContactsDetail ContactsDetail { get; set; }
-        public ICollection<BlobMessages> BlobMessagesRecepient { get; set; }
-        public ICollection<BlobMessages> BlobMessagesSender { get; set; }
+        public ICollection<BlobMessages> BlobMessages { get; set; }
+        public ICollection<MessagesThread> MessagesThread { get; set; }
+        public ICollection<ToSendMessages> ToSendMessages { get; set; }
     }
 }

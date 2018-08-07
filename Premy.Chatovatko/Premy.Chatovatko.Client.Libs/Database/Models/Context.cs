@@ -25,6 +25,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<MessagesThread> MessagesThread { get; set; }
         public virtual DbSet<Settings> Settings { get; set; }
+        public virtual DbSet<ToSendMessages> ToSendMessages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -75,17 +76,12 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasName("fk_blob_messages_public_id_idx")
                     .IsUnique();
 
-                entity.HasIndex(e => e.RecepientId)
-                    .HasName("fk_blob_messages_contacts1_idx");
-
                 entity.HasIndex(e => e.SenderId)
                     .HasName("fk_blob_messages_contacts2_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .ValueGeneratedNever();
-
-                entity.Property(e => e.Blob).HasColumnName("blob");
 
                 entity.Property(e => e.DoDelete)
                     .HasColumnName("do_delete")
@@ -95,21 +91,12 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("public_id")
                     .HasColumnType("INT");
 
-                entity.Property(e => e.RecepientId)
-                    .HasColumnName("recepient_id")
-                    .HasColumnType("INT");
-
                 entity.Property(e => e.SenderId)
                     .HasColumnName("sender_id")
                     .HasColumnType("INT");
 
-                entity.HasOne(d => d.Recepient)
-                    .WithMany(p => p.BlobMessagesRecepient)
-                    .HasForeignKey(d => d.RecepientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-
                 entity.HasOne(d => d.Sender)
-                    .WithMany(p => p.BlobMessagesSender)
+                    .WithMany(p => p.BlobMessages)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
@@ -239,8 +226,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasName("fk_mess_thr_blob_mess_id_idx")
                     .IsUnique();
 
-                entity.HasIndex(e => new { e.RecepientId, e.PublicId })
-                    .HasName("fk_mess_thr_public_id_idx")
+                entity.HasIndex(e => new { e.WithUser, e.Name })
+                    .HasName("fk_mess_thr_with_user_id_idx")
                     .IsUnique();
 
                 entity.Property(e => e.Id)
@@ -268,13 +255,18 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("public_id")
                     .HasColumnType("INT");
 
-                entity.Property(e => e.RecepientId)
-                    .HasColumnName("recepient_id")
+                entity.Property(e => e.WithUser)
+                    .HasColumnName("with_user")
                     .HasColumnType("INT");
 
                 entity.HasOne(d => d.BlobMessages)
                     .WithOne(p => p.MessagesThread)
                     .HasForeignKey<MessagesThread>(d => d.BlobMessagesId);
+
+                entity.HasOne(d => d.WithUserNavigation)
+                    .WithMany(p => p.MessagesThread)
+                    .HasForeignKey(d => d.WithUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Settings>(entity =>
@@ -313,6 +305,26 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                 entity.Property(e => e.UserPublicId)
                     .HasColumnName("user_public_id")
                     .HasColumnType("INT");
+            });
+
+            modelBuilder.Entity<ToSendMessages>(entity =>
+            {
+                entity.ToTable("to_send_messages");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Blob).HasColumnName("blob");
+
+                entity.Property(e => e.RecepientId)
+                    .HasColumnName("recepient_id")
+                    .HasColumnType("INT");
+
+                entity.HasOne(d => d.Recepient)
+                    .WithMany(p => p.ToSendMessages)
+                    .HasForeignKey(d => d.RecepientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
         }
     }

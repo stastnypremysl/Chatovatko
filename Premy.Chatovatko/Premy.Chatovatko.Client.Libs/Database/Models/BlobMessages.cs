@@ -7,12 +7,9 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
     {
         public long Id { get; set; }
         public long? PublicId { get; set; }
-        public long RecepientId { get; set; }
         public long SenderId { get; set; }
         public long DoDelete { get; set; }
-        public byte[] Blob { get; set; }
 
-        public Contacts Recepient { get; set; }
         public Contacts Sender { get; set; }
         public Alarms Alarms { get; set; }
         public ContactsDetail ContactsDetail { get; set; }
