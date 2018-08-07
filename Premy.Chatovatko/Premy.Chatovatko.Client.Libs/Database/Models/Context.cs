@@ -87,6 +87,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("do_delete")
                     .HasColumnType("TINYINT");
 
+                entity.Property(e => e.Failed)
+                    .HasColumnName("failed")
+                    .HasColumnType("TINYINT");
+
                 entity.Property(e => e.PublicId)
                     .HasColumnName("public_id")
                     .HasColumnType("INT");
@@ -214,6 +218,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.HasOne(d => d.IdMessagesThreadNavigation)
                     .WithMany(p => p.Messages)
+                    .HasPrincipalKey(p => p.PublicId)
                     .HasForeignKey(d => d.IdMessagesThread)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
@@ -224,6 +229,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.HasIndex(e => e.BlobMessagesId)
                     .HasName("fk_mess_thr_blob_mess_id_idx")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.PublicId)
+                    .HasName("fk_mess_thr_public_id_idx")
                     .IsUnique();
 
                 entity.HasIndex(e => new { e.WithUser, e.Name })
@@ -253,7 +262,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.Property(e => e.PublicId)
                     .HasColumnName("public_id")
-                    .HasColumnType("INT");
+                    .HasColumnType("BIGINT");
 
                 entity.Property(e => e.WithUser)
                     .HasColumnName("with_user")
