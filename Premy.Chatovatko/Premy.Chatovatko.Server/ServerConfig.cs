@@ -24,9 +24,9 @@ namespace Premy.Chatovatko.Server
         public string CertAddress { get => certAddress; set => certAddress = value; }
         public string ServerName { get; set; }
 
-        public void LoadConfig()
+        public void LoadConfig(String path = "./config.txt")
         {
-            using (StreamReader sr = new StreamReader("./config.txt"))
+            using (StreamReader sr = new StreamReader(path))
             {
                 while (!sr.EndOfStream) {
                     String line = sr.ReadLine();

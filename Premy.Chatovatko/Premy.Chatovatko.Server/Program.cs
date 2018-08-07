@@ -16,7 +16,14 @@ namespace Premy.Chatovatko.Server
             try
             {
                 ServerConfig config = new ServerConfig(logger);
-                config.LoadConfig();
+                if(args.Length == 0)
+                { 
+                    config.LoadConfig();
+                }
+                else
+                {
+                    config.LoadConfig(args[0]);
+                }
 
                 X509Certificate2 certificate = X509Certificate2Utils.ImportFromPkcs12File(config.CertAddress);
 
