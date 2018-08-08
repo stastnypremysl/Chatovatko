@@ -110,6 +110,10 @@ namespace Premy.Chatovatko.Client
                                         {
                                             path = $"{Utils.GetConfigDirectory()}/mykey.p12";
                                         }
+
+                                        WriteLine("If you are logining to this server first time, it is nessary to enter you new unique username:");
+                                        userName = ReadLine();
+
                                         clientCert = X509Certificate2Utils.ImportFromPkcs12File(path, true);
                                     }
 

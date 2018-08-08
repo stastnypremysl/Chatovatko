@@ -121,6 +121,9 @@ namespace Premy.Chatovatko.Server.ClientListener
                             running = false;
                             break;
 
+                        default:
+                            throw new ChatovatkoException(this, "Received unknown command.");
+
                     }
                 }
 
@@ -189,6 +192,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     if (messageRecepientId == user.UserId)
                     {
                         response.MessageIds.Add(blobMessage.Id);
+                        messagesIdsUploaded.Add(blobMessage.Id);
                     }
                     context.SaveChanges();
                 }

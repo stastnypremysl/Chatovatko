@@ -64,6 +64,15 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
                     if (permission)
                     {
+                        var toDelete = context.ContactsDetail
+                            .Where(u => u.ContactId == detail.ContactId)
+                            .SingleOrDefault();
+                        if(toDelete != null)
+                        {
+                            context.ContactsDetail.Remove(toDelete);
+                            DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
+                        }
+
                         context.ContactsDetail.Add(new ContactsDetail()
                         {
                             AlarmPermission = detail.ChangeContactPermission,
@@ -88,6 +97,28 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
                     if (permission)
                     {
+                        bool onlive = (from threads in context.MessagesThread
+                                       where threads.PublicId == jmessage.MessageThreadId
+                                       select threads.Onlive)
+                            .SingleOrDefault() == 1;
+
+                        if (onlive)
+                        {
+                            var toDeleteInfo = (from bmessages in context.BlobMessages
+                                            join messages in context.Messages on bmessages.Id equals messages.BlobMessagesId
+                                            where bmessages.SenderId == senderId && messages.IdMessagesThread == jmessage.MessageThreadId
+                                            select new { messages.BlobMessagesId, messages.Id })
+                                            .SingleOrDefault();
+                            if(toDeleteInfo != null)
+                            {
+                                var toDelete = context.Messages
+                                    .Where(m => m.Id == toDeleteInfo.Id)
+                                    .SingleOrDefault();
+                                context.Messages.Remove(toDelete);
+                                DeleteBlobMessage(context, toDeleteInfo.BlobMessagesId, myUserId);
+                            }
+                        }
+
                         context.Messages.Add(new Messages()
                         {
                             Date = jmessage.Time.GetChatovatkoString(),
@@ -107,6 +138,15 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     permission = permission || messageThread.WithUserId == senderId;
                     if (permission)
                     {
+                        var toDelete = context.MessagesThread
+                            .Where(u => u.PublicId == messageThread.PublicId)
+                            .SingleOrDefault();
+                        if(toDelete != null)
+                        { 
+                            context.Remove(toDelete);
+                            DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
+                        };
+
                         context.MessagesThread.Add(new MessagesThread
                         {
                             Name = messageThread.Name,
@@ -132,8 +172,9 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             .SingleOrDefault();
                         if (contact.SendAesKey != null)
                         {
-
+                            throw new Exception($"AES key of user {contact.UserName} already exist.");
                         }
+                        contact.SendAesKey = aesKey.AESKey;
                     }
                     else
                     {
@@ -143,9 +184,19 @@ namespace Premy.Chatovatko.Client.Libs.Database
             }
         }
 
-        private static void DeleteBlobMessage(Context context, int BlobId)
+        private static void DeleteBlobMessage(Context context, long BlobId, long myUserId)
         {
-            
+            var message = context.BlobMessages
+                .Where(u => u.Id == BlobId)
+                .SingleOrDefault();
+            message.DoDelete = 1;
+            if(message.SenderId == myUserId)
+            {
+                var toDelete = context.ToSendMessages
+                    .Where(u => u.BlobMessagesId == BlobId)
+                    .SingleOrDefault();
+                context.ToSendMessages.Remove(toDelete);
+            }
         }
     }
 

@@ -18,6 +18,9 @@ using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Premy.Chatovatko.Client.Libs.Database;
+using Premy.Chatovatko.Client.Libs.Cryptography;
+using Premy.Chatovatko.Client.Libs.Database.JsonModels;
+using Premy.Chatovatko.Libs.Cryptography;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
@@ -303,13 +306,35 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             TextEncoder.SendInt(stream, userId);
         }
 
-        public void TrustContact(int userId)
+        public void TrustContact(int contactId)
         {
+            Pull();
             Log("Sending TRUST_CONTACT command.");
             TextEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
 
-            TextEncoder.SendInt(stream, userId);
-            
+            TextEncoder.SendInt(stream, contactId);
+            using(Context context = new Context(config))
+            {
+                var contact = context.Contacts
+                    .Where(u => u.PublicId == contactId)
+                    .SingleOrDefault();
+                if(contact.SendAesKey == null)
+                {
+                    AESPassword password = AESPassword.GenerateAESPassword();
+                    JAESKey key = new JAESKey(contactId, password);
+                    PushOperations.SendIJType(context, key, UserId, UserId);
+
+                    X509Certificate2 cert = X509Certificate2Utils.ImportFromPem(
+                        context.Contacts
+                        .Where(u => u.PublicId == contactId)
+                        .Select(u => u.PublicCertificate)
+                        .SingleOrDefault());
+                    BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(password.Password, cert));
+
+                    context.SaveChanges();
+                }
+            }
+            Push();
         }
 
 
