@@ -21,7 +21,7 @@ namespace Premy.Chatovatko.Libs.Cryptography
             builder.AppendLine(Convert.ToBase64String(cert.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks));
             builder.AppendLine("-----END CERTIFICATE-----");
 
-            return builder.ToString();
+            return builder.ToString().Replace("\r\n", "\n").Replace("\r", "\n");
         }
 
         public static X509Certificate2 ImportFromPem(string pem)
@@ -48,7 +48,8 @@ namespace Premy.Chatovatko.Libs.Cryptography
         /// <returns></returns>
         public static string ExportToBase64(X509Certificate2 cert)
         {
-            return Convert.ToBase64String(ExportToPkcs12(cert), Base64FormattingOptions.InsertLineBreaks);
+            return Convert.ToBase64String(ExportToPkcs12(cert), Base64FormattingOptions.InsertLineBreaks)
+                .Replace("\r\n", "\n").Replace("\r", "\n");
             
         }
 
