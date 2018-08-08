@@ -295,13 +295,15 @@ namespace Premy.Chatovatko.Client
 
         static void WriteUsers()
         {
-            String format = "{0,4} {1,8} {2,8} {3,8} {4,8} {5,8}";
+            String format = "{0,4} {1,12} {2,12} {3,12} {4,12} {5,30}";
             using (Context context = new Context(config))
             {
                 WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
+                WriteLine();
                 foreach(var user in 
                     from contacts in context.Contacts
-                    join detail in context.ContactsDetail on contacts.PublicId equals detail.ContactId
+                    join detail in context.ContactsDetail on contacts.PublicId equals detail.ContactId into jDetail
+                    from detail in jDetail.DefaultIfEmpty()
                     select new
                     {
                         Id = contacts.PublicId,
