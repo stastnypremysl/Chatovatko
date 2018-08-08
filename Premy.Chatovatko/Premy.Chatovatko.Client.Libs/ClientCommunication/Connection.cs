@@ -259,6 +259,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     BlobMessages metaBlob = new BlobMessages()
                     {
                         PublicId = metaMessage.PublicId,
+                        SenderId = metaMessage.SenderId,
                         Failed = 0,
                         DoDelete = 0
                     };
@@ -269,10 +270,11 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     {
                         PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id, UserId);
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         Log($"Loading of message {metaMessage.PublicId} has failed.");
                         metaBlob.Failed = 1;
+                        logger.LogException(this, ex);
                     }
                     context.SaveChanges();
 

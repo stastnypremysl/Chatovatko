@@ -82,7 +82,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.DoDelete)
                     .HasColumnName("do_delete")

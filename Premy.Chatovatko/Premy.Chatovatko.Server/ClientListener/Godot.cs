@@ -340,6 +340,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     context.SaveChanges();
                 }
             }
+            Log("Untrust contact done.");
         }
 
         private void TrustContact()
@@ -357,6 +358,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 }
                 else
                 {
+                    Log("Receiving new key.");
                     key = new UsersKeys()
                     {
                         RecepientId = recepientId,
@@ -368,6 +370,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 }
                 context.SaveChanges();
             }
+            Log("Trust contact done.");
         }
 
 

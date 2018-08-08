@@ -13,6 +13,8 @@ using System.Security.Cryptography.X509Certificates;
 using Premy.Chatovatko.Libs.Cryptography;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Premy.Chatovatko.Client.Libs.Cryptography;
+using System.Text;
 
 namespace Premy.Chatovatko.Client
 {
@@ -236,6 +238,16 @@ namespace Premy.Chatovatko.Client
                                 connection.TrustContact(Int32.Parse(commandParts[1]));
                                 break;
 
+                            case "untrust":
+                                if (commandParts.Length < 2)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                VerifyConnectionOpened(true);
+                                connection.UntrustContact(Int32.Parse(commandParts[1]));
+                                break;
+
                             case "generate":
                                 if (commandParts.Length < 2)
                                 {
@@ -253,6 +265,13 @@ namespace Premy.Chatovatko.Client
                                         WriteSyntaxError(commandParts[1]);
                                         break;
                                 }
+                                break;
+                            case "aesTrial":
+                                if (!VerifyConnectionOpened(true))
+                                {
+                                    break;
+                                }
+                                AesTrial();
                                 break;
 
                             case "exit":
@@ -300,6 +319,25 @@ namespace Premy.Chatovatko.Client
                 logger = null;
             }
             
+        }
+
+        static void AesTrial()
+        {
+            using(Context context = new Context(config))
+            {
+                byte[] aesBinKey = context.Contacts
+                .Where(u => u.PublicId == connection.UserId)
+                .Select(u => u.ReceiveAesKey)
+                .SingleOrDefault();
+
+                AESPassword key = new AESPassword(aesBinKey);
+                String testStr = "Testy tisty teristy";
+                WriteLine($"Encrypting string: {testStr}");
+
+                byte[] data = Encoding.UTF8.GetBytes(testStr);
+                byte[] encrypted = key.Encrypt(data);
+                WriteLine(Encoding.UTF8.GetString(key.Decrypt(encrypted)));
+            }
         }
 
         static void WriteUsers()

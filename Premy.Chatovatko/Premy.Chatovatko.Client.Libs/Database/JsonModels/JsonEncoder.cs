@@ -23,7 +23,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
             AESPassword key = new AESPassword(aesBinKey);
             byte[] decrypted = key.Decrypt(message);
             JsonTypes type = (JsonTypes)decrypted[0];
-            string jsonText = Encoding.UTF8.GetString(message, 1, message.Length - 1);
+            string jsonText = Encoding.UTF8.GetString(decrypted, 1, decrypted.Length - 1);
 
             switch (type)
             {
@@ -38,6 +38,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
 
                 case JsonTypes.MESSAGES_THREAD:
                     return JsonConvert.DeserializeObject<JMessageThread>(jsonText);
+
+                case JsonTypes.AES_KEY:
+                    return JsonConvert.DeserializeObject<JAESKey>(jsonText);
+
                 default:
                     throw new Exception("Unknown JsonType.");
             }
