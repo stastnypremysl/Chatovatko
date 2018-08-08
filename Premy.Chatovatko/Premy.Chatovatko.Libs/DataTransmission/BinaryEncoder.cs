@@ -27,7 +27,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
             byte[] buffer = new byte[2048];
             while (resultSize != 0)
             {
-                if(buffer.Length > resultSize)
+                if(buffer.Length < resultSize)
                 {
                     resultSize -= buffer.Length;
                     stream.Read(buffer, 0, buffer.Length);
