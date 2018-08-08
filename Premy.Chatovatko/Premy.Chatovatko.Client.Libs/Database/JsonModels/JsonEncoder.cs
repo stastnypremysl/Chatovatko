@@ -63,6 +63,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
             string json = JsonConvert.SerializeObject(message);
             StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
             writer.Write(json);
+            writer.Close();
 
             byte[] notEncrypted = stream.ToArray();
             return key.Encrypt(notEncrypted);

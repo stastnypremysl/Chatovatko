@@ -331,7 +331,11 @@ namespace Premy.Chatovatko.Client
                 .SingleOrDefault();
 
                 AESPassword key = new AESPassword(aesBinKey);
-                String testStr = "Testy tisty teristy";
+                String testStr = "Testy tisty teristy\n";
+                for(int i = 0; i != 3; i++)
+                {
+                    testStr += testStr;
+                }
                 WriteLine($"Encrypting string: {testStr}");
 
                 byte[] data = Encoding.UTF8.GetBytes(testStr);

@@ -193,7 +193,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.BlobMessagesId)
                     .HasColumnName("blob_messages_id")
@@ -242,7 +242,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Archived)
                     .HasColumnName("archived")
@@ -323,7 +323,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Blob)
                     .IsRequired()
