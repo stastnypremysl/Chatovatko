@@ -16,9 +16,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
         public static String ReadString(Stream stream)
         {
             int lenght = ReadInt(stream);
-            byte[] buffer = new byte[lenght];
-            stream.Read(buffer, 0, lenght);
-            return LUtils.GetText(buffer);
+            return LUtils.GetText(BinaryEncoder.ReceivePureBytes(stream, lenght));
         }
 
         public static void SendString(Stream stream, String message)

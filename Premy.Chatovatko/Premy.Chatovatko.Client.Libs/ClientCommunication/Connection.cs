@@ -49,7 +49,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         /// <param name="serverAddress"></param>
         /// <param name="clientCertificate"></param>
         /// <param name="userName"></param>
-        public Connection(Logger logger, IConnectionVerificator verificator, String serverAddress, 
+        public Connection(Logger logger, IConnectionVerificator verificator, String serverAddress,
             X509Certificate2 clientCertificate, IClientDatabaseConfig config, String userName = null)
         {
             this.logger = logger;
@@ -153,9 +153,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     recepientIds = new List<long>()
                 };
 
-                foreach(var message in toSend)
+                foreach (var message in toSend)
                 {
-                    if(message.RecepientId == UserId)
+                    if (message.RecepientId == UserId)
                     {
                         selfMessages.Add((long)message.BlobMessagesId);
                     }
@@ -172,7 +172,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 #if (DEBUG)
                 Log($"Sending message blobs.");
 #endif
-                foreach(var message in toSend)
+                foreach (var message in toSend)
                 {
                     BinaryEncoder.SendBytes(stream, message.Blob);
                 }
@@ -180,10 +180,10 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 Log($"Receiving PushResponse");
 #endif
                 PushResponse response = TextEncoder.ReadJson<PushResponse>(stream);
-                var selfMessagesZip = selfMessages.Zip(response.MessageIds, (u, v) => 
-                    new { PrivateId = u, PublicId = v});
+                var selfMessagesZip = selfMessages.Zip(response.MessageIds, (u, v) =>
+                    new { PrivateId = u, PublicId = v });
 
-                foreach(var message in selfMessagesZip)
+                foreach (var message in selfMessagesZip)
                 {
                     context.BlobMessages.Where(u => u.Id == message.PrivateId)
                         .SingleOrDefault().PublicId = message.PublicId;
@@ -235,7 +235,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 context.Database.ExecuteSqlCommand("update CONTACTS set TRUSTED=0;");
                 context.SaveChanges();
 
-                foreach(var user in context.Contacts
+                foreach (var user in context.Contacts
                     .Where(users => capsula.TrustedUserIds.Contains(users.PublicId)))
                 {
                     user.Trusted = 1;
@@ -247,7 +247,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 foreach (var id in capsula.AesKeysUserIds)
                 {
                     var user = context.Contacts.Where(con => con.PublicId == id).SingleOrDefault();
-                    user.ReceiveAesKey = BinaryEncoder.ReceiveBytes(stream);
+                    user.ReceiveAesKey = RSAEncoder.Decrypt(BinaryEncoder.ReceiveBytes(stream), ClientCertificate);
                 }
                 context.SaveChanges();
 #if (DEBUG)
@@ -255,39 +255,28 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 #endif
                 foreach (PullMessage metaMessage in capsula.Messages)
                 {
-                    using (var transaction = context.Database.BeginTransaction())
-                    {
-                        try
-                        {
-                            BlobMessages metaBlob = new BlobMessages()
-                            {
-                                PublicId = metaMessage.PublicId,
-                                Failed = 0,
-                                DoDelete = 0
-                            };
-                            context.BlobMessages.Add(metaBlob);
-                            context.SaveChanges();
 
-                            try
-                            {
-                                PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id, UserId);
-                            }
-                            catch
-                            {
-                                Log($"Loading of message {metaMessage.PublicId} has failed.");
-                                metaBlob.Failed = 1;
-                            }
-                        }
-                        catch
-                        {
-                            transaction.Rollback();
-                            throw;
-                        }
-                        finally
-                        {
-                            transaction.Commit();
-                        }
+                    BlobMessages metaBlob = new BlobMessages()
+                    {
+                        PublicId = metaMessage.PublicId,
+                        Failed = 0,
+                        DoDelete = 0
+                    };
+                    context.BlobMessages.Add(metaBlob);
+                    context.SaveChanges();
+
+                    try
+                    {
+                        PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id, UserId);
                     }
+                    catch
+                    {
+                        Log($"Loading of message {metaMessage.PublicId} has failed.");
+                        metaBlob.Failed = 1;
+                    }
+                    context.SaveChanges();
+
+
                 }
             }
             Log("Pull have been done.");
@@ -322,7 +311,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             TextEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
 
             TextEncoder.SendInt(stream, contactId);
-            using(Context context = new Context(config))
+            using (Context context = new Context(config))
             {
                 var contact = context.Contacts
                     .Where(u => u.PublicId == contactId)
@@ -360,6 +349,6 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             logger.Log(this, message);
         }
 
-        
+
     }
 }

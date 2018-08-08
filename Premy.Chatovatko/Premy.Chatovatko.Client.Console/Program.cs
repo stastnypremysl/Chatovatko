@@ -27,6 +27,7 @@ namespace Premy.Chatovatko.Client
 
         static void Main(string[] args)
         {
+        main:
             logger = new Logger(new ConsoleLoggerOutput());
             WriteLine("Chatovatko client at your service!");
             try {
@@ -189,8 +190,15 @@ namespace Premy.Chatovatko.Client
                                 {
                                     case "database":
                                         initializator.DBDelete();
+                                        WriteLine();
+
                                         running = false;
-                                        break;
+                                        config = null;
+                                        initializator = null;
+                                        settingsLoader = null;
+                                        settings = null;
+                                        connection = null;
+                                        goto main;
                                     default:
                                         WriteSyntaxError(commandParts[1]);
                                         break;
@@ -289,6 +297,7 @@ namespace Premy.Chatovatko.Client
             finally
             {
                 logger.Close();
+                logger = null;
             }
             
         }
@@ -298,8 +307,8 @@ namespace Premy.Chatovatko.Client
             String format = "{0,4} {1,12} {2,12} {3,12} {4,12} {5,30}";
             using (Context context = new Context(config))
             {
-                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
                 WriteLine();
+                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
                 foreach(var user in 
                     from contacts in context.Contacts
                     join detail in context.ContactsDetail on contacts.PublicId equals detail.ContactId into jDetail
