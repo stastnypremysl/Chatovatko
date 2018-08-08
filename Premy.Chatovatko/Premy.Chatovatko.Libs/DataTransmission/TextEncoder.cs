@@ -23,7 +23,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
         {
             byte[] byteStr = LUtils.GetBytes(message);
             SendInt(stream, byteStr.Length);
-            stream.Write(byteStr, 0, byteStr.Length);
+            BinaryEncoder.SendPureBytes(stream, byteStr);
         }
 
         public static int ReadInt(Stream stream)

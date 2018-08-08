@@ -11,7 +11,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
         public static void SendBytes(Stream mainStream, byte[] toSend)
         {
             SendInt(mainStream, toSend.Length);
-            mainStream.Write(toSend, 0, toSend.Length);
+            SendPureBytes(mainStream, toSend);
         }
 
         public static byte[] ReceiveBytes(Stream mainStream)
@@ -27,7 +27,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
             byte[] buffer = new byte[2048];
             while (resultSize != 0)
             {
-                if(buffer.Length < resultSize)
+                if (buffer.Length < resultSize)
                 {
                     resultSize -= buffer.Length;
                     stream.Read(buffer, 0, buffer.Length);
@@ -41,6 +41,28 @@ namespace Premy.Chatovatko.Libs.DataTransmission
                 }
             }
             return memStream.ToArray();
+        }
+
+        public static void SendPureBytes(Stream stream, byte[] bytes)
+        {
+            int index = 0;
+            int packageSize = 2048;
+            int remaining = bytes.Length;
+
+            while (remaining != 0)
+            {
+                if (packageSize < remaining)
+                {
+                    stream.Write(bytes, index, packageSize);
+                    remaining -= packageSize;
+                    index += packageSize;
+                }
+                else
+                {
+                    stream.Write(bytes, index, remaining);
+                    remaining = 0;
+                }
+            }
         }
     }
 }
