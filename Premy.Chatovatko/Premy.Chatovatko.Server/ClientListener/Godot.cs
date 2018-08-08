@@ -1,5 +1,5 @@
-﻿//#define DEBUG
-#undef  DEBUG
+﻿#define DEBUG
+//#undef  DEBUG
 
 using MySql.Data.MySqlClient;
 using Premy.Chatovatko.Libs;
@@ -59,17 +59,17 @@ namespace Premy.Chatovatko.Server.ClientListener
             this.godotCounter = godotCounter;
             this.config = config;
             godotCounter.IncreaseCreated();
-            
+
             logger.Log(this, "Godot has been born.");
-            
+
         }
-        
-                
+
+
         public void Run(TcpClient client)
         {
             try
             {
-                logger.Log(this, String.Format("Godot has been activated. Client IP address is {0}", 
+                logger.Log(this, String.Format("Godot has been activated. Client IP address is {0}",
                     LUtils.GetIpAddress(client)));
                 godotCounter.IncreaseRunning();
 
@@ -98,29 +98,39 @@ namespace Premy.Chatovatko.Server.ClientListener
                             break;
 
                         case ConnectionCommand.PULL:
+#if (DEBUG)
                             Log("PULL command received.");
+#endif
                             Push();
                             break;
 
                         case ConnectionCommand.PUSH:
+#if (DEBUG)
                             Log("PUSH command received.");
+#endif
                             Pull();
+                            break;
+
+                        case ConnectionCommand.CREATE_ONLIVE_TUNNEL:
+                            Log("CREATE_ONLIVE_TUNNEL command received.");
+                            CreateOnliveTunnel();
                             break;
 
                         case ConnectionCommand.END_CONNECTION:
                             Log("END_CONNECTION command received.");
                             running = false;
                             break;
+
                     }
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Log(this, String.Format("Godot has crashed. Exception:\n{0}\n{1}\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace));
             }
             finally
-            { 
+            {
                 stream.Close();
                 client.Close();
                 godotCounter.IncreaseDestroyed();
@@ -141,6 +151,11 @@ namespace Premy.Chatovatko.Server.ClientListener
             Log($"Downloading done.\nUserIds: {userIdsUploaded.Count}\nMessagesIds: {messagesIdsUploaded.Count}\nAESKeys: {aesKesUserIdsUploaded.Count}");
         }
 
+        private void CreateOnliveTunnel()
+        {
+
+        }
+
         private void Pull()
         {
 #if (DEBUG)
@@ -149,18 +164,18 @@ namespace Premy.Chatovatko.Server.ClientListener
 #endif
 
             PushCapsula capsula = TextEncoder.ReadJson<PushCapsula>(stream);
-
-#if (DEBUG)
-            Log($"Receiving and saving {capsula.recepientIds.Count} blobs.");
-#endif
             PushResponse response = new PushResponse()
             {
                 MessageIds = new List<long>()
             };
 
-            using(Context context = new Context(config))
+            using (Context context = new Context(config))
             {
-                foreach(var messageRecepientId in capsula.recepientIds)
+#if (DEBUG)
+                Log($"Receiving and saving {capsula.recepientIds.Count} blobs.");
+#endif
+                
+                foreach (var messageRecepientId in capsula.recepientIds)
                 {
                     BlobMessages blobMessage = new BlobMessages()
                     {
@@ -171,13 +186,28 @@ namespace Premy.Chatovatko.Server.ClientListener
                     context.BlobMessages.Add(blobMessage);
                     context.SaveChanges();
 
-                    if(messageRecepientId == user.UserId)
+                    if (messageRecepientId == user.UserId)
                     {
                         response.MessageIds.Add(blobMessage.Id);
                     }
+                    context.SaveChanges();
                 }
-                
+#if (DEBUG)
+                Log($"Deleting {capsula.messageToDeleteIds.Count} blobs.");
+#endif
+                foreach(var toDeleteId in capsula.messageToDeleteIds)
+                {
+                    var toDelete = context.BlobMessages
+                        .Where(u => u.RecepientId == user.UserId && u.Id == toDeleteId).SingleOrDefault();
+                    if(toDelete != null)
+                    { 
+                        context.BlobMessages.Remove(toDelete);
+                    }
+                }
+                context.SaveChanges();
             }
+
+
 #if (DEBUG)
             Log("Sending push response.");
 #endif
@@ -197,7 +227,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 PullCapsula capsula = new PullCapsula();
 
                 List<PullUser> pullUsers = new List<PullUser>();
-                foreach(Users user in context.Users.Where(u => !userIdsUploaded.Contains(u.Id)))
+                foreach (Users user in context.Users.Where(u => !userIdsUploaded.Contains(u.Id)))
                 {
                     PullUser pullUser = new PullUser()
                     {
@@ -213,8 +243,8 @@ namespace Premy.Chatovatko.Server.ClientListener
                 Log($"{pullUsers.Count} users will be pushed.");
 #endif
 
-                capsula.TrustedUserIds = new List<long>();                
-                foreach(var userId in (
+                capsula.TrustedUserIds = new List<long>();
+                foreach (var userId in (
                     from userKeys in context.UsersKeys
                     where userKeys.Trusted == true && userKeys.SenderId == user.UserId
                     select new { userKeys.RecepientId }))
@@ -229,7 +259,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 List<byte[]> aesBlobsToSend = new List<byte[]>();
 
                 List<PullMessage> pullMessages = new List<PullMessage>();
-                foreach (var message in 
+                foreach (var message in
                     from messages in context.BlobMessages
                     where messages.RecepientId == user.UserId //Messages of connected user
                     where !messagesIdsUploaded.Contains(messages.Id) //New messages
@@ -237,7 +267,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     join keys in context.UsersKeys on messages.RecepientId equals keys.SenderId //Keys sended by connected user
                     where keys.Trusted == true //Only trusted
                     where messages.SenderId == keys.RecepientId //Trusted information just only about sending user
-                    select new {messages.SenderId, messages.Content, messages.Id}
+                    select new { messages.SenderId, messages.Content, messages.Id }
                     )
                 {
                     pullMessages.Add(new PullMessage()
@@ -253,7 +283,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 Log($"{messagesBlobsToSend.Count} messageBlobs will be pushed.");
 #endif
                 capsula.AesKeysUserIds = new List<long>();
-                foreach (var user in 
+                foreach (var user in
                     from userKeys in context.UsersKeys
                     where userKeys.RecepientId == user.UserId
                     where !aesKesUserIdsUploaded.Contains(userKeys.SenderId)
@@ -281,7 +311,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 foreach (byte[] data in messagesBlobsToSend)
                 {
                     BinaryEncoder.SendBytes(stream, data);
-                }             
+                }
 
             }
 #if (DEBUG)
@@ -307,7 +337,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             return true;
         }
 
-        
+
         public string GetLogSource()
         {
             return String.Format("Godot {0}", id);

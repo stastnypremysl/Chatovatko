@@ -1,4 +1,5 @@
-﻿#undef DEBUG
+﻿#define DEBUG
+//#undef DEBUG
 
 using Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios;
 using Premy.Chatovatko.Client.Libs.Database.Models;
@@ -154,8 +155,12 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     }
                     capsula.recepientIds.Add(message.RecepientId);
                 }
+                capsula.messageToDeleteIds = context.BlobMessages
+                    .Where(u => u.DoDelete == 1)
+                    .Select(u => (long)u.PublicId).ToList();
+
 #if (DEBUG)
-                Log($"Sending capsula with {toSend.Count} messages.");
+                Log($"Sending capsula with {toSend.Count} messages. {capsula.messageToDeleteIds.Count} will be deleted.");
 #endif
                 TextEncoder.SendJson(stream, capsula);
 #if (DEBUG)
@@ -185,6 +190,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 Log("Cleaning queue.");
 #endif
                 context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
+                context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1;;");
                 context.SaveChanges();
 
             }
@@ -278,9 +284,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     }
                 }
             }
-#if (DEBUG)
             Log("Pull have been done.");
-#endif
         }
 
 
