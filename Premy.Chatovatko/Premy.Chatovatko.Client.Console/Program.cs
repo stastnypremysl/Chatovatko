@@ -133,6 +133,15 @@ namespace Premy.Chatovatko.Client
                                     settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicKey);
                                     settings = settingsLoader.GetSettingsCapsula();
 
+                                    Log("Self-trustification begin.");
+                                    connection.TrustContact(connection.UserId);
+                                    Log("Self-trustification done.");
+
+                                    Log("Updating.");
+                                    connection.Pull();
+                                    connection.Push();
+                                    Log("Updating done.");
+
                                 }
                                 break;
 

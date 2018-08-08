@@ -103,6 +103,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             InitSync();
             isConnected = true;
 
+            Pull();
+            Push();
+
         }
 
         private void InitSync()
@@ -264,7 +267,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
                             try
                             {
-                                PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id);
+                                PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id, UserId);
                             }
                             catch
                             {
@@ -288,16 +291,25 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         }
 
 
-        private void UntrustContact()
+        public void UntrustContact(int userId)
         {
+            if (userId == this.UserId)
+            {
+                throw new ChatovatkoException(this, "You really don't want untrust yourself.");
+            }
+
             Log("Sending UNTRUST_CONTACT command.");
             TextEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
+            TextEncoder.SendInt(stream, userId);
         }
 
-        private void TrustContact()
+        public void TrustContact(int userId)
         {
             Log("Sending TRUST_CONTACT command.");
             TextEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
+
+            TextEncoder.SendInt(stream, userId);
+            
         }
 
 
