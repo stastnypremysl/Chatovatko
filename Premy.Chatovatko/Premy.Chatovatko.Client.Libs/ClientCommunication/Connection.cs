@@ -294,16 +294,25 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         }
 
 
-        public void UntrustContact(int userId)
+        public void UntrustContact(int contactId)
         {
-            if (userId == this.UserId)
+            if (contactId == this.UserId)
             {
                 throw new ChatovatkoException(this, "You really don't want untrust yourself.");
             }
 
             Log("Sending UNTRUST_CONTACT command.");
             TextEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
-            TextEncoder.SendInt(stream, userId);
+            TextEncoder.SendInt(stream, contactId);
+            using (Context context = new Context(config))
+            {
+                var contact = context.Contacts
+                    .Where(u => u.PublicId == contactId)
+                    .SingleOrDefault();
+                contact.Trusted = 0;
+
+                context.SaveChanges();
+            }
         }
 
         public void TrustContact(int contactId)
@@ -318,7 +327,10 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 var contact = context.Contacts
                     .Where(u => u.PublicId == contactId)
                     .SingleOrDefault();
-                if(contact.SendAesKey == null)
+                contact.Trusted = 1;
+                context.SaveChanges();
+
+                if (contact.SendAesKey == null)
                 {
                     AESPassword password = AESPassword.GenerateAESPassword();
                     JAESKey key = new JAESKey(contactId, password);

@@ -11,6 +11,8 @@ using Premy.Chatovatko.Client.Libs.ClientCommunication;
 using Premy.Chatovatko.Client.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Premy.Chatovatko.Libs.Cryptography;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Premy.Chatovatko.Client
 {
@@ -194,6 +196,7 @@ namespace Premy.Chatovatko.Client
                                         break;
                                 }
                                 break;
+
                             case "download":
                                 if (commandParts.Length < 3)
                                 {
@@ -210,6 +213,21 @@ namespace Premy.Chatovatko.Client
                                         break;
                                 }
                                 break;
+
+                            case "ls":
+                                WriteUsers();
+                                break;
+
+                            case "trust":
+                                if (commandParts.Length < 2)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                VerifyConnectionOpened(true);
+                                connection.TrustContact(Int32.Parse(commandParts[1]));
+                                break;
+
                             case "generate":
                                 if (commandParts.Length < 2)
                                 {
@@ -228,16 +246,21 @@ namespace Premy.Chatovatko.Client
                                         break;
                                 }
                                 break;
+
                             case "exit":
                             case "quit":
                                 running = false;
                                 break;
+
                             case "--":
                             case "":
+                            case "#":
                                 break;
+
                             case "status":
                                 WriteStatus(settings.Settings, config);
                                 break;
+
                             default:
                                 WriteSyntaxError(commandParts[0]);
                                 break;
@@ -268,6 +291,30 @@ namespace Premy.Chatovatko.Client
                 logger.Close();
             }
             
+        }
+
+        static void WriteUsers()
+        {
+            String format = "{0,4} {1,8} {2,8} {3,8} {4,8} {5,8}";
+            using (Context context = new Context(config))
+            {
+                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
+                foreach(var user in 
+                    from contacts in context.Contacts
+                    join detail in context.ContactsDetail on contacts.PublicId equals detail.ContactId
+                    select new
+                    {
+                        Id = contacts.PublicId,
+                        Trusted = contacts.Trusted == 1,
+                        detail.NickName,
+                        AlarmPermission = detail.AlarmPermission == 1,
+                        ContactPermission = detail.ChangeContactsPermission == 1,
+                        contacts.UserName
+                    })
+                {
+                    WriteLine(format, user.Id, user.NickName, user.Trusted, user.AlarmPermission, user.ContactPermission, user.UserName);
+                }
+            }
         }
 
         static bool VerifyConnectionOpened(bool log = false)

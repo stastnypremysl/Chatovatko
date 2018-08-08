@@ -327,12 +327,47 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private void UntrustContact()
         {
-
+            int recepientId = TextEncoder.ReadInt(stream);
+            using (Context context = new Context(config))
+            {
+                var key = context.UsersKeys
+                    .Where(u => u.RecepientId == recepientId)
+                    .Where(u => u.SenderId == user.UserId)
+                    .SingleOrDefault();
+                if(key != null)
+                {
+                    key.Trusted = false;
+                    context.SaveChanges();
+                }
+            }
         }
 
         private void TrustContact()
         {
-
+            int recepientId = TextEncoder.ReadInt(stream);
+            using(Context context = new Context(config))
+            {
+                var key = context.UsersKeys
+                    .Where(u => u.RecepientId == recepientId)
+                    .Where(u => u.SenderId == user.UserId)
+                    .SingleOrDefault();
+                if(key != null)
+                {
+                    key.Trusted = true;
+                }
+                else
+                {
+                    key = new UsersKeys()
+                    {
+                        RecepientId = recepientId,
+                        SenderId = user.UserId,
+                        EncryptedAesKey = BinaryEncoder.ReceiveBytes(stream),
+                        Trusted = true
+                    };
+                    context.Add(key);
+                }
+                context.SaveChanges();
+            }
         }
 
 
