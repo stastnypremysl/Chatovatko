@@ -27,7 +27,6 @@ CREATE TABLE `main`.`settings` (
   `failed` TINYINT NOT NULL);
 
   CREATE INDEX `fk_blob_messages_contacts2_idx` ON blob_messages (`sender_id` ASC);
-  CREATE UNIQUE INDEX `fk_blob_messages_public_id_idx` ON blob_messages (`public_id` ASC);
 
   ---------------------------------------
   CREATE TABLE IF NOT EXISTS `main`.`contacts_detail` (
