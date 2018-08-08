@@ -308,7 +308,7 @@ namespace Premy.Chatovatko.Client
             using (Context context = new Context(config))
             {
                 WriteLine();
-                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
+                WriteLine("{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-30}", "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
                 foreach(var user in 
                     from contacts in context.Contacts
                     join detail in context.ContactsDetail on contacts.PublicId equals detail.ContactId into jDetail
