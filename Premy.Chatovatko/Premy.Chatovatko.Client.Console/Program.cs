@@ -433,15 +433,15 @@ namespace Premy.Chatovatko.Client
 
         static void WriteMessages(long threadId)
         {
-            String format = "{0,-4} {1,-12} {5,-30}";
+            String format = "{0,-4} {1,-25} {2,-12}\n{3}\n";
             using (Context context = new Context(config))
             {
                 WriteLine();
-                WriteLine(format, "Id", "Date", "Text");
                 foreach (var message in context.Messages
                     .Where(u => u.IdMessagesThread == threadId))
                 {
-                    WriteLine(format, message.Id, message.Date, message.Text);
+                    WriteLine("{0,-4} {1,-25} {2,-12}", "Id", "Date", "Sender");
+                    WriteLine(format, message.Id, message.Date, InfoTools.GetMessageSenderUserId(context, message.Id), message.Text);
                 }
             }
         }
