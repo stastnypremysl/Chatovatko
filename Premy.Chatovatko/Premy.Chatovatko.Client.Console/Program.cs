@@ -530,7 +530,7 @@ namespace Premy.Chatovatko.Client
 
         static void WriteThreads()
         {
-            String format = "{0,-4} {1,-20} {2,-12} {3,-12} {4,-12} {5,-30}";
+            String format = "{0,-4} {5,-15} {2,-12} {3,-12} {4,-12} {1,-35}";
             using (Context context = new Context(config))
             {
                 WriteLine();
