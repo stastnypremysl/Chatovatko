@@ -344,6 +344,11 @@ namespace Premy.Chatovatko.Client
             }
         }
 
+        static void WriteThreads()
+        {
+
+        }
+
         static void WriteUsers()
         {
             String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-30}";

@@ -20,6 +20,10 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
         public static void ParseIJTypeMessage(Context context, IJType decoded, long senderId, long messageId, long myUserId)
         {
+            if(decoded == null)
+            {
+                return;
+            }
             if(context.Contacts
                 .Where(u => u.PublicId == senderId)
                 .Select(u => u.Trusted)
