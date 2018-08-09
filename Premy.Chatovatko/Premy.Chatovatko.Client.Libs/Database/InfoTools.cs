@@ -21,5 +21,13 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
             return blobMessage.SenderId;
         }
+
+        public static long GetMessageThreadPublicId(Context context, long privateId)
+        {
+            return context.MessagesThread
+                .Where(u => u.Id == privateId)
+                .Select(u => u.PublicId)
+                .Single();
+        }
     }
 }

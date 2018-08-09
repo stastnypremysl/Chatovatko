@@ -414,7 +414,8 @@ namespace Premy.Chatovatko.Client
             }
             using (Context context = new Context(config))
             {
-                CMessage message = new CMessage(threadId, textBuilder.ToString(), DateTime.Now);
+                CMessage message = new CMessage(InfoTools.GetMessageThreadPublicId (context, threadId)
+                    , textBuilder.ToString(), DateTime.Now);
                 long recepientId = context.MessagesThread
                     .Where(u => u.Id == threadId)
                     .Select(u => u.WithUser)

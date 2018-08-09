@@ -8,9 +8,9 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
     public class CMessage : JMessage, ICInsertModel
     {
 
-        public CMessage(long messageThreadId, string text, DateTime time)
+        public CMessage(long messageThreadPublicId, string text, DateTime time)
         {
-            this.MessageThreadId = messageThreadId;
+            this.MessageThreadId = messageThreadPublicId;
             this.Text = text;
             this.Time = time;
         }
