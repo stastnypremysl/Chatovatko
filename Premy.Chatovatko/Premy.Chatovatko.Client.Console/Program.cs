@@ -15,6 +15,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Premy.Chatovatko.Client.Libs.Cryptography;
 using System.Text;
+using Premy.Chatovatko.Client.Libs.Database.InsertModels;
 
 namespace Premy.Chatovatko.Client
 {
@@ -225,7 +226,51 @@ namespace Premy.Chatovatko.Client
                                 break;
 
                             case "ls":
-                                WriteUsers();
+                                if (commandParts.Length < 2)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                switch (commandParts[1])
+                                {
+                                    case "users":
+                                        WriteUsers();
+                                        break;
+                                    case "threads":
+                                        WriteThreads();
+                                        break;
+                                    case "messages":
+                                        if (commandParts.Length < 3)
+                                        {
+                                            WriteNotEnoughParameters();
+                                            break;
+                                        }
+                                        WriteMessages(Int32.Parse(commandParts[2]));
+                                        break;
+                                    default:
+                                        WriteSyntaxError(commandParts[1]);
+                                        break;
+                                }
+                                break;
+
+                            case "post":
+                                if (commandParts.Length < 4)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                switch (commandParts[1])
+                                {
+                                    case "thread":
+                                        PostThread(Int32.Parse(commandParts[2]), BuildFromRest(commandParts, 3));
+                                        break;
+                                    case "message":
+                                        PostMessage(Int32.Parse(commandParts[2]), commandParts[3]);
+                                        break;
+                                    default:
+                                        WriteSyntaxError(commandParts[1]);
+                                        break;
+                                }
                                 break;
 
                             case "trust":
@@ -344,9 +389,75 @@ namespace Premy.Chatovatko.Client
             }
         }
 
+        static string BuildFromRest(string[] data, int startIndex)
+        {
+            StringBuilder builder = new StringBuilder();
+            for(int i = startIndex; i != data.Length; i++)
+            {
+                builder.Append(data[i]);
+            }
+            return builder.ToString();
+        }
+
+        static void PostMessage(long threadId, string eof)
+        {
+            StringBuilder textBuilder = new StringBuilder();
+            while (true)
+            {
+                String readedLine = ReadLine();
+                if (readedLine.Equals(eof))
+                {
+                    break;
+                }
+                textBuilder.Append(readedLine);
+            }
+            using (Context context = new Context(config))
+            {
+                CMessage message = new CMessage(threadId, textBuilder.ToString(), DateTime.Now);
+                long recepientId = context.MessagesThread
+                    .Where(u => u.Id == threadId)
+                    .Select(u => u.WithUser)
+                    .Single();
+                PushOperations.Insert(context, message, recepientId, settings.UserPublicId);
+            }
+        }
+
+        static void PostThread(long userId, string name)
+        {
+            using (Context context = new Context(config))
+            {
+                CMessageThread thread = new CMessageThread(context, name, false, userId, settings.UserPublicId);
+                PushOperations.Insert(context, thread, userId, settings.UserPublicId);
+            }
+        }
+
+        static void WriteMessages(long threadId)
+        {
+            String format = "{0,-4} {1,-12} {5,-30}";
+            using (Context context = new Context(config))
+            {
+                WriteLine();
+                WriteLine(format, "Id", "Date", "Text");
+                foreach (var message in context.Messages
+                    .Where(u => u.IdMessagesThread == threadId))
+                {
+                    WriteLine(format, message.Id, message.Date, message.Text);
+                }
+            }
+        }
+
         static void WriteThreads()
         {
-
+            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-30}";
+            using (Context context = new Context(config))
+            {
+                WriteLine();
+                WriteLine(format, "Id", "Name", "Archived", "WithUserId", "Onlive", "PublicId");
+                foreach(var thread in context.MessagesThread)
+                {
+                    WriteLine(format, thread.Id, thread.Name, thread.Archived == 1, thread.WithUser, thread.Onlive == 1, thread.PublicId);
+                }
+            }
         }
 
         static void WriteUsers()
