@@ -19,6 +19,11 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
         public static void SendIJType(Context context, IJType toSend, long recepientId, long myUserId)
         {
+            if(toSend == null)
+            {
+                return;
+            }
+
             var recepient = context.Contacts
                 .Where(u => u.PublicId == recepientId)
                 .SingleOrDefault();
