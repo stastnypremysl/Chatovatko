@@ -271,7 +271,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     join keys in context.UsersKeys on messages.RecepientId equals keys.SenderId //Keys sended by connected user
                     where keys.Trusted == true //Only trusted
                     where messages.SenderId == keys.RecepientId //Trusted information just only about sending user
-                    orderby messages.Id ascending //Message order must be respected
+                    orderby messages.Id descending //Message order must be respected
                     select new { messages.SenderId, messages.Content, messages.Id }
                     )
                 {
