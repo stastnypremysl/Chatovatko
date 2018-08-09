@@ -11,9 +11,9 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
         private readonly long recepientId;
         private readonly long myUserId;
 
-        public UMessageThread(MessagesThread thread, long recepientId, long myUserId)
+        public UMessageThread(MessagesThread thread, long myUserId)
         {
-            this.recepientId = recepientId;
+            this.recepientId = thread.WithUser;
             this.myUserId = myUserId;
 
             Archived = thread.Archived == 1;

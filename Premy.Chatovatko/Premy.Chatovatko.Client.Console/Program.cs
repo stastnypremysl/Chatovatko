@@ -16,6 +16,8 @@ using Microsoft.EntityFrameworkCore;
 using Premy.Chatovatko.Client.Libs.Cryptography;
 using System.Text;
 using Premy.Chatovatko.Client.Libs.Database.InsertModels;
+using Premy.Chatovatko.Client.Libs.Database.DeleteModels;
+using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
 
 namespace Premy.Chatovatko.Client
 {
@@ -202,6 +204,25 @@ namespace Premy.Chatovatko.Client
                                         settings = null;
                                         connection = null;
                                         goto main;
+
+                                    case "message":
+                                        if (commandParts.Length < 3)
+                                        {
+                                            WriteNotEnoughParameters();
+                                            break;
+                                        }
+                                        DeleteThread(Int32.Parse(commandParts[2]));
+                                        break;
+
+                                    case "thread":
+                                        if (commandParts.Length < 3)
+                                        {
+                                            WriteNotEnoughParameters();
+                                            break;
+                                        }
+                                        DeleteMessage(Int32.Parse(commandParts[2]));
+                                        break;
+                                    
                                     default:
                                         WriteSyntaxError(commandParts[1]);
                                         break;
@@ -266,6 +287,23 @@ namespace Premy.Chatovatko.Client
                                         break;
                                     case "message":
                                         PostMessage(Int32.Parse(commandParts[2]), commandParts[3]);
+                                        break;
+                                    default:
+                                        WriteSyntaxError(commandParts[1]);
+                                        break;
+                                }
+                                break;
+
+                            case "rename":
+                                if (commandParts.Length < 4)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                switch (commandParts[1])
+                                {
+                                    case "thread":
+                                        RenameThread(Int32.Parse(commandParts[2]), BuildFromRest(commandParts, 3));
                                         break;
                                     default:
                                         WriteSyntaxError(commandParts[1]);
@@ -422,6 +460,41 @@ namespace Premy.Chatovatko.Client
                     , textBuilder.ToString(), DateTime.Now, recepientId, settings.UserPublicId);
                 
                 PushOperations.Insert(context, message, recepientId, settings.UserPublicId);
+            }
+        }
+
+        static void DeleteMessage(long messageId)
+        {
+            using (Context context = new Context(config))
+            {
+                var toDelete = context.Messages
+                    .Where(u => u.Id == messageId)
+                    .Single();
+                new DMessage(toDelete, settings.UserPublicId).DoDelete(context);
+            }
+        }
+
+        static void DeleteThread(long threadId)
+        {
+            using(Context context = new Context(config))
+            {
+                var toDelete = context.Messages
+                    .Where(u => u.Id == threadId)
+                    .Single();
+                new DMessage(toDelete, settings.UserPublicId).DoDelete(context);
+            }
+        }
+
+        static void RenameThread(long threadId, string newName)
+        {
+            using (Context context = new Context(config))
+            {
+                var toRename = new UMessageThread(context.MessagesThread
+                    .Where(u => u.Id == threadId)
+                    .Single(), settings.UserPublicId);
+                toRename.Name = newName;
+                PushOperations.Update(context, toRename, toRename.WithUser, settings.UserPublicId);
+                
             }
         }
 
