@@ -9,6 +9,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
         public long ContactId { get; set; }
         public long ChangeContactPermission { get; set; }
         public string NickName { get; set; }
+        public bool AlarmPermission { get; set; }
 
         public JsonTypes GetJsonType()
         {

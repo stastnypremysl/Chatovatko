@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Premy.Chatovatko.Client.Libs.Database.Models
 {
-    public partial class Alarms
+    public partial class Alarms : IBlobbed
     {
         public long Id { get; set; }
         public string Time { get; set; }
@@ -11,5 +11,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public long BlobMessagesId { get; set; }
 
         public BlobMessages BlobMessages { get; set; }
+
+        public long GetBlobId()
+        {
+            return BlobMessagesId;
+        }
     }
 }
