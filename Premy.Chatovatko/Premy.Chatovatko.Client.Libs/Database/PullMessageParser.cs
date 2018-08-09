@@ -51,6 +51,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             Text = alarm.Text,
                             Time = alarm.Date.GetChatovatkoString()
                         });
+                        context.SaveChanges();
                     }
                     else
                     {
@@ -76,6 +77,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             context.ContactsDetail.Remove(toDelete);
                             PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
                         }
+                        context.SaveChanges();
 
                         context.ContactsDetail.Add(new ContactsDetail()
                         {
@@ -84,6 +86,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             BlobMessagesId = messageId,
                             ContactId = detail.ContactId
                         });
+                        context.SaveChanges();
                     }
                     else
                     {
@@ -123,6 +126,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                                 PushOperations.DeleteBlobMessage(context, toDeleteInfo.BlobMessagesId, myUserId);
                             }
                         }
+                        context.SaveChanges();
 
                         context.Messages.Add(new Messages()
                         {
@@ -131,6 +135,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             IdMessagesThread = jmessage.MessageThreadId,
                             BlobMessagesId = messageId
                         });
+                        context.SaveChanges();
                     }
                     else
                     {
@@ -152,6 +157,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             //PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
                             //Piggy bug fix.
                         };
+                        context.SaveChanges();
 
                         if(!messageThread.DoOnlyDelete)
                         { 
@@ -165,6 +171,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                                 BlobMessagesId = messageId
                             });
                         }
+                        context.SaveChanges();
                     }
                     else
                     {
@@ -184,6 +191,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             throw new Exception($"AES key of user {contact.UserName} already exist.");
                         }
                         contact.SendAesKey = aesKey.AESKey;
+                        context.SaveChanges();
                     }
                     else
                     {
