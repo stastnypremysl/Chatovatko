@@ -395,6 +395,7 @@ namespace Premy.Chatovatko.Client
             for(int i = startIndex; i != data.Length; i++)
             {
                 builder.Append(data[i]);
+                builder.Append(' ');
             }
             return builder.ToString();
         }
@@ -448,7 +449,7 @@ namespace Premy.Chatovatko.Client
 
         static void WriteThreads()
         {
-            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-30}";
+            String format = "{0,-4} {1,-20} {2,-12} {3,-12} {4,-12} {5,-30}";
             using (Context context = new Context(config))
             {
                 WriteLine();
