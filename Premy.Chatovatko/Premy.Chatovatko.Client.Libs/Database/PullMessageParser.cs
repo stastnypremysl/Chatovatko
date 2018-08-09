@@ -148,18 +148,20 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     permission = permission || (messageThread.WithUserId == senderId && !messageThread.DoOnlyDelete);
                     if (permission)
                     {
-                        var toDelete = context.MessagesThread
+                        var old = context.MessagesThread
                             .Where(u => u.PublicId == messageThread.PublicId)
                             .SingleOrDefault();
-                        if(toDelete != null)
+                        if(messageThread.DoOnlyDelete && old != null)
                         { 
-                            context.Remove(toDelete);
-                            //PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
-                            //Piggy bug fix.
-                        };
-                        context.SaveChanges();
-
-                        if(!messageThread.DoOnlyDelete)
+                            context.Remove(old);
+                        }
+                        else if(old != null)
+                        {
+                            old.Name = messageThread.Name;
+                            old.BlobMessagesId = messageId;
+                            old.Archived = messageThread.Archived;
+                        }
+                        else                        
                         { 
                             context.MessagesThread.Add(new MessagesThread
                             {
