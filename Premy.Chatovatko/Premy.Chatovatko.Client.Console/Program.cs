@@ -449,6 +449,7 @@ namespace Premy.Chatovatko.Client
                     break;
                 }
                 textBuilder.Append(readedLine);
+                textBuilder.Append('\n');
             }
             using (Context context = new Context(config))
             {
