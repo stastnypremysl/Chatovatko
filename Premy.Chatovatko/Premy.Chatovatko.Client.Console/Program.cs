@@ -440,7 +440,7 @@ namespace Premy.Chatovatko.Client
             {
                 WriteLine();
                 foreach (var message in context.Messages
-                    .Where(u => u.IdMessagesThread == threadId))
+                    .Where(u => u.Id == threadId))
                 {
                     WriteLine("{0,-4} {1,-25} {2,-12}", "Id", "Date", "Sender");
                     WriteLine(format, message.Id, message.Date, InfoTools.GetMessageSenderUserId(context, message.Id), message.Text);
