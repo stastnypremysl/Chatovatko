@@ -52,6 +52,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
 
         public IJType GetSelfUpdate()
         {
+            if(recepientId == myUserId)
+            {
+                return null;
+            }
             return new JMessageThread()
             {
                 Archived = Archived ? 1 : 0,

@@ -414,12 +414,13 @@ namespace Premy.Chatovatko.Client
             }
             using (Context context = new Context(config))
             {
-                CMessage message = new CMessage(InfoTools.GetMessageThreadPublicId (context, threadId)
-                    , textBuilder.ToString(), DateTime.Now);
                 long recepientId = context.MessagesThread
                     .Where(u => u.Id == threadId)
                     .Select(u => u.WithUser)
                     .Single();
+                CMessage message = new CMessage(InfoTools.GetMessageThreadPublicId (context, threadId)
+                    , textBuilder.ToString(), DateTime.Now, recepientId, settings.UserPublicId);
+                
                 PushOperations.Insert(context, message, recepientId, settings.UserPublicId);
             }
         }
@@ -439,8 +440,10 @@ namespace Premy.Chatovatko.Client
             using (Context context = new Context(config))
             {
                 WriteLine();
+                var publicThreadId = InfoTools.GetMessageThreadPublicId(context, threadId);
+
                 foreach (var message in context.Messages
-                    .Where(u => u.Id == threadId))
+                    .Where(u => u.IdMessagesThread == publicThreadId))
                 {
                     WriteLine("{0,-4} {1,-25} {2,-12}", "Id", "Date", "Sender");
                     WriteLine(format, message.Id, message.Date, InfoTools.GetMessageSenderUserId(context, message.Id), message.Text);

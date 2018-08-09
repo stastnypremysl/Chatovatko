@@ -7,12 +7,15 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
 {
     public class CMessage : JMessage, ICInsertModel
     {
-
-        public CMessage(long messageThreadPublicId, string text, DateTime time)
+        private readonly long recepientId;
+        private readonly long myUserId;
+        public CMessage(long messageThreadPublicId, string text, DateTime time, long recepientId, long myUserId)
         {
             this.MessageThreadId = messageThreadPublicId;
             this.Text = text;
             this.Time = time;
+            this.recepientId = recepientId;
+            this.myUserId = myUserId;
         }
 
         public InsertModelTypes GetModelType()
@@ -22,6 +25,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
 
         public IJType GetRecepientUpdate()
         {
+            if (recepientId == myUserId)
+            {
+                return null;
+            }
             return this;
         }
 
