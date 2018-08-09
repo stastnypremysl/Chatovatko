@@ -211,7 +211,7 @@ namespace Premy.Chatovatko.Client
                                             WriteNotEnoughParameters();
                                             break;
                                         }
-                                        DeleteThread(Int32.Parse(commandParts[2]));
+                                        DeleteMessage(Int32.Parse(commandParts[2]));
                                         break;
 
                                     case "thread":
@@ -220,7 +220,7 @@ namespace Premy.Chatovatko.Client
                                             WriteNotEnoughParameters();
                                             break;
                                         }
-                                        DeleteMessage(Int32.Parse(commandParts[2]));
+                                        DeleteThread(Int32.Parse(commandParts[2]));
                                         break;
                                     
                                     default:
