@@ -14,11 +14,13 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
         private readonly long myUserId;
         public CMessageThread(Context context, String name, bool onlive, long recepientId, long myUserId, bool archived = false)
         {
+            //Conflict is possible, when you untrust contact, reinitialize database, create new message thread and trust contact again.
             PublicId = myUserId << 32;
-            PublicId += context.MessagesThread
+            PublicId += (context.MessagesThread
                 .OrderByDescending(u => u.Id)
                 .Select(u => u.Id)
-                .FirstOrDefault() + 1;
+                .FirstOrDefault() + 1) << 10;
+            PublicId += new Random().Next(0, 1023);
             this.recepientId = recepientId;
             this.myUserId = myUserId;
 
