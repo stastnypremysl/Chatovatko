@@ -94,7 +94,11 @@ namespace Premy.Chatovatko.Client.Libs.Database
                 var toDelete = context.ToSendMessages
                     .Where(u => u.BlobMessagesId == BlobId)
                     .SingleOrDefault();
-                context.ToSendMessages.Remove(toDelete);
+                if(toDelete != null)
+                { 
+                    context.ToSendMessages.Remove(toDelete);
+                }
+
             }
         }
 
