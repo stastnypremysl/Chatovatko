@@ -460,6 +460,7 @@ namespace Premy.Chatovatko.Client
                     , textBuilder.ToString(), DateTime.Now, recepientId, settings.UserPublicId);
                 
                 PushOperations.Insert(context, message, recepientId, settings.UserPublicId);
+                context.SaveChanges();
             }
         }
 
@@ -471,6 +472,7 @@ namespace Premy.Chatovatko.Client
                     .Where(u => u.Id == messageId)
                     .Single();
                 new DMessage(toDelete, settings.UserPublicId).DoDelete(context);
+                context.SaveChanges();
             }
         }
 
@@ -482,6 +484,7 @@ namespace Premy.Chatovatko.Client
                     .Where(u => u.Id == threadId)
                     .Single();
                 new DMessageThread(toDelete, settings.UserPublicId).DoDelete(context);
+                context.SaveChanges();
             }
         }
 
@@ -494,7 +497,7 @@ namespace Premy.Chatovatko.Client
                     .Single(), settings.UserPublicId);
                 toRename.Name = newName;
                 PushOperations.Update(context, toRename, toRename.WithUser, settings.UserPublicId);
-                
+                context.SaveChanges();
             }
         }
 
@@ -504,6 +507,7 @@ namespace Premy.Chatovatko.Client
             {
                 CMessageThread thread = new CMessageThread(context, name, false, userId, settings.UserPublicId);
                 PushOperations.Insert(context, thread, userId, settings.UserPublicId);
+                context.SaveChanges();
             }
         }
 
