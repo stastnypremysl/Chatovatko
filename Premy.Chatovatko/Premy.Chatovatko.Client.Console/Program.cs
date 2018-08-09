@@ -478,10 +478,10 @@ namespace Premy.Chatovatko.Client
         {
             using(Context context = new Context(config))
             {
-                var toDelete = context.Messages
+                var toDelete = context.MessagesThread
                     .Where(u => u.Id == threadId)
                     .Single();
-                new DMessage(toDelete, settings.UserPublicId).DoDelete(context);
+                new DMessageThread(toDelete, settings.UserPublicId).DoDelete(context);
             }
         }
 
