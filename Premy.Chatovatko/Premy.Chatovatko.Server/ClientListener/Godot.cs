@@ -265,13 +265,13 @@ namespace Premy.Chatovatko.Server.ClientListener
                 List<PullMessage> pullMessages = new List<PullMessage>();
                 foreach (var message in
                     from messages in context.BlobMessages
+                    orderby messages.Id ascending //Message order must be respected
                     where messages.RecepientId == user.UserId //Messages of connected user
                     where !messagesIdsUploaded.Contains(messages.Id) //New messages
 
                     join keys in context.UsersKeys on messages.RecepientId equals keys.SenderId //Keys sended by connected user
                     where keys.Trusted == true //Only trusted
                     where messages.SenderId == keys.RecepientId //Trusted information just only about sending user
-                    orderby messages.Id descending //Message order must be respected
                     select new { messages.SenderId, messages.Content, messages.Id }
                     )
                 {
