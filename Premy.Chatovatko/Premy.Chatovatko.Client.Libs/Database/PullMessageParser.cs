@@ -93,11 +93,12 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
                 case JsonTypes.MESSAGES:
                     JMessage jmessage = (JMessage)decoded;
-                    permission = permission || (
+                    long threadWithUser =(
                        from threads in context.MessagesThread
                        where threads.PublicId == jmessage.MessageThreadId
                        select threads.WithUser
-                       ).SingleOrDefault() == senderId;
+                       ).SingleOrDefault();
+                    permission = permission || threadWithUser == senderId;
 
                     if (permission)
                     {
@@ -139,7 +140,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
                 case JsonTypes.MESSAGES_THREAD:
                     JMessageThread messageThread = (JMessageThread)decoded;
-                    permission = permission || messageThread.WithUserId == senderId;
+                    permission = permission || (messageThread.WithUserId == senderId && !messageThread.DoOnlyDelete);
                     if (permission)
                     {
                         var toDelete = context.MessagesThread
@@ -152,19 +153,22 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             //Piggy bug fix.
                         };
 
-                        context.MessagesThread.Add(new MessagesThread
-                        {
-                            Name = messageThread.Name,
-                            PublicId = messageThread.PublicId,
-                            Onlive = messageThread.Onlive,
-                            Archived = messageThread.Archived,
-                            WithUser = messageThread.WithUserId,
-                            BlobMessagesId = messageId
-                        });
+                        if(!messageThread.DoOnlyDelete)
+                        { 
+                            context.MessagesThread.Add(new MessagesThread
+                            {
+                                Name = messageThread.Name,
+                                PublicId = messageThread.PublicId,
+                                Onlive = messageThread.Onlive,
+                                Archived = messageThread.Archived,
+                                WithUser = messageThread.WithUserId,
+                                BlobMessagesId = messageId
+                            });
+                        }
                     }
                     else
                     {
-                        throw new Exception($"User with id {senderId} doesn't have permission to create/edit this message thread.");
+                        throw new Exception($"User with id {senderId} doesn't have permission to create/edit/delete this message thread.");
                     }
                     break;
 

@@ -4,6 +4,7 @@ using System.Text;
 using Premy.Chatovatko.Client.Libs.Database.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Premy.Chatovatko.Client.Libs.Database.JsonModels;
 
 namespace Premy.Chatovatko.Client.Libs.Database.DeleteModels
 {
@@ -28,9 +29,17 @@ namespace Premy.Chatovatko.Client.Libs.Database.DeleteModels
             }
 
             context.MessagesThread.Remove(thread);
+            var jthread = new JMessageThread()
+            {
+                PublicId = thread.PublicId,
+                DoOnlyDelete = true
+            };
+
+            PushOperations.SendIJType(context, jthread, myUserId, myUserId);
+
             //PushOperations.DeleteBlobMessage(context, thread.GetBlobId(), myUserId);
             //Piggy bug fix
-            throw new NotSupportedException("Not supported, because developer of this app is absolutly useless.");
+            //throw new NotSupportedException("Not supported, because developer of this app is absolutly useless.");
         }
     }
 }
