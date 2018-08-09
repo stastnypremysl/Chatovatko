@@ -74,8 +74,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                         if(toDelete != null)
                         {
                             context.ContactsDetail.Remove(toDelete);
-                            //PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
-                            //Piggy bug fix.
+                            PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
                         }
 
                         context.ContactsDetail.Add(new ContactsDetail()
@@ -149,7 +148,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
                         if(toDelete != null)
                         { 
                             context.Remove(toDelete);
-                            PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
+                            //PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
+                            //Piggy bug fix.
                         };
 
                         context.MessagesThread.Add(new MessagesThread

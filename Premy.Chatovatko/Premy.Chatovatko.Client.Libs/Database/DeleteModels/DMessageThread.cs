@@ -30,6 +30,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.DeleteModels
             context.MessagesThread.Remove(thread);
             //PushOperations.DeleteBlobMessage(context, thread.GetBlobId(), myUserId);
             //Piggy bug fix
+            throw new NotSupportedException("Not supported, because developer of this app is absolutly useless.");
         }
     }
 }
