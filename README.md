@@ -34,7 +34,7 @@ Than make a config file. Here is an example for inspiration:
 
     ConnectionString=Server=localhost; database=chatovatko;UID=MyUserName;password=SuperSecretPassword
     CertAddress=/mnt/c/keys/private.p12
-    ServerName=Super server name
+    ServerName=Unforgattable server name
 
 When is everything ready, run server with this command
 
@@ -68,14 +68,25 @@ If anything goes wrong, you can always relogin. Run
 
 and continue as first time.
 
+#### Casual commands
+To exit application, just enter
+
+    exit
+or
+
+    quit
+If you want to add comments to your script, please respect this convention
+    # <comment>
+    -- <comment>
+
 #### Online only commands
 To open new connection to server, use
 
-     connect
+    connect
  
  If a connection crashed, or you just wanted to disconnect, run
  
-     disconnect
+    disconnect
      
 ##### Pulling and pushing
 Almost all changes are kept in local database. It is necessary to push them to server to finilize them. Analogily the same, you need to pull if you want do download all changes, which are on server already. Two magical selfdescribing keywords:
@@ -99,4 +110,15 @@ If you change your mind and want to untrust some user, just enter to console
 Please, remember the already loaded messages will not be loaded again after database deletion.
 
 #### Offline commands
+These commands will be always execute offline and it is necessary to pull/push to keep everything up-to-date.
 
+##### Lists
+To list all users, please enter
+
+    ls users
+     
+To list all of your threads, please enter
+
+    ls threads
+   
+Each thread has its own private id (`id`) and its public id (`public_id`). Private id is unique only on the client, but public id is unique globally.
