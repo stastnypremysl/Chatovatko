@@ -153,3 +153,10 @@ A thread can be renamed by
 The rule for `<name>` are same as you were creating new thread.
 
 ##### Delete
+To delete message thread, please enter
+
+    delete thread <private_thread_id>
+     
+Messages can be deleted by
+
+    delete message <message_id> 
