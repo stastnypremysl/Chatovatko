@@ -75,7 +75,7 @@ To exit application, just enter
 or
 
     quit
-If you want to add comments to your script, please respect this convention
+If you want add comments to your script, please respect this convention
 
     # <comment>
     -- <comment>
