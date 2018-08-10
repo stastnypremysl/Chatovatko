@@ -26,7 +26,7 @@ To clone repository, enter to your console:
 For deep technical details, please, visit wiki.
 
 ### Installation of server
-Install MySql14 and run script [`Chatovatko/sql/serverBuildScripts/build.sql`](https://github.com/stastnypremysl/Chatovatko/blob/master/sql/serverBuildScripts/build.sql). It is necessary to have `.NET Core 2.1` installed. This [manual](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) seems to be useful.
+Install `MySql 14` and run script [`Chatovatko/sql/serverBuildScripts/build.sql`](https://github.com/stastnypremysl/Chatovatko/blob/master/sql/serverBuildScripts/build.sql). It is necessary to have `.NET Core 2.1` installed. This [manual](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) seems to be useful.
 
 You will need **p12 certificate**. You can run this script to generate it: [`Chatovatko/scripts/genarateCert.sh`](https://github.com/stastnypremysl/Chatovatko/blob/master/scripts/genarateCert.sh).
 
@@ -40,6 +40,8 @@ When is everything ready, run server with this command
 
     cd /pathToRepository/Chatovatko/Premy.Chatovatko/Premy.Chatovatko.Server
     dotnet run -c Release -- /otherPath/configFile.txt
+
+Server uses **TCP** in ports **8470-8472**.
     
 ### Console client
 #### Installation
@@ -49,3 +51,21 @@ As it was in server installation, install [`.NET Core 2.1`](https://www.microsof
     dotnet run -c Release
 
 #### First run
+There are two inicialization commands:
+
+    init new <server_address>
+
+This will generate new p12 certificate and you will be asked to enter path to save it. **It is necessary to keep it SAFE!** Than you will be asked to enter your new unique username.
+
+    init login <server_address>
+    
+If you have your onw p12 certificate, use this. If the certificate haven't been paired with this server already, it will be used username you enter. Otherwise entered username will be ignored.
+
+#### Reset/Relogin
+If anything goes wrong, you can always relogin. Run
+
+    delete database
+
+and continue as this was a first run of Chatovatko.
+
+#### Lists
