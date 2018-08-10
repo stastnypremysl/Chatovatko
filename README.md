@@ -23,10 +23,10 @@ To clone repository, enter to your console:
     
     git clone https://github.com/stastnypremysl/Chatovatko/
 
-### Server
-Install MySql14 and run script [`Chatovatko/sql/serverBuildScripts/build.sql`](https://github.com/stastnypremysl/Chatovatko/blob/master/sql/serverBuildScripts/build.sql). You will need **p12 certificate**. You can run this script for its generation: [`https://github.com/stastnypremysl/Chatovatko/blob/master/scripts/genarateCert.sh`'].
+### Installation of server
+Install MySql14 and run script [`Chatovatko/sql/serverBuildScripts/build.sql`](https://github.com/stastnypremysl/Chatovatko/blob/master/sql/serverBuildScripts/build.sql). You will need **p12 certificate**. You can run this script to generate it: [`Chatovatko/scripts/genarateCert.sh`](https://github.com/stastnypremysl/Chatovatko/blob/master/scripts/genarateCert.sh).
 
-Than make config file. Here is an example for inspiration:
+Than make a config file. Here is an example for inspiration:
 
     ConnectionString=Server=localhost; database=chatovatko;UID=MyUserName;password=SuperSecretPassword
     CertAddress=/mnt/c/keys/private.p12
