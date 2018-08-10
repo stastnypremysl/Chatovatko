@@ -68,4 +68,22 @@ If anything goes wrong, you can always relogin. Run
 
 and continue as this was a first run of Chatovatko.
 
-#### Lists
+#### Online only commands
+To open new connection to server, use
+
+     connect
+ 
+ If a connection crashed, or you just wanted to disconnect, run
+ 
+     disconnect
+     
+##### Pulling and pushing
+Almost all changes are kept in local database. It is necessary to push them to server to finilize them. Analogily the same, you need to pull if you want do download all changes, which are on server already. Two magical selfdescribing keywords:
+
+    push
+    pull
+    
+##### Trutification
+
+#### Offline commands
+
