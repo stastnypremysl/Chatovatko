@@ -66,7 +66,7 @@ If anything goes wrong, you can always relogin. Run
 
     delete database
 
-and continue as this was a first run of Chatovatko.
+and continue as first time.
 
 #### Online only commands
 To open new connection to server, use
