@@ -22,9 +22,11 @@ There is no offical release currently, but you can download git repository and c
 To clone repository, enter to your console:
     
     git clone https://github.com/stastnypremysl/Chatovatko/
+    
+For deep technical details, please, visit wiki.
 
 ### Installation of server
-Install MySql14 and run script [`Chatovatko/sql/serverBuildScripts/build.sql`](https://github.com/stastnypremysl/Chatovatko/blob/master/sql/serverBuildScripts/build.sql). It is necessary to have `.NET Core 2.1`. The [manual](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) seems to be useful.
+Install MySql14 and run script [`Chatovatko/sql/serverBuildScripts/build.sql`](https://github.com/stastnypremysl/Chatovatko/blob/master/sql/serverBuildScripts/build.sql). It is necessary to have `.NET Core 2.1` installed. This [manual](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) seems to be useful.
 
 You will need **p12 certificate**. You can run this script to generate it: [`Chatovatko/scripts/genarateCert.sh`](https://github.com/stastnypremysl/Chatovatko/blob/master/scripts/genarateCert.sh).
 
@@ -33,3 +35,17 @@ Than make a config file. Here is an example for inspiration:
     ConnectionString=Server=localhost; database=chatovatko;UID=MyUserName;password=SuperSecretPassword
     CertAddress=/mnt/c/keys/private.p12
     ServerName=Super server name
+
+When is everything ready, run server with this command
+
+    cd /pathToRepository/Chatovatko/Premy.Chatovatko/Premy.Chatovatko.Server
+    dotnet run -c Release -- /otherPath/configFile.txt
+    
+### Console client
+#### Installation
+As it was in server installation, install [`.NET Core 2.1`](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) if you haven't done it already. There are no more prerequsities. Just run
+
+    cd /pathToRepository/Chatovatko/Premy.Chatovatko/Premy.Chatovatko.Client.Console
+    dotnet run -c Release
+
+#### First run
