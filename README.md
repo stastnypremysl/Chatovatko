@@ -76,6 +76,7 @@ or
 
     quit
 If you want to add comments to your script, please respect this convention
+
     # <comment>
     -- <comment>
 
