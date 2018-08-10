@@ -84,6 +84,19 @@ Almost all changes are kept in local database. It is necessary to push them to s
     pull
     
 ##### Trutification
+Before you can send messages to an user, you must trustify him. To do so, enter
+
+    trust <user_id>
+
+This will send server information, you trust this user and generate confirmatory message to user's chain. If you've done this first time, it will also create new AES key and send it encryped to server. The key is for encrypting your messages for the user and for his ability of reading it.
+
+The user must trustify you to receive your messages.
+
+If you change your mind and want to untrust some user, just enter to console
+
+    untrust <user_id>
+    
+Please, remember the already loaded messages will not be loaded again after database deletion.
 
 #### Offline commands
 
