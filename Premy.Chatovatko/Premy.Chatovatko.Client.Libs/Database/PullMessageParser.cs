@@ -155,6 +155,10 @@ namespace Premy.Chatovatko.Client.Libs.Database
                         { 
                             context.Remove(old);
                         }
+                        else if (messageThread.DoOnlyDelete)
+                        {
+
+                        }
                         else if(old != null)
                         {
                             old.Name = messageThread.Name;
