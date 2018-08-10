@@ -12,8 +12,8 @@ Chatovatko is currently tested under Ubuntu 18.04 and Windows 10.
 * **AES256** used for encrypting messages
 * **MySql** is required as server-side database.
 * Sqlite3 is used as client side database
-* Project is developed using **Visual Studio 2017** and **MySql Workbench 8.0**
-* Also, project also benefits from Entity Framework Core, Newtonsoft.Json and Pomelo.EntityFrameworkCore.MySql
+* The project is developed using **Visual Studio 2017** and **MySql Workbench 8.0**
+* Also, the project also benefits from Entity Framework Core, Newtonsoft.Json and Pomelo.EntityFrameworkCore.MySql
 * SHA256 and SHA1 used for hashing
 * Only little endian is supported
 
@@ -30,13 +30,13 @@ Install `MySql 14` and run script [`Chatovatko/sql/serverBuildScripts/build.sql`
 
 You will need **p12 certificate**. You can run this script to generate it: [`Chatovatko/scripts/genarateCert.sh`](https://github.com/stastnypremysl/Chatovatko/blob/master/scripts/genarateCert.sh).
 
-Than make a config file. Here is an example for inspiration:
+Then make a config file. Here is an example for inspiration:
 
     ConnectionString=Server=localhost; database=chatovatko;UID=MyUserName;password=SuperSecretPassword
     CertAddress=/mnt/c/keys/private.p12
     ServerName=Unforgattable server name
 
-When is everything ready, run server with this command
+When's everything ready, run server with this command
 
     cd /pathToRepository/Chatovatko/Premy.Chatovatko/Premy.Chatovatko.Server
     dotnet run -c Release -- /otherPath/configFile.txt
@@ -55,11 +55,11 @@ There are two inicialization commands:
 
     init new <server_address>
 
-This will generate new p12 certificate and you will be asked to enter path to save it. **It is necessary to keep it SAFE!** Than you will be asked to enter your new unique username.
+This one will generate new p12 certificate and you will be asked to enter path to save it. **It is necessary to keep it SAFE!** After that you will be asked to enter your new unique username.
 
     init login <server_address>
     
-If you have your onw p12 certificate, use this. If the certificate haven't been paired with this server already, it will be used username you enter. Otherwise entered username will be ignored.
+If you have your onw p12 certificate, use this one. If the certificate haven't been paired with this server already, the entered username will be used for your registration. Otherwise the username will be ignored.
 
 #### Reset/Relogin
 If anything goes wrong, you can always relogin. Run
@@ -85,7 +85,7 @@ To open new connection to server, use
 
     connect
  
- If a connection crashed, or you just wanted to disconnect, run
+If a connection crashed, or you just wanted to disconnect, run
  
     disconnect
      
@@ -102,16 +102,16 @@ Before you can send messages to an user, you must trustify him. To do so, enter
 
 This will send server information, you trust this user and generate confirmatory message to user's chain. If you've done this first time, it will also create new AES key and send it encryped to server. The key is for encrypting your messages for the user and for his ability of reading it.
 
-The user must trustify you to receive your messages.
+The user must have trustifed you to receive your messages.
 
 If you change your mind and want to untrust some user, just enter to console
 
     untrust <user_id>
     
-Please, remember the already loaded messages will not be loaded again after database deletion.
+Please, remember the already loaded messages from untrusted users will not be loaded again after database deletion.
 
 #### Offline commands
-These commands will be always execute offline and it is necessary to pull/push to keep everything up-to-date.
+These commands will be always executed offline and it is necessary to pull/push to keep everything up-to-date.
 
 ##### Lists
 To list all users, please enter
