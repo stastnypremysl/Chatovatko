@@ -59,7 +59,7 @@ This one will generate new p12 certificate and you will be asked to enter path t
 
     init login <server_address>
     
-If you have your onw p12 certificate, use this one. If the certificate haven't been paired with this server already, the entered username will be used for your registration. Otherwise the username will be ignored.
+If you have your own p12 certificate, use this one. If the certificate haven't been paired with this server already, the entered username will be used for your registration. Otherwise the username will be ignored.
 
 #### Reset/Relogin
 If anything goes wrong, you can always relogin. Run
