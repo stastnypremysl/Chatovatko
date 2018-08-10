@@ -90,7 +90,7 @@ To open new connection to server, use
     disconnect
      
 ##### Pulling and pushing
-Almost all changes are kept in local database. It is necessary to push them to server to finilize them. Analogily the same, you need to pull if you want do download all changes, which are on server already. Two magical selfdescribing keywords:
+Almost all changes are kept in local database. It is necessary to push them on server to finilize them. Analogily the same, you need pull if you want download all changes, which are on server already. Two magical selfdescribing keywords:
 
     push
     pull
@@ -123,3 +123,33 @@ To list all of your threads, please enter
     ls threads
    
 Each thread has its own private id (`id`) and its public id (`public_id`). Private id is unique only on the client, but public id is unique globally.
+
+Thread writeout can be invoced by
+
+    ls messages <private_thread_id>
+    
+##### Posts
+A new thread can be created by
+
+    post thread <user_id> <name>
+
+Please, keep in mind, a name can't contain double space.
+
+To send new message, please enter
+
+    post message <private_thread_id> <eof>
+    ......................
+    ....message content...
+    ......................
+    <eof>
+    
+Remember that `<eof>` cannot contain any space.
+
+##### Rename
+A thread can be renamed by
+
+    rename thread <private_thread_id> <name>
+    
+The rule for `<name>` are same as you were creating new thread.
+
+##### Delete
