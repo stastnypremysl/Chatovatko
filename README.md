@@ -1,8 +1,15 @@
 # Chatovatko
-A chatting C# application with end-to-end encryption.
+A chatting C# application with end-to-end encryption. The main purpuse of application is to deliver solution for secure chatting, where you can be sure your messages will remain private even if server will be misused.
 The application is now under development. The works on front end hasn't started yet.
 
 Chatovatko is currently tested under Ubuntu 18.04 and Windows 10.
+
+## Function overview
+* End-to-end encryption
+* Backuping conversations to server
+* On live chatting (chat, where messages are not sended, but chat textbox is cloned to recepient)
+* Multiplatform client app (Windows, Android, iOS)
+* Multiplatform server app (Windows, Linux)
 
 ## Important technical details
 * **.NET Core 2.1** used for server-side service and for command-based console application (for testing porpuse)
