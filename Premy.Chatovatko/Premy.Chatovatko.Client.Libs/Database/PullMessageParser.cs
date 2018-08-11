@@ -69,23 +69,27 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
                     if (permission)
                     {
-                        var toDelete = context.ContactsDetail
+                        var toUpdate = context.ContactsDetail
                             .Where(u => u.ContactId == detail.ContactId)
                             .SingleOrDefault();
-                        if(toDelete != null)
+                        if(toUpdate != null)
                         {
-                            context.ContactsDetail.Remove(toDelete);
-                            PushOperations.DeleteBlobMessage(context, toDelete.BlobMessagesId, myUserId);
+                            toUpdate.NickName = detail.NickName;
+                            toUpdate.BlobMessagesId = messageId;
+                            toUpdate.AlarmPermission = detail.AlarmPermission ? 1 : 0;
+                            toUpdate.ChangeContactsPermission = detail.ChangeContactPermission;
                         }
-                        context.SaveChanges();
-
-                        context.ContactsDetail.Add(new ContactsDetail()
-                        {
-                            AlarmPermission = detail.ChangeContactPermission,
-                            NickName = detail.NickName,
-                            BlobMessagesId = messageId,
-                            ContactId = detail.ContactId
+                        else
+                        { 
+                            context.ContactsDetail.Add(new ContactsDetail()
+                            {
+                                AlarmPermission = detail.ChangeContactPermission,
+                                NickName = detail.NickName,
+                                BlobMessagesId = messageId,
+                                ContactId = detail.ContactId,
+                                ChangeContactsPermission = detail.ChangeContactPermission
                         });
+                        }
                         context.SaveChanges();
                     }
                     else
@@ -110,32 +114,39 @@ namespace Premy.Chatovatko.Client.Libs.Database
                                        select threads.Onlive)
                             .SingleOrDefault() == 1;
 
+                        bool updated = false;
                         if (onlive)
                         {
-                            var toDeleteInfo = (from bmessages in context.BlobMessages
+                            var toUpdateInfo = (from bmessages in context.BlobMessages
                                             join messages in context.Messages on bmessages.Id equals messages.BlobMessagesId
                                             where bmessages.SenderId == senderId && messages.IdMessagesThread == jmessage.MessageThreadId
                                             select new { messages.BlobMessagesId, messages.Id })
                                             .SingleOrDefault();
-                            if(toDeleteInfo != null)
+                            if(toUpdateInfo != null)
                             {
-                                var toDelete = context.Messages
-                                    .Where(m => m.Id == toDeleteInfo.Id)
+                                var toUpdate = context.Messages
+                                    .Where(m => m.Id == toUpdateInfo.Id)
                                     .SingleOrDefault();
-                                context.Messages.Remove(toDelete);
-                                PushOperations.DeleteBlobMessage(context, toDeleteInfo.BlobMessagesId, myUserId);
+                                updated = true;
+
+                                toUpdate.Text = jmessage.Text;
+                                toUpdate.Date = jmessage.Time.GetChatovatkoString();
+                                toUpdate.BlobMessagesId = messageId;
+
+                                context.SaveChanges();
                             }
                         }
-                        context.SaveChanges();
 
-                        context.Messages.Add(new Messages()
-                        {
-                            Date = jmessage.Time.GetChatovatkoString(),
-                            Text = jmessage.Text,
-                            IdMessagesThread = jmessage.MessageThreadId,
-                            BlobMessagesId = messageId
-                        });
-                        context.SaveChanges();
+                        if (!updated) { 
+                            context.Messages.Add(new Messages()
+                            {
+                                Date = jmessage.Time.GetChatovatkoString(),
+                                Text = jmessage.Text,
+                                IdMessagesThread = jmessage.MessageThreadId,
+                                BlobMessagesId = messageId
+                            });
+                            context.SaveChanges();
+                        }
                     }
                     else
                     {
