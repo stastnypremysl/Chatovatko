@@ -16,6 +16,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
         public string ServerName => Settings.ServerName;
         public string ServerAddress => Settings.ServerAddress;
         public string ServerPublicCertificate => Settings.ServerPublicCertificate;
+        public long ClientId => Settings.ClientId;
         public IClientDatabaseConfig Config { get; }
 
         public SettingsCapsula(Settings settings, IClientDatabaseConfig config)

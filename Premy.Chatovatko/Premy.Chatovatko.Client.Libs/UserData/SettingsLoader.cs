@@ -37,7 +37,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
             }
         }
 
-        public void Create(X509Certificate2 clientCert, int userId, String userName, String serverName, String serverAddress, String serverPublicKey)
+        public void Create(X509Certificate2 clientCert, int userId, String userName, String serverName, String serverAddress, String serverPublicKey, long clientId)
         {
             if (Exists())
             {
@@ -50,7 +50,9 @@ namespace Premy.Chatovatko.Client.Libs.UserData
                 ServerAddress = serverAddress,
                 ServerName = serverName,
                 ServerPublicCertificate = serverPublicKey,
-                UserName = userName
+                UserName = userName,
+                ClientId = clientId,
+                LastUniqueId = clientId << 26
             };
 
             using (Context context = new Context(config))

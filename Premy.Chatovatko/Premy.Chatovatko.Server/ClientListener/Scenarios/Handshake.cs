@@ -52,6 +52,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
 
             Users user;
             String message;
+            Clients client;
             bool newUser = false;
             using (Context context = new Context(config))
             {
@@ -91,6 +92,25 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                     message = "User exists.";
                     log("User exists.");
                 }
+
+                client = new Clients()
+                {
+                    UserId = user.Id
+                };
+
+                if (clientHandshake.ClientId == null)
+                {     
+                    context.Add(client);
+                    context.SaveChanges();
+
+                    log($"Added client with Id {client.Id}.");
+                }
+                else
+                {
+                    log($"Client with Id {client.Id} has logged in.");
+                }
+
+
             }
 
             ServerHandshake toSend = new ServerHandshake()
@@ -99,7 +119,8 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 NewUser = newUser,
                 Succeeded = true,
                 UserId = user.Id,
-                UserName = user.UserName
+                UserName = user.UserName,
+                ClientId = client.Id
             };
             TextEncoder.SendJson(stream, toSend);
 

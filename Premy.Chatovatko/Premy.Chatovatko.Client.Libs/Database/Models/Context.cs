@@ -313,7 +313,18 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.UserPublicId)
+                    .IsRequired()
                     .HasColumnName("user_public_id")
+                    .HasColumnType("INT");
+
+                entity.Property(e => e.LastUniqueId)
+                    .IsRequired()
+                    .HasColumnName("last_unique_id")
+                    .HasColumnType("BIGINT");
+
+                entity.Property(e => e.ClientId)
+                    .IsRequired()
+                    .HasColumnName("client_id")
                     .HasColumnType("INT");
             });
 

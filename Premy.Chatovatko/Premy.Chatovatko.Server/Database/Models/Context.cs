@@ -21,6 +21,7 @@ namespace Premy.Chatovatko.Server.Database.Models
         public virtual DbSet<Logs> Logs { get; set; }
         public virtual DbSet<UsersKeys> UsersKeys { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Clients> Clients { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -73,6 +74,28 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .WithMany(p => p.BlobMessagesSender)
                     .HasForeignKey(d => d.SenderId)
                     .HasConstraintName("sender_id_foreign_key");
+            });
+
+            modelBuilder.Entity<Clients>(entity =>
+            {
+                entity.ToTable("clients");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("fk_clients_users1_idx");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("int(11)");
+
+               entity.HasOne(d => d.User)
+                    .WithMany(p => p.Clients)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_clients_users1");
             });
 
             modelBuilder.Entity<Logs>(entity =>

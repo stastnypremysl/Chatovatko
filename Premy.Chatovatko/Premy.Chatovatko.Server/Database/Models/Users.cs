@@ -22,5 +22,6 @@ namespace Premy.Chatovatko.Server.Database.Models
         public ICollection<BlobMessages> BlobMessagesSender { get; set; }
         public ICollection<UsersKeys> UsersKeysRecepient { get; set; }
         public ICollection<UsersKeys> UsersKeysSender { get; set; }
+        public ICollection<Clients> Clients { get; set; }
     }
 }

@@ -39,6 +39,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public int UserId { get; private set; }
         public string UserName { get; private set; }
+        public int? ClientId { get; private set; }
         public X509Certificate2 ClientCertificate { get; }
 
         /// <summary>
@@ -58,6 +59,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             this.ClientCertificate = clientCertificate;
             this.UserName = userName;
             this.config = config;
+            this.ClientId = null;
         }
 
         /// <summary>
@@ -74,6 +76,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             this.ClientCertificate = settings.ClientCertificate;
             this.UserName = settings.UserName;
             this.config = settings.Config;
+            this.ClientId = (int)settings.ClientId;
         }
 
         public bool IsConnected()
@@ -96,12 +99,13 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
 
             logger.Log(this, "Handshake started.");
-            var handshake = Handshake.Login(logger, stream, ClientCertificate, UserName);
+            var handshake = Handshake.Login(logger, stream, ClientCertificate, UserName, ClientId);
             logger.Log(this, "Handshake successeded.");
 
             UserName = handshake.UserName;
             UserId = handshake.UserId;
-            logger.Log(this, $"User {UserName} has id {UserId}.");
+            ClientId = handshake.ClientId;
+            logger.Log(this, $"User {UserName} has id {UserId}. Client has id {ClientId}.");
 
             InitSync();
             isConnected = true;

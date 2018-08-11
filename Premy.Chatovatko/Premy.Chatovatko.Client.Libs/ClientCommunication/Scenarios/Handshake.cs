@@ -17,16 +17,18 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
     {
         public string UserName{get;set; }
         public int UserId { get; set; }
+        public int ClientId { get; set; }
     }
 
     public class Handshake
     {
-        public static HandshakeReturnCapsula Login(Logger logger, Stream stream, X509Certificate2 cert, string userName = null)
+        public static HandshakeReturnCapsula Login(Logger logger, Stream stream, X509Certificate2 cert, string userName = null, int? clientId = null)
         {
             ClientHandshake clientHandshake = new ClientHandshake()
             {
                 PemCertificate = X509Certificate2Utils.ExportToPem(cert),
-                UserName = userName
+                UserName = userName,
+                ClientId = clientId
             };
 
             if(userName != null && userName.Length > DataConstants.USER_NAME_MAX_LENGHT)
@@ -51,7 +53,8 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
             return new HandshakeReturnCapsula()
             {
                 UserId = serverHandshake.UserId,
-                UserName = serverHandshake.UserName
+                UserName = serverHandshake.UserName,
+                ClientId = serverHandshake.ClientId
             };
         }
 
