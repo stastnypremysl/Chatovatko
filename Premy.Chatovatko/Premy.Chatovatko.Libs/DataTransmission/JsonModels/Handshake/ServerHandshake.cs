@@ -11,5 +11,6 @@ namespace Premy.Chatovatko.Libs.DataTransmission.JsonModels.Handshake
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string Errors { get; set; }
+        public int ClientId { get; set; }
     }
 }

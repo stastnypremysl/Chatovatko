@@ -12,5 +12,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public string ServerName { get; set; }
         public string ServerAddress { get; set; }
         public string ServerPublicCertificate { get; set; }
+        public long LastUniqueId { get; set; }
+        public long ClientId { get; set; }
     }
 }

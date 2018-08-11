@@ -5,7 +5,9 @@ CREATE TABLE `main`.`settings` (
   `user_name` VARCHAR NOT NULL,
   `server_name` VARCHAR NOT NULL,
   `server_address` VARCHAR NOT NULL,
-  `server_public_certificate` VARCHAR NOT NULL);
+  `server_public_certificate` VARCHAR NOT NULL,
+  `client_id` INT NOT NULL,
+  `last_unique_id` BIGINT NOT NULL);
 
   ---------------------------------------
   CREATE TABLE IF NOT EXISTS `main`.`contacts` (

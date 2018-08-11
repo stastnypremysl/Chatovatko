@@ -64,4 +64,16 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`users_keys` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+/*---------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `chatovatko`.`clients` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_clients_users1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_clients_users1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `chatovatko`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 COMMIT;

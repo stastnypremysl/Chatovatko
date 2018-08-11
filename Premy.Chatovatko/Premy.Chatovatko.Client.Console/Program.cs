@@ -142,7 +142,7 @@ namespace Premy.Chatovatko.Client
                                     connection.Connect();
 
                                     Log("Saving settings.");
-                                    settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicKey);
+                                    settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicKey, (int)connection.ClientId);
                                     settings = settingsLoader.GetSettingsCapsula();
 
                                     Log("Self-trustification begin.");
