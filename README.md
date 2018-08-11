@@ -6,7 +6,7 @@ Chatovatko is currently tested under Ubuntu 18.04 and Windows 10.
 
 ## Function overview
 * End-to-end encryption
-* Backuping conversations to server
+* Backuping encrypted conversations to server
 * On live chatting (chat, where messages are not sended, but chat textbox is cloned to recepient)
 * Multiplatform client app (Windows, Android, iOS)
 * Multiplatform server app (Windows, Linux)
