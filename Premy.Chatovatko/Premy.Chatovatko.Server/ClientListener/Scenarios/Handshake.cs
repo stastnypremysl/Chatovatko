@@ -107,6 +107,13 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 else
                 {
                     client.Id = (int)clientHandshake.ClientId;
+                    if(context.Clients.Where(u => u.Id == client.Id).Single().UserId != user.Id)
+                    {
+                        errorHandshake.Errors = "This client id isn't owned by this user.";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    
                     log($"Client with Id {client.Id} has logged in.");
                 }
 
