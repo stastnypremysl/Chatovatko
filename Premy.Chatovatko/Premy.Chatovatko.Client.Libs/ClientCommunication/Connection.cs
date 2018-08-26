@@ -107,33 +107,13 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             ClientId = handshake.ClientId;
             logger.Log(this, $"User {UserName} has id {UserId}. Client has id {ClientId}.");
 
-            InitSync();
             isConnected = true;
 
             Pull();
             Push();
 
         }
-
-        private void InitSync()
-        {
-            logger.Log(this, "Initializating synchronization");
-            InitClientSync toSend;
-            using (Context context = new Context(config))
-            {
-                toSend = new InitClientSync()
-                {
-                    UserIds = context.Contacts.Select(c => c.PublicId).ToList(),
-                    AesKeysUserIds = context.Contacts.Where(c => c.ReceiveAesKey != null).Select(c => c.PublicId).ToList(),
-                    PublicBlobMessagesIds = context.BlobMessages.Where(bm => bm.PublicId != null).Select(bm => bm.PublicId).ToList()
-                };
-
-            }
-            TextEncoder.SendJson(stream, toSend);
-
-            logger.Log(this, "Initialization of synchronization done");
-        }
-
+        
         public void Disconnect()
         {
             Log("Sending END_CONNECTION command.");

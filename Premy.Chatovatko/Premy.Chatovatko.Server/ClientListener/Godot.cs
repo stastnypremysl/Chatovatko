@@ -34,22 +34,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private readonly ServerConfig config;
         private UserCapsula user;
-
-        /// <summary>
-        /// Already uploaded users. (independetly on aes keys)
-        /// </summary>
-        private IList<long> userIdsUploaded;
-
-        /// <summary>
-        /// Already uploaded blob messages.
-        /// </summary>
-        private IList<long?> messagesIdsUploaded;
-
-        /// <summary>
-        /// Already uploaded aes keys.
-        /// </summary>
-        private IList<long> aesKesUserIdsUploaded;
-
+        
 
         public Godot(ulong id, Logger logger, ServerConfig config, X509Certificate2 serverCert, GodotCounter godotCounter)
         {
@@ -79,7 +64,6 @@ namespace Premy.Chatovatko.Server.ClientListener
                 logger.Log(this, "SSL authentication completed. Starting Handshake.");
                 this.user = Handshake.Run(stream, Log, config);
 
-                InitSync();
 
                 bool running = true;
                 while (running)
@@ -141,18 +125,6 @@ namespace Premy.Chatovatko.Server.ClientListener
             }
         }
 
-        private void InitSync()
-        {
-            Log("Initializating synchronization.");
-            Log("Downloading already uploaded users and messages.");
-            InitClientSync initClientSync = TextEncoder.ReadInitClientSync(stream);
-
-            userIdsUploaded = initClientSync.UserIds;
-            messagesIdsUploaded = initClientSync.PublicBlobMessagesIds;
-            aesKesUserIdsUploaded = initClientSync.AesKeysUserIds;
-
-            Log($"Downloading done.\nUserIds: {userIdsUploaded.Count}\nMessagesIds: {messagesIdsUploaded.Count}\nAESKeys: {aesKesUserIdsUploaded.Count}");
-        }
 
         private void CreateOnliveTunnel()
         {
