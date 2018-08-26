@@ -18,7 +18,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
         public Contacts Sender { get; set; }
         public Alarms Alarms { get; set; }
-        public ContactsDetail ContactsDetail { get; set; }
+        public Contacts Contacts { get; set; }
         public Messages Messages { get; set; }
         public MessagesThread MessagesThread { get; set; }
         public ICollection<ToSendMessages> ToSendMessages { get; set; }
