@@ -307,6 +307,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
                 if (contact.SendAesKey == null)
                 {
+                    TextEncoder.SendInt(stream, 1);
                     AESPassword password = AESPassword.GenerateAESPassword();
                     JAESKey key = new JAESKey(contactId, password);
                     PushOperations.SendIJType(context, key, UserId, UserId);
@@ -319,6 +320,10 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(password.Password, cert));
 
                     context.SaveChanges();
+                }
+                else
+                {
+                    TextEncoder.SendInt(stream, 0);
                 }
             }
             Push();

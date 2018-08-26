@@ -95,6 +95,10 @@ namespace Premy.Chatovatko.Server.ClientListener
                             Pull();
                             break;
 
+                        case ConnectionCommand.SEARCH_CONTACT:
+                            Log("SEARCH_CONTACT command received.");
+                            SearchContact();
+                            break;
 
                         case ConnectionCommand.END_CONNECTION:
                             Log("END_CONNECTION command received.");
@@ -119,6 +123,11 @@ namespace Premy.Chatovatko.Server.ClientListener
                 godotCounter.IncreaseDestroyed();
                 logger.Log(this, "Godot has died.");
             }
+        }
+
+        private void SearchContact()
+        {
+
         }
 
         
@@ -315,21 +324,31 @@ namespace Premy.Chatovatko.Server.ClientListener
                     .Where(u => u.RecepientId == recepientId)
                     .Where(u => u.SenderId == user.UserId)
                     .SingleOrDefault();
-                if(key != null)
+                if(TextEncoder.ReadInt(stream) == 0)
                 {
                     key.Trusted = true;
                 }
                 else
                 {
                     Log("Receiving new key.");
-                    key = new UsersKeys()
+                    var aesKey = BinaryEncoder.ReceiveBytes(stream);
+                    if (key != null)
                     {
-                        RecepientId = recepientId,
-                        SenderId = user.UserId,
-                        EncryptedAesKey = BinaryEncoder.ReceiveBytes(stream),
-                        Trusted = true
-                    };
-                    context.Add(key);
+                        Log("Updating!");
+                        key.AesKey = aesKey;
+                        key.Trusted = true;
+                    }
+                    else
+                    {
+                        key = new UsersKeys()
+                        {
+                            RecepientId = recepientId,
+                            SenderId = user.UserId,
+                            AesKey = aesKey,
+                            Trusted = true
+                        };
+                        context.Add(key);
+                    }
                 }
                 context.SaveChanges();
             }
