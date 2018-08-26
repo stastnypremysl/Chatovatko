@@ -42,7 +42,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             byte[] received = BinaryEncoder.ReceiveBytes(stream);
             if (!randomBytes.SequenceEqual(received))
             {
-                log("Sending error to client.");
+                log("Client's certificate verification failed.");
                 errorHandshake.Errors = "Client's certificate verification failed.";
                 TextEncoder.SendJson(stream, errorHandshake);
                 throw new Exception(errorHandshake.Errors);
@@ -56,9 +56,8 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             bool newUser = false;
             using (Context context = new Context(config))
             {
-                SHA1 sha = new SHA1CryptoServiceProvider();
-                byte[] hash = sha.ComputeHash(clientCertificate.RawData);
-                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha1.SequenceEqual(hash));
+                byte[] hash = SHA256.Create().ComputeHash(clientCertificate.RawData);
+                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha2.SequenceEqual(hash));
 
                 if (user == null){
                     log("User doesn't exist yet. I'll try to create him.");
@@ -78,7 +77,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                     user = new Users()
                     {
                         PublicCertificate = clientHandshake.PemCertificate,
-                        PublicCertificateSha1 = hash,
+                        PublicCertificateSha2 = hash,
                         UserName = clientHandshake.UserName
                     };
 
@@ -107,6 +106,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 }
                 else
                 {
+                    client.Id = (int)clientHandshake.ClientId;
                     log($"Client with Id {client.Id} has logged in.");
                 }
 

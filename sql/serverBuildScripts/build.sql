@@ -76,4 +76,24 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`clients` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+/*--------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `chatovatko`.`clients_messages_downloaded` (
+  `id` INT NOT NULL,
+  `clients_id` INT NOT NULL,
+  `blob_messages_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `clients_id`, `blob_messages_id`),
+  INDEX `fk_clients_messages_downloaded_clients1_idx` (`clients_id` ASC),
+  INDEX `fk_clients_messages_downloaded_blob_messages1_idx` (`blob_messages_id` ASC),
+  INDEX `client_messages_index` (`clients_id` ASC, `blob_messages_id` ASC),
+  CONSTRAINT `fk_clients_messages_downloaded_clients1`
+    FOREIGN KEY (`clients_id`)
+    REFERENCES `chatovatko`.`clients` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_clients_messages_downloaded_blob_messages1`
+    FOREIGN KEY (`blob_messages_id`)
+    REFERENCES `chatovatko`.`blob_messages` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
 COMMIT;

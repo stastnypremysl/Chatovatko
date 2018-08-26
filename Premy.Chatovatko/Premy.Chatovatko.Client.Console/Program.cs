@@ -620,8 +620,8 @@ namespace Premy.Chatovatko.Client
         {
             WriteLine("Server name:");
             WriteLine(info.Name);
-            WriteLine("Public key:");
-            WriteLine(info.PublicKey);
+            WriteLine("Public key SHA-256 sum:");
+            WriteLine(SHA256Utils.ComputeSha256Hash(info.PublicKey));
         }
 
         static void WriteStatus(Settings settings, IClientDatabaseConfig config)
