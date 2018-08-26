@@ -91,7 +91,7 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("user_id")
                     .HasColumnType("int(11)");
 
-               entity.HasOne(d => d.User)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.Clients)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -141,7 +141,7 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasName("id_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.PublicCertificateSha1)
+                entity.HasIndex(e => e.PublicCertificateSha2)
                     .HasName("public_certificate_sha1_UNIQUE")
                     .IsUnique();
 
@@ -158,10 +158,10 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("public_certificate")
                     .HasColumnType("mediumtext");
 
-                entity.Property(e => e.PublicCertificateSha1)
+                entity.Property(e => e.PublicCertificateSha2)
                     .IsRequired()
-                    .HasColumnName("public_certificate_sha1")
-                    .HasMaxLength(20);
+                    .HasColumnName("public_certificate_sha2")
+                    .HasMaxLength(64);
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
@@ -184,9 +184,10 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.EncryptedAesKey)
-                    .HasColumnName("encrypted_aes_key")
-                    .HasMaxLength(256);
+                entity.Property(e => e.AesKey)
+                    .IsRequired()
+                    .HasColumnName("aes_key")
+                    .HasMaxLength(1024);
 
                 entity.Property(e => e.RecepientId)
                     .HasColumnName("recepient_id")
