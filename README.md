@@ -12,7 +12,7 @@ Chatovatko is currently tested under Ubuntu 18.04 and Windows 10.
 * Multiplatform server app (Windows, Linux)
 
 ## Important technical details
-* **.NET Core 2.1** used for server-side service and for command-based console application (for testing porpuse)
+* **.NET Core 2.1** used for server-side service and for command-based console application (for testing purpuse)
 * **.NET Standart 2.0** used for multiplatform client libraries and server-client shared libraries
 * **Tls 1.2** is used for encrypting communication between server and client and for server verification
 * **RSA** with key size **4096** is used for client verification and sending AES keys
@@ -43,7 +43,7 @@ Then make a config file. Here is an example for inspiration:
     CertAddress=/mnt/c/keys/private.p12
     ServerName=Unforgattable server name
 
-When's everything ready, run server with this command
+When everything is ready, run server with this command
 
     cd /pathToRepository/Chatovatko/Premy.Chatovatko/Premy.Chatovatko.Server
     dotnet run -c Release -- /otherPath/configFile.txt
@@ -52,7 +52,7 @@ Server uses **TCP** in ports **8470-8472**.
     
 ### Console client
 #### Installation
-As it was in server installation, install [`.NET Core 2.1`](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) if you haven't done it already. There are no more prerequsities. Just run
+As it was in server installation, install [`.NET Core 2.1`](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) haven't done it already. There are no more prerequsities. Just run:
 
     cd /pathToRepository/Chatovatko/Premy.Chatovatko/Premy.Chatovatko.Client.Console
     dotnet run -c Release
@@ -66,7 +66,7 @@ This one will generate new p12 certificate and you will be asked to enter path t
 
     init login <server_address>
     
-If you have your own p12 certificate, use this one. If the certificate haven't been paired with this server already, the entered username will be used for your registration. Otherwise the username will be ignored.
+If you have your p12 certificate, use this one. If the certificate hasn't been paired with this server already, the entered username will be used for your registration. Otherwise the username will be ignored.
 
 #### Reset/Relogin
 If anything goes wrong, you can always relogin. Run
@@ -82,7 +82,7 @@ To exit application, just enter
 or
 
     quit
-If you want add comments to your script, please respect this convention
+If you want to add comments to your script, please respect this convention
 
     # <comment>
     -- <comment>
@@ -97,7 +97,7 @@ If a connection crashed, or you just wanted to disconnect, run
     disconnect
      
 ##### Pulling and pushing
-Almost all changes are kept in local database. It is necessary to push them on server to finilize them. Analogily the same, you need pull if you want download all changes, which are on server already. Two magical selfdescribing keywords:
+Almost all changes are kept in local database. It is necessary to push them on server to finalize them. Analogily the same, you need pull if you want to download all changes, which are on server already. Two magical selfdescribing keywords:
 
     push
     pull
@@ -107,7 +107,7 @@ Before you can send messages to an user, you must trustify him. To do so, enter
 
     trust <user_id>
 
-This will send server information, you trust this user and generate confirmatory message to user's chain. If you've done this first time, it will also create new AES key and send it encryped to server. The key is for encrypting your messages for the user and for his ability of reading it.
+This will send server information, that you trust this user and it will generate confirmatory message to user's chain. If you've done this first time, it will also create new AES key and send it encryped to server. The key is for encrypting your messages for the user and for his ability of reading it.
 
 The user must have trustifed you to receive your messages.
 
