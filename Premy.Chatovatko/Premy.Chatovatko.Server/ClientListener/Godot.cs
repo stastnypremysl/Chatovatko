@@ -95,10 +95,6 @@ namespace Premy.Chatovatko.Server.ClientListener
                             Pull();
                             break;
 
-                        case ConnectionCommand.CREATE_ONLIVE_TUNNEL:
-                            Log("CREATE_ONLIVE_TUNNEL command received.");
-                            CreateOnliveTunnel();
-                            break;
 
                         case ConnectionCommand.END_CONNECTION:
                             Log("END_CONNECTION command received.");
@@ -125,12 +121,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             }
         }
 
-
-        private void CreateOnliveTunnel()
-        {
-
-        }
-
+        
         private void Pull()
         {
 #if (DEBUG)
