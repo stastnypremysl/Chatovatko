@@ -73,6 +73,7 @@ CREATE TABLE `main`.`settings` (
    ON UPDATE CASCADE,
   `text` MEDIUMTEXT NOT NULL,
   `date` DATETIME NOT NULL,
+  `attechment` BLOB NULL,
   `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (id)
     ON DELETE CASCADE
 	ON UPDATE CASCADE);

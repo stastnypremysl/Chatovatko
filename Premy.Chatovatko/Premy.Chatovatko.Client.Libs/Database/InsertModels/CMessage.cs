@@ -9,13 +9,15 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
     {
         private readonly long recepientId;
         private readonly long myUserId;
-        public CMessage(long messageThreadPublicId, string text, DateTime time, long recepientId, long myUserId)
+        private readonly byte[] attechment;
+        public CMessage(long messageThreadPublicId, string text, DateTime time, long recepientId, long myUserId, byte[] attechment = null)
         {
             this.MessageThreadId = messageThreadPublicId;
             this.Text = text;
             this.Time = time;
             this.recepientId = recepientId;
             this.myUserId = myUserId;
+            this.attechment = attechment;
         }
 
         public InsertModelTypes GetModelType()
@@ -23,18 +25,26 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
             return InsertModelTypes.MESSAGE;
         }
 
-        public IJType GetRecepientUpdate()
+        public JsonCapsula GetRecepientUpdate()
         {
             if (recepientId == myUserId)
             {
                 return null;
             }
-            return this;
+            return new JsonCapsula()
+            {
+                Attechment = attechment,
+                Message = this
+            };
         }
 
-        public IJType GetSelfUpdate()
+        public JsonCapsula GetSelfUpdate()
         {
-            return this;
+            return new JsonCapsula()
+            {
+                Attechment = attechment,
+                Message = this
+            };
         }
     }
 }

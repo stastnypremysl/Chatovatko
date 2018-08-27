@@ -8,8 +8,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
     public interface ICInsertModel
     {
         InsertModelTypes GetModelType();
-        IJType GetSelfUpdate();
-        IJType GetRecepientUpdate();
+        JsonCapsula GetSelfUpdate();
+        JsonCapsula GetRecepientUpdate();
 
     }
 }

@@ -189,6 +189,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("text")
                     .HasColumnType("MEDIUMTEXT");
 
+                entity.Property(e => e.Attechment)
+                    .HasColumnName("attechment")
+                    .HasColumnType("BLOB");
+
                 entity.HasOne(d => d.BlobMessages)
                     .WithOne(p => p.Messages)
                     .HasForeignKey<Messages>(d => d.BlobMessagesId);
