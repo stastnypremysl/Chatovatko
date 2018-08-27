@@ -7,7 +7,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
     public enum InsertModelTypes
     {
         ALARM,
-        CONTACT_DETAIL,
+        CONTACT,
         MESSAGE,
         MESSAGE_THREAD
     }

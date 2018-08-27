@@ -8,7 +8,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
     {
         public string Name { get; set; }
         public long Onlive { get; set; }
-        public long Archived { get; set; }
+        public bool Archived { get; set; }
         public long WithUserId { get; set; }
         public long PublicId { get; set; }
         public bool DoOnlyDelete { get; set; } = false;

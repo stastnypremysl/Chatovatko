@@ -7,26 +7,17 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
 {
     public class CContact: JContact, ICInsertModel
     {
-        public CContactDetail(bool alarmPermission, bool changeContactPermission, string nickName, long contactId)
-        {
-            AlarmPermission = alarmPermission;
-            ChangeContactPermission = changeContactPermission ? 1 : 0;
-            NickName = nickName;
-            ContactId = contactId;
-        }
-
-
         public InsertModelTypes GetModelType()
         {
-            return InsertModelTypes.CONTACT_DETAIL;
+            return InsertModelTypes.CONTACT;
         }
 
-        public IJType GetRecepientUpdate()
+        public JsonCapsula GetRecepientUpdate()
         {
-            return this;
+            return new JsonCapsula(this);
         }
 
-        public IJType GetSelfUpdate()
+        public JsonCapsula GetSelfUpdate()
         {
             return null;
         }

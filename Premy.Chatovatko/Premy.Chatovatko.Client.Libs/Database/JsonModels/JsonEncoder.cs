@@ -51,9 +51,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
                 case JsonTypes.MESSAGES_THREAD:
                     jmessage = JsonConvert.DeserializeObject<JMessageThread>(jsonText);
                     break;
-                case JsonTypes.AES_KEY:
-                    jmessage = JsonConvert.DeserializeObject<JAESKey>(jsonText);
-                    break;
                 default:
                     throw new Exception("Unknown JsonType.");
             }
