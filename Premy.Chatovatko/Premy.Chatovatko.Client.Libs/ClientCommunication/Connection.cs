@@ -180,7 +180,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 Log("Cleaning queue.");
 #endif
                 context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
-                context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1;;");
+                context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1 and PUBLIC_ID<>null;;");
                 context.SaveChanges();
 
             }
@@ -231,7 +231,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 foreach (var id in capsula.AesKeysUserIds)
                 {
                     var user = context.Contacts.Where(con => con.PublicId == id).SingleOrDefault();
-                    user.ReceiveAesKey = RSAEncoder.Decrypt(BinaryEncoder.ReceiveBytes(stream), ClientCertificate);
+                    user.ReceiveAesKey = RSAEncoder.DecryptAndVerify(BinaryEncoder.ReceiveBytes(stream), ClientCertificate);
                 }
                 context.SaveChanges();
 #if (DEBUG)
@@ -317,7 +317,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                         .Where(u => u.PublicId == contactId)
                         .Select(u => u.PublicCertificate)
                         .SingleOrDefault());
-                    BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(password.Password, cert));
+                    BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(password.Password, cert));
 
                     context.SaveChanges();
                 }

@@ -5,7 +5,7 @@ using Premy.Chatovatko.Client.Libs.Database.JsonModels;
 
 namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
 {
-    public class CContactDetail : JContactDetail, ICInsertModel
+    public class CContact: JContact, ICInsertModel
     {
         public CContactDetail(bool alarmPermission, bool changeContactPermission, string nickName, long contactId)
         {
