@@ -200,7 +200,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 #endif
             using (Context context = new Context(config))
             {
-                PullCapsula capsula = new PullCapsula();
+                ServerPullCapsula capsula = new ServerPullCapsula();
 
                 List<PullUser> pullUsers = new List<PullUser>();
                 foreach (Users user in context.Users.Where(u => !userIdsUploaded.Contains(u.Id)))

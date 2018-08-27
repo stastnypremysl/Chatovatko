@@ -4,12 +4,9 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization
 {
-    public class PullCapsula
+    public class ServerPullCapsula
     {
-        public IList<PullUser> Users { get; set; }
-        public IList<long> TrustedUserIds { get; set; }
         public IList<PullMessage>  Messages { get; set; }
-
         public IList<long> AesKeysUserIds { get; set; }
     }
 }

@@ -193,7 +193,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             Log("Sending PULL command.");
             TextEncoder.SendCommand(stream, ConnectionCommand.PULL);
 
-            PullCapsula capsula = TextEncoder.ReadPullCapsula(stream);
+            ServerPullCapsula capsula = TextEncoder.ReadPullCapsula(stream);
 #if (DEBUG)
             Log("Received PullCapsula.");
 #endif
