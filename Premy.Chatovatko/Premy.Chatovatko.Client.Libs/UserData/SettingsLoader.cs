@@ -41,7 +41,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
         {
             if (Exists())
             {
-                throw new ChatovatkoException(this, "Settings already exists");
+                throw new Exception("Settings already exists");
             }
             Settings settings = new Settings()
             {

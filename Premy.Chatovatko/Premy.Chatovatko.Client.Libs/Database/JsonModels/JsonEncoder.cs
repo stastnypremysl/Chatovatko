@@ -91,5 +91,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
             byte[] notEncrypted = stream.ToArray();
             return key.Encrypt(notEncrypted);
         }
+
+        public static byte[] GetJsonEncoded(Context context, JsonCapsula capsula, long receiverId)
+        {
+            return GetJsonEncoded(context, capsula.Message, receiverId, capsula.Attechment);
+        }
     }
 }
