@@ -68,7 +68,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 bool running = true;
                 while (running)
                 {
-                    ConnectionCommand command = TextEncoder.ReadCommand(stream);
+                    ConnectionCommand command = BinaryEncoder.ReadCommand(stream);
                     switch (command)
                     {
                         case ConnectionCommand.TRUST_CONTACT:

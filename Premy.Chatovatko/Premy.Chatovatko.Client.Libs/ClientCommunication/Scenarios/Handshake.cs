@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Premy.Chatovatko.Client.Libs.Cryptography;
 using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission;
@@ -12,13 +13,6 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
 {
-
-    public class HandshakeReturnCapsula
-    {
-        public string UserName{get;set; }
-        public int UserId { get; set; }
-        public int ClientId { get; set; }
-    }
 
     public class Handshake
     {
@@ -55,7 +49,8 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
             {
                 UserId = serverHandshake.UserId,
                 UserName = serverHandshake.UserName,
-                ClientId = serverHandshake.ClientId
+                ClientId = serverHandshake.ClientId,
+                SelfAesPassword = new AESPassword(RSAEncoder.DecryptAndVerify(serverHandshake.SelfAesKey, cert, cert))
             };
         }
 

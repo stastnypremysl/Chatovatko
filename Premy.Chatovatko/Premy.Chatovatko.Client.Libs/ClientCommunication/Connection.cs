@@ -42,6 +42,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         public string UserName { get; private set; }
         public int? ClientId { get; private set; }
         public X509Certificate2 ClientCertificate { get; }
+        public AESPassword SelfAesPassword { get; private set; }
 
         /// <summary>
         /// Constructor for init operations.
@@ -85,7 +86,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             return isConnected && stream.IsEncrypted;
         }
 
-        public void Connect()
+        public void Connect(String password = null)
         {
 
             client = new TcpClient(serverAddress, ServerPort);
@@ -100,26 +101,23 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
 
             logger.Log(this, "Handshake started.");
-            var handshake = Handshake.Login(logger, stream, ClientCertificate, UserName, ClientId);
+            var handshake = Handshake.Login(logger, stream, ClientCertificate, password, UserName, ClientId);
             logger.Log(this, "Handshake successeded.");
 
             UserName = handshake.UserName;
             UserId = handshake.UserId;
             ClientId = handshake.ClientId;
+            SelfAesPassword = handshake.SelfAesPassword;
             logger.Log(this, $"User {UserName} has id {UserId}. Client has id {ClientId}.");
 
             isConnected = true;
-
-            Pull();
-            Push();
-
         }
         
         public void Disconnect()
         {
             Log("Sending END_CONNECTION command.");
             isConnected = false;
-            TextEncoder.SendCommand(stream, ConnectionCommand.END_CONNECTION);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.END_CONNECTION);
             stream.Close();
             client.Close();
         }

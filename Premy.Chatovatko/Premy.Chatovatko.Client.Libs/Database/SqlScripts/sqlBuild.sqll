@@ -17,7 +17,7 @@ CREATE TABLE `main`.`settings` (
   `trusted` TINYINT NOT NULL,
   `send_aes_key` BLOB NULL,
   `receive_aes_key` BLOB NULL,
-  `blob_messages_id` INT NOT NULL REFERENCES `blob_messages` (id)
+  `blob_messages_id` INT NULL REFERENCES `blob_messages` (id)
     ON DELETE CASCADE
 	ON UPDATE CASCADE,
   `alarm_permission` TINYINT NOT NULL,

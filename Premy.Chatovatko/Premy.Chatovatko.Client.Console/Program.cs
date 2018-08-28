@@ -145,6 +145,27 @@ namespace Premy.Chatovatko.Client
                                     settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicKey, (int)connection.ClientId);
                                     settings = settingsLoader.GetSettingsCapsula();
 
+                                    Log("Saving the self AES key.");
+                                    //The only user outside of the chain
+                                    using (Context context = new Context(config))
+                                    {
+                                        context.Contacts.Add(new Contacts()
+                                        {
+                                            PublicId = connection.UserId,
+                                            UserName = connection.UserName,
+                                            AlarmPermission = 1,
+                                            BlobMessagesId = null,
+
+                                            NickName = null,
+                                            Trusted = 1,
+                                            ReceiveAesKey = connection.SelfAesPassword.Password,
+                                            SendAesKey = connection.SelfAesPassword.Password,
+
+                                            PublicCertificate = X509Certificate2Utils.ExportToPem(clientCert)
+                                        });
+                                        context.SaveChanges();
+                                    }
+
                                     Log("Self-trustification begin.");
                                     connection.TrustContact(connection.UserId);
                                     Log("Self-trustification done.");

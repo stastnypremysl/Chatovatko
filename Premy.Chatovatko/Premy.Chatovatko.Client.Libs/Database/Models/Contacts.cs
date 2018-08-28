@@ -18,13 +18,13 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public long Trusted { get; set; }
         public byte[] SendAesKey { get; set; }
         public byte[] ReceiveAesKey { get; set; }
-        public long BlobMessagesId { get; set; }
+        public long? BlobMessagesId { get; set; }
         public long AlarmPermission { get; set; }
         public string NickName { get; set; }
 
         public long GetBlobId()
         {
-            return BlobMessagesId;
+            return (long)BlobMessagesId;
         }
 
         public BlobMessages BlobMessagesNavigation { get; set; }
