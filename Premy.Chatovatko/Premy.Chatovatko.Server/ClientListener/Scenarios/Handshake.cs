@@ -24,12 +24,6 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             X509Certificate2 clientCertificate = X509Certificate2Utils.ImportFromPem(clientHandshake.PemCertificate);
             log($"Logging user sent username {clientHandshake.UserName}\n Certificate:\n {clientHandshake.PemCertificate}");
 
-            log("Generating random bytes");
-            byte[] randomBytes = LUtils.GenerateRandomBytes(TcpConstants.HANDSHAKE_LENGHT);
-
-            log("Sending encrypted bytes");
-            BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(randomBytes, clientCertificate));
-
             ServerHandshake errorHandshake = new ServerHandshake()
             {
                 Errors = "",
@@ -38,6 +32,19 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 UserId = -1,
                 UserName = ""
             };
+
+            if (config.Password != null && !config.Password.Equals(clientHandshake.ServerPassword))
+            {
+                errorHandshake.Errors = "Server password is wrong.";
+                TextEncoder.SendJson(stream, errorHandshake);
+                throw new Exception(errorHandshake.Errors);
+            }
+
+            log("Generating random bytes");
+            byte[] randomBytes = LUtils.GenerateRandomBytes(TcpConstants.HANDSHAKE_LENGHT);
+
+            log("Sending encrypted bytes");
+            BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(randomBytes, clientCertificate));
 
             byte[] received = BinaryEncoder.ReceiveBytes(stream);
             if (!randomBytes.SequenceEqual(received))

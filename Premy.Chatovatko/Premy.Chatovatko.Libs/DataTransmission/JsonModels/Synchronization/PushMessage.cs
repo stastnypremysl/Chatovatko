@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization
 {
-    public class PushCapsula
+    public class PushMessage
     {
-        public IList<PushMessage> PushMessages { get; set; }
-        public IList<long> MessageToDeleteIds { get; set; }
+        public int RecepientId { get; set; }
+        public int Priority { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact
     {
         public int UserId { get; set; }
         public string UserName { get; set; }
-        public string Certificate { get; set; }
-        public bool Successed { get; set; }
+        public string PemCertificate { get; set; }
+        public bool Succeeded { get; set; }
     }
 }

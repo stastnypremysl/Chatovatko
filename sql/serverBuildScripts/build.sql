@@ -17,9 +17,10 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`blob_messages` (
   `recepient_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
   `content` BLOB NOT NULL,
+  `priority` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-  INDEX `recepiant_id` (`recepient_id` ASC, `id` ASC),
+  INDEX `recepiant_id` (`recepient_id` ASC, `priority` ASC, `id` ASC),
   INDEX `sender_id` (`sender_id` ASC),
   CONSTRAINT `recepient_id_foreign_key`
     FOREIGN KEY (`recepient_id`)

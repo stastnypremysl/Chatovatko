@@ -12,6 +12,7 @@ namespace Premy.Chatovatko.Server
         public ServerConfig(Logger logger)
         {
             this.logger = logger;
+            Password = null;
         }
 
         private Logger logger;
@@ -23,6 +24,7 @@ namespace Premy.Chatovatko.Server
         public string CertPasswd { get => certPasswd; set => certPasswd = value; }
         public string CertAddress { get => certAddress; set => certAddress = value; }
         public string ServerName { get; set; }
+        public string Password { get; set; }
 
         public void LoadConfig(String path = "./config.txt")
         {
@@ -55,6 +57,9 @@ namespace Premy.Chatovatko.Server
                             break;
                         case "ServerName":
                             ServerName = rest;
+                            break;
+                        case "Password":
+                            Password = rest;
                             break;
                         default:
                             logger.Log(this, String.Format("The parameter {0} doesn't exist.", name));

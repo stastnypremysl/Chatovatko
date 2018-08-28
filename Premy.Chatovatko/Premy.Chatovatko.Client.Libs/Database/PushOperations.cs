@@ -17,7 +17,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
     public static class PushOperations
     {
 
-        public static void SendIJType(Context context, IJType toSend, long recepientId, long myUserId)
+        public static void SendIJType(Context context, JsonCapsula toSend, long recepientId, long myUserId)
         {
             if(toSend == null)
             {

@@ -10,13 +10,27 @@ namespace Premy.Chatovatko.Libs.Cryptography
 {
     public static class RSAEncoder
     {
+        private static readonly RSAEncryptionPadding encryptionPadding = RSAEncryptionPadding.OaepSHA256;
+
+        public static byte[] Encrypt(byte[] data, X509Certificate2 cert)
+        {
+            RSA publicKey = cert.GetRSAPublicKey();
+            return publicKey.Encrypt(data, encryptionPadding);
+        }
+
+        public static byte[] Decrypt(byte[] encrypted, X509Certificate2 cert)
+        {
+            RSA privateKey = cert.GetRSAPrivateKey();
+            return privateKey.Decrypt(encrypted, encryptionPadding);
+        }
+
         public static byte[] EncryptAndSign(byte[] data, X509Certificate2 receiverCert, X509Certificate2 myCert)
         {
             RSA publicKey = receiverCert.GetRSAPublicKey();
 
             MemoryStream stream = new MemoryStream();
 
-            byte[] encrypted = publicKey.Encrypt(data, RSAEncryptionPadding.OaepSHA256);
+            byte[] encrypted = publicKey.Encrypt(data, encryptionPadding);
             byte[] signiture = Sign(data, myCert);
 
             BinaryEncoder.SendBytes(stream, signiture);
@@ -33,7 +47,7 @@ namespace Premy.Chatovatko.Libs.Cryptography
             MemoryStream stream = new MemoryStream(data);
 
             byte[] signiture = BinaryEncoder.ReceiveBytes(stream);
-            byte[] decrypted = privateKey.Decrypt(BinaryEncoder.ReceiveBytes(stream), RSAEncryptionPadding.OaepSHA256);
+            byte[] decrypted = privateKey.Decrypt(BinaryEncoder.ReceiveBytes(stream), encryptionPadding);
 
             if(!Verify(decrypted, signiture, senderCert))
             {

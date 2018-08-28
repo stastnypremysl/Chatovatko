@@ -22,13 +22,14 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
 
     public class Handshake
     {
-        public static HandshakeReturnCapsula Login(Logger logger, Stream stream, X509Certificate2 cert, string userName = null, int? clientId = null)
+        public static HandshakeReturnCapsula Login(Logger logger, Stream stream, X509Certificate2 cert, string password, string userName = null, int? clientId = null)
         {
             ClientHandshake clientHandshake = new ClientHandshake()
             {
                 PemCertificate = X509Certificate2Utils.ExportToPem(cert),
                 UserName = userName,
-                ClientId = clientId
+                ClientId = clientId,
+                ServerPassword = password
             };
 
             if(userName != null && userName.Length > DataConstants.USER_NAME_MAX_LENGHT)

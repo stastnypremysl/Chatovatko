@@ -14,11 +14,11 @@ namespace Premy.Chatovatko.Client.Libs.Database
     {
         public static void ParseEncryptedMessage(Context context, byte[] message, long senderId, long messageId, long myUserId)
         {
-            IJType decoded = JsonEncoder.GetJsonDecoded(context, message, senderId);
+            JsonCapsula decoded = JsonEncoder.GetJsonDecoded(context, message, senderId);
             ParseIJTypeMessage(context, decoded, senderId, messageId, myUserId);    
         }
 
-        public static void ParseIJTypeMessage(Context context, IJType decoded, long senderId, long messageId, long myUserId)
+        public static void ParseIJTypeMessage(Context context, JsonCapsula decoded, long senderId, long messageId, long myUserId)
         {
             if(decoded == null)
             {
@@ -33,10 +33,10 @@ namespace Premy.Chatovatko.Client.Libs.Database
             }
 
             bool permission = senderId == myUserId;
-            switch (decoded.GetJsonType())
+            switch (decoded.Message.GetJsonType())
             {
                 case JsonTypes.ALARM:
-                    JAlarm alarm = (JAlarm)decoded;
+                    JAlarm alarm = (JAlarm)decoded.Message;
                     permission = permission || 
                         context.ContactsDetail
                         .Where(u => u.ContactId == senderId)
@@ -59,7 +59,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     }
                     break;
 
-                case JsonTypes.CONTACT_DETAIL:
+                case JsonTypes.CONTACT:
                     JContactDetail detail = (JContactDetail)decoded;
                     permission = permission ||
                        context.ContactsDetail
@@ -99,7 +99,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     break;
 
                 case JsonTypes.MESSAGES:
-                    JMessage jmessage = (JMessage)decoded;
+                    JMessage jmessage = (JMessage)decoded.Message;
                     long threadWithUser =(
                        from threads in context.MessagesThread
                        where threads.PublicId == jmessage.MessageThreadId
@@ -155,7 +155,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     break;
 
                 case JsonTypes.MESSAGES_THREAD:
-                    JMessageThread messageThread = (JMessageThread)decoded;
+                    JMessageThread messageThread = (JMessageThread)decoded.Message;
                     permission = permission || (messageThread.WithUserId == senderId && !messageThread.DoOnlyDelete);
                     if (permission)
                     {
@@ -174,7 +174,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                         {
                             old.Name = messageThread.Name;
                             old.BlobMessagesId = messageId;
-                            old.Archived = messageThread.Archived;
+                            old.Archived = messageThread.Archived ? 1 : 0;
                         }
                         else                        
                         { 
@@ -196,25 +196,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     }
                     break;
 
-                case JsonTypes.AES_KEY:
-                    JAESKey aesKey = (JAESKey)decoded;
-                    if (permission)
-                    {
-                        var contact = context.Contacts
-                            .Where(c => c.PublicId == aesKey.UserId)
-                            .SingleOrDefault();
-                        if (contact.SendAesKey != null)
-                        {
-                            throw new Exception($"AES key of user {contact.UserName} already exist.");
-                        }
-                        contact.SendAesKey = aesKey.AESKey;
-                        context.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new Exception($"User with id {senderId} doesn't have permission to create AES keys to send.");
-                    }
-                    break;
+                default:
+                    throw new Exception($"Json type unknown.");
             }
         }
 
