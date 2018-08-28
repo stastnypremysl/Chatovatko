@@ -44,7 +44,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             byte[] randomBytes = LUtils.GenerateRandomBytes(TcpConstants.HANDSHAKE_LENGHT);
 
             log("Sending encrypted bytes");
-            BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(randomBytes, clientCertificate));
+            BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(randomBytes, clientCertificate));
 
             byte[] received = BinaryEncoder.ReceiveBytes(stream);
             if (!randomBytes.SequenceEqual(received))

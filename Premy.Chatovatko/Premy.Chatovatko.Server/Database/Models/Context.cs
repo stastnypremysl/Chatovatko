@@ -66,6 +66,10 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("sender_id")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.Priority)
+                    .HasColumnName("priority")
+                    .HasColumnType("int(11)");
+
                 entity.HasOne(d => d.Recepient)
                     .WithMany(p => p.BlobMessagesRecepient)
                     .HasForeignKey(d => d.RecepientId)

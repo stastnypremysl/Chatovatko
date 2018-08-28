@@ -21,6 +21,7 @@ using Premy.Chatovatko.Client.Libs.Database;
 using Premy.Chatovatko.Client.Libs.Cryptography;
 using Premy.Chatovatko.Client.Libs.Database.JsonModels;
 using Premy.Chatovatko.Libs.Cryptography;
+using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
@@ -281,10 +282,14 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             TextEncoder.SendInt(stream, contactId);
             using (Context context = new Context(config))
             {
-                var contact = context.Contacts
+                var contact = new UContact(context.Contacts
                     .Where(u => u.PublicId == contactId)
-                    .SingleOrDefault();
-                contact.Trusted = 0;
+                    .SingleOrDefault())
+                {
+                    Trusted = false
+                };
+
+                PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
 
                 context.SaveChanges();
             }
@@ -299,32 +304,36 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             TextEncoder.SendInt(stream, contactId);
             using (Context context = new Context(config))
             {
-                var contact = context.Contacts
+                var contact = new UContact(context.Contacts
                     .Where(u => u.PublicId == contactId)
-                    .SingleOrDefault();
-                contact.Trusted = 1;
-                context.SaveChanges();
+                    .SingleOrDefault())
+                {
+                    Trusted = true
+                };
+
 
                 if (contact.SendAesKey == null)
                 {
                     TextEncoder.SendInt(stream, 1);
                     AESPassword password = AESPassword.GenerateAESPassword();
-                    JAESKey key = new JAESKey(contactId, password);
-                    PushOperations.SendIJType(context, key, UserId, UserId);
 
-                    X509Certificate2 cert = X509Certificate2Utils.ImportFromPem(
+                    contact.SendAesKey = password.Password;
+                    X509Certificate2 recepientCert = X509Certificate2Utils.ImportFromPem(
                         context.Contacts
                         .Where(u => u.PublicId == contactId)
                         .Select(u => u.PublicCertificate)
                         .SingleOrDefault());
-                    BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(password.Password, cert));
+                    BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(password.Password, recepientCert, ClientCertificate));
 
-                    context.SaveChanges();
                 }
+                
                 else
                 {
                     TextEncoder.SendInt(stream, 0);
                 }
+
+                PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
+                context.SaveChanges();
             }
             Push();
         }

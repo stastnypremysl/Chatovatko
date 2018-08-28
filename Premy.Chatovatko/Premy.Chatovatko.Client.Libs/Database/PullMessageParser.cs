@@ -38,8 +38,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
                 case JsonTypes.ALARM:
                     JAlarm alarm = (JAlarm)decoded.Message;
                     permission = permission || 
-                        context.ContactsDetail
-                        .Where(u => u.ContactId == senderId)
+                        context.Contacts
+                        .Where(u => u.PublicId == senderId)
                         .Select(u => u.AlarmPermission)
                         .SingleOrDefault() == 1;
 
@@ -60,35 +60,43 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     break;
 
                 case JsonTypes.CONTACT:
-                    JContactDetail detail = (JContactDetail)decoded;
-                    permission = permission ||
-                       context.ContactsDetail
-                       .Where(u => u.ContactId == senderId)
-                       .Select(u => u.ChangeContactsPermission)
-                       .SingleOrDefault() == 1;
-
+                    JContact detail = (JContact)decoded.Message;
+                    
                     if (permission)
                     {
-                        var toUpdate = context.ContactsDetail
-                            .Where(u => u.ContactId == detail.ContactId)
+                        var toUpdate = context.Contacts
+                            .Where(u => u.PublicId == detail.PublicId)
                             .SingleOrDefault();
                         if(toUpdate != null)
                         {
                             toUpdate.NickName = detail.NickName;
-                            toUpdate.BlobMessagesId = messageId;
+                            toUpdate.PublicCertificate = detail.PublicCertificate;
                             toUpdate.AlarmPermission = detail.AlarmPermission ? 1 : 0;
-                            toUpdate.ChangeContactsPermission = detail.ChangeContactPermission;
+                            toUpdate.PublicId = detail.PublicId;
+
+                            toUpdate.ReceiveAesKey = detail.ReceiveAesKey;
+                            toUpdate.SendAesKey = detail.SendAesKey;
+                            toUpdate.UserName = detail.UserName;
+                            toUpdate.Trusted = detail.Trusted ? 1 : 0;
+
+                            toUpdate.BlobMessagesId = messageId;
                         }
                         else
                         { 
-                            context.ContactsDetail.Add(new ContactsDetail()
+                            context.Contacts.Add(new Contacts()
                             {
-                                AlarmPermission = detail.ChangeContactPermission,
                                 NickName = detail.NickName,
-                                BlobMessagesId = messageId,
-                                ContactId = detail.ContactId,
-                                ChangeContactsPermission = detail.ChangeContactPermission
-                        });
+                                PublicCertificate = detail.PublicCertificate,
+                                AlarmPermission = detail.AlarmPermission ? 1 : 0,
+                                PublicId = detail.PublicId,
+
+                                ReceiveAesKey = detail.ReceiveAesKey,
+                                SendAesKey = detail.SendAesKey,
+                                UserName = detail.UserName,
+                                Trusted = detail.Trusted ? 1 : 0,
+
+                                BlobMessagesId = messageId                                
+                            });
                         }
                         context.SaveChanges();
                     }
@@ -183,7 +191,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                                 Name = messageThread.Name,
                                 PublicId = messageThread.PublicId,
                                 Onlive = messageThread.Onlive,
-                                Archived = messageThread.Archived,
+                                Archived = messageThread.Archived ? 1 : 0,
                                 WithUser = messageThread.WithUserId,
                                 BlobMessagesId = messageId
                             });

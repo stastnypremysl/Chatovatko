@@ -12,6 +12,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
         public string UserName { get; set; }
         public string PublicCertificate { get; set; }
         public bool Trusted { get; set; }
+
         public byte[] SendAesKey { get; set; }
         public byte[] ReceiveAesKey { get; set; }
         public bool AlarmPermission { get; set; }
