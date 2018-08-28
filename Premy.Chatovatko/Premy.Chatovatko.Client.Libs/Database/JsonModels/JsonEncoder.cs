@@ -25,11 +25,11 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
             byte[] decrypted = key.Decrypt(message);
 
             MemoryStream stream = new MemoryStream(decrypted);
-            JsonTypes type = (JsonTypes)TextEncoder.ReadInt(stream);
+            JsonTypes type = (JsonTypes)BinaryEncoder.ReadInt(stream);
             string jsonText = TextEncoder.ReadString(stream);
 
             byte[] attechment = null;
-            int isAttechment = TextEncoder.ReadInt(stream);
+            int isAttechment = BinaryEncoder.ReadInt(stream);
 
             if(isAttechment == 1)
             {
@@ -73,18 +73,18 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
             AESPassword key = new AESPassword(aesBinKey);
 
             MemoryStream stream = new MemoryStream();
-            TextEncoder.SendInt(stream, (int)message.GetJsonType());
+            BinaryEncoder.SendInt(stream, (int)message.GetJsonType());
 
             string json = JsonConvert.SerializeObject(message);
             TextEncoder.SendString(stream, json);
 
             if(attechment == null)
             {
-                TextEncoder.SendInt(stream, 0);
+                BinaryEncoder.SendInt(stream, 0);
             }
             else
             {
-                TextEncoder.SendInt(stream, 1);
+                BinaryEncoder.SendInt(stream, 1);
                 BinaryEncoder.SendBytes(stream, attechment);
             }
 

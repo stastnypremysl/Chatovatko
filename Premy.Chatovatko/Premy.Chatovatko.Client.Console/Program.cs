@@ -376,11 +376,6 @@ namespace Premy.Chatovatko.Client
                                 break;
                         }
                     }
-                    catch (ChatovatkoException ex)
-                    {
-                        logger.Log("Program", "Core", "The command has failed.", true);
-                        logger.LogException(ex);
-                    }
                     catch (Exception ex)
                     {
                         logger.LogException(ex, "Program", "Core", "The command has failed.");
@@ -394,7 +389,7 @@ namespace Premy.Chatovatko.Client
             }
             catch(Exception ex)
             {
-                logger.Log("Program", "Core",String.Format("The client has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
+                logger.LogException(ex, "Program", "Core", "The command has failed.");
             }
             finally
             {
@@ -545,26 +540,23 @@ namespace Premy.Chatovatko.Client
 
         static void WriteUsers()
         {
-            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-30}";
+            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {5,-30}";
             using (Context context = new Context(config))
             {
                 WriteLine();
-                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
+                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "UserName");
                 foreach(var user in 
                     from contacts in context.Contacts
-                    join detail in context.ContactsDetail on contacts.PublicId equals detail.ContactId into jDetail
-                    from detail in jDetail.DefaultIfEmpty()
                     select new
                     {
                         Id = contacts.PublicId,
                         Trusted = contacts.Trusted == 1,
-                        detail.NickName,
-                        AlarmPermission = detail.AlarmPermission == 1,
-                        ContactPermission = detail.ChangeContactsPermission == 1,
+                        contacts.NickName,
+                        AlarmPermission = contacts.AlarmPermission == 1,
                         contacts.UserName
                     })
                 {
-                    WriteLine(format, user.Id, user.NickName, user.Trusted, user.AlarmPermission, user.ContactPermission, user.UserName);
+                    WriteLine(format, user.Id, user.NickName, user.Trusted, user.AlarmPermission, user.UserName);
                 }
             }
         }

@@ -43,7 +43,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
             byte[] decrypted = RSAEncoder.Decrypt(encrypted, cert);
             BinaryEncoder.SendBytes(stream, decrypted);
 
-            ServerHandshake serverHandshake = TextEncoder.ReadServerHandshake(stream);
+            ServerHandshake serverHandshake = TextEncoder.ReadJson<ServerHandshake>(stream);
             logger.Log("Handshake", "Handshake", serverHandshake.Errors, false);
 
             if (!serverHandshake.Succeeded)

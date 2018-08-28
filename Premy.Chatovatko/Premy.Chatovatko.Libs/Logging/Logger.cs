@@ -63,11 +63,15 @@ namespace Premy.Chatovatko.Libs.Logging
         public void LogException(ILoggable me, Exception exception)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(exception.GetType().Name);
-            builder.Append("\n");
-            builder.Append(exception.Message);
-            builder.Append("\n");
-            builder.Append(exception.StackTrace);
+            while (exception.InnerException != null)
+            {
+                builder.Append(exception.GetType().Name);
+                builder.Append("\n");
+                builder.Append(exception.Message);
+                builder.Append("\n");
+                builder.Append(exception.StackTrace);
+                exception = exception.InnerException;
+            }
             Log(me, builder.ToString(), true);
         }
 
@@ -76,22 +80,19 @@ namespace Premy.Chatovatko.Libs.Logging
             StringBuilder builder = new StringBuilder();
             builder.Append(me.GetMessage());
             builder.Append("\n");
-            builder.Append(exception.GetType().Name);
-            builder.Append("\n");
-            builder.Append(exception.Message);
-            builder.Append("\n");
-            builder.Append(exception.StackTrace);
+            while (exception.InnerException != null)
+            {
+                builder.Append(exception.GetType().Name);
+                builder.Append("\n");
+                builder.Append(exception.Message);
+                builder.Append("\n");
+                builder.Append(exception.StackTrace);
+                exception = exception.InnerException;
+            }
             me.SetMessage(builder.ToString());
             Log(me);
         }
-
-        public void LogException(ChatovatkoException exception)
-        {
-            Log(exception.GetLogMessage);
-        }
-
-
-
+        
         public void Log(ILoggable me, String message) => Log(me, message, false);
 
         public void Log(object me, String message) => Log(me, message, false);

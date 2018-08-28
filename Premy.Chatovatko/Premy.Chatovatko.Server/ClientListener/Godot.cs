@@ -106,7 +106,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                             break;
 
                         default:
-                            throw new ChatovatkoException(this, "Received unknown command.");
+                            throw new Exception("Received unknown command.");
 
                     }
                 }
@@ -114,7 +114,8 @@ namespace Premy.Chatovatko.Server.ClientListener
             }
             catch (Exception ex)
             {
-                logger.Log(this, String.Format("Godot has crashed. Exception:\n{0}\n{1}\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace));
+                logger.Log(this, "Godot has crashed.");
+                logger.LogException(this, ex);
             }
             finally
             {
@@ -299,7 +300,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private void UntrustContact()
         {
-            int recepientId = TextEncoder.ReadInt(stream);
+            int recepientId = BinaryEncoder.ReadInt(stream);
             using (Context context = new Context(config))
             {
                 var key = context.UsersKeys
@@ -317,14 +318,14 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private void TrustContact()
         {
-            int recepientId = TextEncoder.ReadInt(stream);
+            int recepientId = BinaryEncoder.ReadInt(stream);
             using(Context context = new Context(config))
             {
                 var key = context.UsersKeys
                     .Where(u => u.RecepientId == recepientId)
                     .Where(u => u.SenderId == user.UserId)
                     .SingleOrDefault();
-                if(TextEncoder.ReadInt(stream) == 0)
+                if(BinaryEncoder.ReadInt(stream) == 0)
                 {
                     key.Trusted = true;
                 }

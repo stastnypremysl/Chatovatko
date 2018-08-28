@@ -38,7 +38,7 @@ namespace Premy.Chatovatko.Server
             }
             catch(Exception ex)
             {
-                logger.Log("Program", "Core", String.Format("The server has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
+                logger.LogException(ex, "Program", "Core", "Program has crashed.");
             }
             finally
             {

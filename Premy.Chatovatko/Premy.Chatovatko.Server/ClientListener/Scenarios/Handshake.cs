@@ -20,7 +20,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
         public static UserCapsula Run(Stream stream, Action<string> log, ServerConfig config)
         {
             
-            ClientHandshake clientHandshake = TextEncoder.ReadClientHandshake(stream);
+            ClientHandshake clientHandshake = TextEncoder.ReadJson<ClientHandshake>(stream);
             X509Certificate2 clientCertificate = X509Certificate2Utils.ImportFromPem(clientHandshake.PemCertificate);
             log($"Logging user sent username {clientHandshake.UserName}\n Certificate:\n {clientHandshake.PemCertificate}");
 

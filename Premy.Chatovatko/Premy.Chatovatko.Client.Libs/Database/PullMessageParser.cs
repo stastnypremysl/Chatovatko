@@ -190,7 +190,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             {
                                 Name = messageThread.Name,
                                 PublicId = messageThread.PublicId,
-                                Onlive = messageThread.Onlive,
+                                Onlive = messageThread.Onlive ? 1 : 0,
                                 Archived = messageThread.Archived ? 1 : 0,
                                 WithUser = messageThread.WithUserId,
                                 BlobMessagesId = messageId

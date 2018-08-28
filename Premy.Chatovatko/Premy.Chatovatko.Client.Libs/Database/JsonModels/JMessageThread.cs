@@ -7,7 +7,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
     public class JMessageThread : IJType
     {
         public string Name { get; set; }
-        public long Onlive { get; set; }
+        public bool Onlive { get; set; }
         public bool Archived { get; set; }
         public long WithUserId { get; set; }
         public long PublicId { get; set; }

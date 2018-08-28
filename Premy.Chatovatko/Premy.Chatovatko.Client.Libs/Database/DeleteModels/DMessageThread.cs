@@ -35,7 +35,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.DeleteModels
                 DoOnlyDelete = true
             };
 
-            PushOperations.SendIJType(context, jthread, myUserId, myUserId);
+            PushOperations.SendJsonCapsula(context, new JsonCapsula(jthread), myUserId, myUserId);
 
             //PushOperations.DeleteBlobMessage(context, thread.GetBlobId(), myUserId);
             //Piggy bug fix
