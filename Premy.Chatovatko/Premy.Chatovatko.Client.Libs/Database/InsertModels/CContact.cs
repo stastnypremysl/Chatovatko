@@ -14,12 +14,12 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
 
         public JsonCapsula GetRecepientUpdate()
         {
-            return new JsonCapsula(this);
+            return null;
         }
 
         public JsonCapsula GetSelfUpdate()
         {
-            return null;
+            return new JsonCapsula(this);
         }
     }
 }
