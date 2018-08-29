@@ -331,14 +331,25 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     BinaryEncoder.SendBytes(stream, toSend);
 
                 }
-                
                 else
                 {
                     Log("No new key will be sended.");
                     BinaryEncoder.SendInt(stream, 0);
                 }
 
-                PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
+                if (contactId != this.UserId)
+                {
+                    PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
+                }
+                else
+                {
+                    var me = context.Contacts
+                        .Where(u => u.PublicId == UserId)
+                        .Single();
+                    me.SendAesKey = contact.SendAesKey;
+                    me.ReceiveAesKey = contact.ReceiveAesKey;
+                }
+
                 context.SaveChanges();
             }
             Log("Trustification has been done.");
