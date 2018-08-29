@@ -458,7 +458,8 @@ namespace Premy.Chatovatko.Client
             for(int i = startIndex; i != data.Length; i++)
             {
                 builder.Append(data[i]);
-                builder.Append(' ');
+                if(i + 1 != data.Length)
+                    builder.Append(' ');
             }
             return builder.ToString();
         }
