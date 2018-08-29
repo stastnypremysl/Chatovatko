@@ -86,4 +86,5 @@ CREATE TABLE `main`.`settings` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `recepient_id` INT NOT NULL REFERENCES `contacts` (`public_id`),
   `blob` BLOB NOT NULL,
-  `blob_messages_id` INT NULL REFERENCES `blob_messages` (id));
+  `blob_messages_id` INT NULL REFERENCES `blob_messages` (id),
+  `priority` INT NOT NULL);

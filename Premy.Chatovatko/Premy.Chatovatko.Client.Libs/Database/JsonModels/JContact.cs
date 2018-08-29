@@ -22,5 +22,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
         {
             return JsonTypes.CONTACT;
         }
+
+        public long GetPriority()
+        {
+            return 100;
+        }
     }
 }

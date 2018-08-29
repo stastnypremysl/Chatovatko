@@ -328,6 +328,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .HasColumnName("recepient_id")
                     .HasColumnType("INT");
 
+                entity.Property(e => e.Priority)
+                    .HasColumnName("priority")
+                    .HasColumnType("INT");
+
                 entity.HasOne(d => d.BlobMessages)
                     .WithMany(p => p.ToSendMessages)
                     .HasForeignKey(d => d.BlobMessagesId);

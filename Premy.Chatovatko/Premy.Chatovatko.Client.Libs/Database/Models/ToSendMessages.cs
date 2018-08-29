@@ -10,6 +10,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public long RecepientId { get; set; }
         public byte[] Blob { get; set; }
         public long? BlobMessagesId { get; set; }
+        public long Priority { get; set; }
 
         public BlobMessages BlobMessages { get; set; }
         public Contacts Recepient { get; set; }

@@ -58,7 +58,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
             {
                 RecepientId = recepientId,
                 BlobMessagesId = blobId,
-                Blob = JsonEncoder.GetJsonEncoded(context, toSend, recepientId)
+                Blob = JsonEncoder.GetJsonEncoded(context, toSend, recepientId),
+                Priority = toSend.Message.GetPriority()
             });
 
             context.SaveChanges();

@@ -272,12 +272,12 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         {
             if (contactId == this.UserId)
             {
-                throw new ChatovatkoException(this, "You really don't want untrust yourself.");
+                throw new Exception("You really don't want untrust yourself.");
             }
 
             Log("Sending UNTRUST_CONTACT command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
-            TextEncoder.SendInt(stream, contactId);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
+            BinaryEncoder.SendInt(stream, contactId);
             using (Context context = new Context(config))
             {
                 var contact = new UContact(context.Contacts
@@ -297,9 +297,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         {
             Pull();
             Log("Sending TRUST_CONTACT command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
 
-            TextEncoder.SendInt(stream, contactId);
+            BinaryEncoder.SendInt(stream, contactId);
             using (Context context = new Context(config))
             {
                 var contact = new UContact(context.Contacts
@@ -312,7 +312,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
                 if (contact.SendAesKey == null)
                 {
-                    TextEncoder.SendInt(stream, 1);
+                    BinaryEncoder.SendInt(stream, 1);
                     AESPassword password = AESPassword.GenerateAESPassword();
 
                     contact.SendAesKey = password.Password;
@@ -327,7 +327,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 
                 else
                 {
-                    TextEncoder.SendInt(stream, 0);
+                    BinaryEncoder.SendInt(stream, 0);
                 }
 
                 PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
