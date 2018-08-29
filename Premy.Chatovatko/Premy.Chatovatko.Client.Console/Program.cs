@@ -192,27 +192,15 @@ namespace Premy.Chatovatko.Client
                                 break;
 
                             case "search":
-                                if (commandParts.Length < 3)
+                                if (commandParts.Length < 2)
                                 {
                                     WriteNotEnoughParameters();
                                     break;
                                 }
 
-                                SearchCServerCapsula searchCapsula;
-                                switch (commandParts[1])
-                                {
-                                    case "id":
-                                        searchCapsula = connection.SearchContact(Int32.Parse(commandParts[2]));
-                                        break;
-
-                                    case "username":
-                                        searchCapsula = connection.SearchContact(BuildFromRest(commandParts, 2));
-                                        break;
-
-                                    default:
-                                        WriteSyntaxError(commandParts[1]);
-                                        throw new Exception("Syntax error");
-                                }
+                                SearchCServerCapsula searchCapsula = connection.SearchContact(
+                                    GetUserId(commandParts, 1));
+                                
                                 break;
 
                             case "push":
@@ -258,7 +246,7 @@ namespace Premy.Chatovatko.Client
                                             WriteNotEnoughParameters();
                                             break;
                                         }
-                                        DeleteThread(Int32.Parse(commandParts[2]));
+                                        DeleteThread(GetThreadId(commandParts[2]));
                                         break;
                                     
                                     default:
@@ -321,10 +309,10 @@ namespace Premy.Chatovatko.Client
                                 switch (commandParts[1])
                                 {
                                     case "thread":
-                                        PostThread(Int32.Parse(commandParts[2]), BuildFromRest(commandParts, 3));
+                                        PostThread(GetUserId(commandParts[2]), BuildFromRest(commandParts, 3));
                                         break;
                                     case "message":
-                                        PostMessage(Int32.Parse(commandParts[2]), commandParts[3]);
+                                        PostMessage(GetThreadId(commandParts[2]), commandParts[3]);
                                         break;
                                     default:
                                         WriteSyntaxError(commandParts[1]);
@@ -332,22 +320,26 @@ namespace Premy.Chatovatko.Client
                                 }
                                 break;
 
-                            case "rename":
-                                if (commandParts.Length < 4)
+                            case "nickname":
+                                if (commandParts.Length < 3)
                                 {
                                     WriteNotEnoughParameters();
                                     break;
                                 }
-                                switch (commandParts[1])
-                                {
-                                    case "thread":
-                                        RenameThread(Int32.Parse(commandParts[2]), BuildFromRest(commandParts, 3));
-                                        break;
-                                    default:
-                                        WriteSyntaxError(commandParts[1]);
-                                        break;
-                                }
+                                int userId = GetUserId(commandParts[1]);
+                                string nickName = BuildFromRest(commandParts, 2);
+                                SetNickName(userId, nickName);
                                 break;
+
+                            case "rename":
+                                if (commandParts.Length < 3)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                
+                                RenameThread(GetThreadId(commandParts[2]), BuildFromRest(commandParts, 3));
+                                 break;
 
                             case "trust":
                                 if (commandParts.Length < 2)
@@ -356,7 +348,7 @@ namespace Premy.Chatovatko.Client
                                     break;
                                 }
                                 VerifyConnectionOpened(true);
-                                connection.TrustContact(Int32.Parse(commandParts[1]));
+                                connection.TrustContact(GetUserId(commandParts, 1));
                                 break;
 
                             case "untrust":
@@ -366,7 +358,7 @@ namespace Premy.Chatovatko.Client
                                     break;
                                 }
                                 VerifyConnectionOpened(true);
-                                connection.UntrustContact(Int32.Parse(commandParts[1]));
+                                connection.UntrustContact(GetUserId(commandParts, 1));
                                 break;
 
                             case "generate":
@@ -602,7 +594,59 @@ namespace Premy.Chatovatko.Client
             }
         }
 
-        static void Set
+        static int GetUserId(string userTextRaw)
+        {
+            if (Validators.ValidateRegexUserName(userTextRaw))
+            {
+                using(Context context = new Context(config))
+                {
+                    return (int)context.Contacts
+                        .Where(u => u.UserName == userTextRaw)
+                        .Select(u => u.PublicId)
+                        .Single();
+                }
+            }
+            else
+            {
+                return int.Parse(userTextRaw);
+            }
+        }
+
+        static int GetUserId(string[] inputString, int startIndex)
+        {
+            return GetUserId(BuildFromRest(inputString, startIndex));
+        }
+
+        static int GetThreadId(string userTextRaw)
+        {
+            if (!int.TryParse(userTextRaw, out int ret))
+            {
+                using (Context context = new Context(config))
+                {
+                    return (int)context.MessagesThread
+                        .Where(u => u.Name == userTextRaw)
+                        .Select(u => u.Id)
+                        .Single();
+                }
+            }
+            else
+            {
+                return ret;
+            }
+        }
+        
+        static void SetNickName(int userId, string nickName)
+        {
+            using(Context context = new Context(config))
+            {
+                UContact contact = new UContact(
+                    context.Contacts
+                    .Where(u => u.PublicId == userId)
+                    .Single());
+                contact.NickName = nickName;
+                PushOperations.Update(context, contact, settings.UserPublicId, settings.UserPublicId);
+            }
+        }
 
         static bool VerifyConnectionOpened(bool log = false)
         {
