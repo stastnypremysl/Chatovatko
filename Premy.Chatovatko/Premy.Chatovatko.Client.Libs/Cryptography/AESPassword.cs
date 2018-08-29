@@ -12,7 +12,7 @@ namespace Premy.Chatovatko.Client.Libs.Cryptography
         
         public AESPassword(byte[] password)
         {
-            this.password = password;
+            this.password = password ?? throw new Exception("Password can't be null.");
         }
 
         public byte[] Password => password;
