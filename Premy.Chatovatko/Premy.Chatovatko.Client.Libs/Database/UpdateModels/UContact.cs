@@ -36,11 +36,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
 
         public JsonCapsula GetSelfUpdate()
         {
-            return null;
-        }
-
-        public JsonCapsula GetRecepientUpdate()
-        {
             return new JsonCapsula(new JContact()
             {
                 AlarmPermission = this.AlarmPermission,
@@ -52,6 +47,12 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
                 ReceiveAesKey = this.ReceiveAesKey,
                 NickName = this.NickName
             });
+        }
+    
+
+        public JsonCapsula GetRecepientUpdate()
+        {
+            return null;
         }
     }
 }
