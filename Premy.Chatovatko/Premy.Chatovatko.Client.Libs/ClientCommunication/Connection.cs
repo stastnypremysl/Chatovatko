@@ -223,7 +223,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 #endif
                 foreach (var id in capsula.AesKeysUserIds)
                 {
-                    var user = context.Contacts.Where(con => con.PublicId == id).SingleOrDefault();
+                    var user = new UContact(context.Contacts.Where(con => con.PublicId == id).SingleOrDefault());
                     try
                     {
                         user.ReceiveAesKey = RSAEncoder.DecryptAndVerify(BinaryEncoder.ReceiveBytes(stream), MyCertificate, X509Certificate2Utils.ImportFromPem(user.PublicCertificate));
@@ -233,6 +233,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                         Log($"Loading of Receive AESKey from {user.PublicId} has failed.");
                         logger.LogException(this, ex);
                     }
+                    PushOperations.Update(context, user, UserId, UserId);
                 }
                 context.SaveChanges();
 #if (DEBUG)
