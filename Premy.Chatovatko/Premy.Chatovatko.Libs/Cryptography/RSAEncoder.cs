@@ -51,7 +51,7 @@ namespace Premy.Chatovatko.Libs.Cryptography
 
             if(!Verify(decrypted, signiture, senderCert))
             {
-                throw new Exception("The signiture of AES key isn't correct.");
+                throw new Exception("The signiture of data isn't correct.");
             }
             return decrypted;
         }
