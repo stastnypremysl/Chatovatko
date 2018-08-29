@@ -143,7 +143,7 @@ Each thread has its own private id (`id`) and its public id (`public_id`). Priva
 
 Thread writeout can be invoced by
 
-    ls messages <private_thread_id>
+    ls messages <thread>
     
 ##### Posts
 A new thread can be created by
