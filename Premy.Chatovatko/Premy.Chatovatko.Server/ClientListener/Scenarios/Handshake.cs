@@ -17,7 +17,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
 {
     public static class Handshake
     {
-        public static UserCapsula Run(Stream stream, Action<string> log, ServerConfig config)
+        public static ConnectionInfo Run(Stream stream, Action<string> log, ServerConfig config)
         {
             
             ClientHandshake clientHandshake = TextEncoder.ReadJson<ClientHandshake>(stream);
@@ -138,8 +138,8 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             };
             TextEncoder.SendJson(stream, toSend);
 
-            UserCapsula ret = new UserCapsula(user, clientCertificate);
-            log($"Handshake successeded. User {ret.UserName} with id {ret.UserId} has logged in");
+            ConnectionInfo ret = new ConnectionInfo(user, clientCertificate, client.Id);
+            log($"Handshake successeded. User {ret.UserName} with id {ret.UserId} has logged in. Client has id {client.Id}.");
             return ret;
         }
     }

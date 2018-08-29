@@ -22,6 +22,7 @@ using Premy.Chatovatko.Client.Libs.Cryptography;
 using Premy.Chatovatko.Client.Libs.Database.JsonModels;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
@@ -41,7 +42,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         public int UserId { get; private set; }
         public string UserName { get; private set; }
         public int? ClientId { get; private set; }
-        public X509Certificate2 ClientCertificate { get; }
+        public X509Certificate2 MyCertificate { get; }
         public AESPassword SelfAesPassword { get; private set; }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             this.logger = logger;
             this.verificator = verificator;
             this.serverAddress = serverAddress;
-            this.ClientCertificate = clientCertificate;
+            this.MyCertificate = clientCertificate;
             this.UserName = userName;
             this.config = config;
             this.ClientId = null;
@@ -75,7 +76,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             this.logger = logger;
             this.verificator = new ConnectionVerificator(logger, settings.ServerPublicCertificate);
             this.serverAddress = settings.ServerAddress;
-            this.ClientCertificate = settings.ClientCertificate;
+            this.MyCertificate = settings.ClientCertificate;
             this.UserName = settings.UserName;
             this.config = settings.Config;
             this.ClientId = (int)settings.ClientId;
@@ -94,14 +95,14 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
             stream = new SslStream(client.GetStream(), false, verificator.AppCertificateValidation);
             X509CertificateCollection clientCertificates = new X509CertificateCollection();
-            clientCertificates.Add(ClientCertificate);
+            clientCertificates.Add(MyCertificate);
 
             stream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
             logger.Log(this, "SSL authentication completed.");
 
 
             logger.Log(this, "Handshake started.");
-            var handshake = Handshake.Login(logger, stream, ClientCertificate, password, UserName, ClientId);
+            var handshake = Handshake.Login(logger, stream, MyCertificate, password, UserName, ClientId);
             logger.Log(this, "Handshake successeded.");
 
             UserName = handshake.UserName;
@@ -190,47 +191,44 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         public void Pull()
         {
             Log("Sending PULL command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.PULL);
-
-            ServerPullCapsula capsula = TextEncoder.ReadPullCapsula(stream);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
 #if (DEBUG)
-            Log("Received PullCapsula.");
+            Log("Sending ClientPullCapsula.");
+#endif
+            ClientPullCapsula clientCapsula;
+            using (Context context = new Context(config))
+            {
+                clientCapsula = new ClientPullCapsula()
+                {
+                    AesKeysUserIds = context.Contacts
+                        .Where(u => u.ReceiveAesKey == null)
+                        .Select(u => u.PublicId)
+                        .ToArray()
+                };
+            }
+            TextEncoder.SendJson(stream, clientCapsula);
+
+            ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
+#if (DEBUG)
+            Log("Received ServerPullCapsula.");
 #endif
             using (Context context = new Context(config))
             {
-#if (DEBUG)
-                Log("Saving new users.");
-#endif
-                foreach (PullUser user in capsula.Users)
-                {
-                    context.Contacts.Add(new Contacts
-                    {
-                        PublicId = user.UserId,
-                        PublicCertificate = user.PublicCertificate,
-                        UserName = user.UserName
-                    });
-                }
-                context.SaveChanges();
-
-#if (DEBUG)
-                Log("Saving trusted contacts.");
-#endif
-                context.Database.ExecuteSqlCommand("update CONTACTS set TRUSTED=0;");
-                context.SaveChanges();
-
-                foreach (var user in context.Contacts
-                    .Where(users => capsula.TrustedUserIds.Contains(users.PublicId)))
-                {
-                    user.Trusted = 1;
-                }
-                context.SaveChanges();
 #if (DEBUG)
                 Log("Receiving and saving AES keys.");
 #endif
                 foreach (var id in capsula.AesKeysUserIds)
                 {
                     var user = context.Contacts.Where(con => con.PublicId == id).SingleOrDefault();
-                    user.ReceiveAesKey = RSAEncoder.DecryptAndVerify(BinaryEncoder.ReceiveBytes(stream), ClientCertificate);
+                    try
+                    {
+                        user.ReceiveAesKey = RSAEncoder.DecryptAndVerify(BinaryEncoder.ReceiveBytes(stream), MyCertificate, X509Certificate2Utils.ImportFromPem(user.PublicCertificate));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Loading of Receive AESKey from {user.PublicId} has failed.");
+                        logger.LogException(this, ex);
+                    }
                 }
                 context.SaveChanges();
 #if (DEBUG)
@@ -321,7 +319,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                         .Where(u => u.PublicId == contactId)
                         .Select(u => u.PublicCertificate)
                         .SingleOrDefault());
-                    BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(password.Password, recepientCert, ClientCertificate));
+                    BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(password.Password, recepientCert, MyCertificate));
 
                 }
                 

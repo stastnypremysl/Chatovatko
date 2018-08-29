@@ -6,17 +6,19 @@ using System.Text;
 
 namespace Premy.Chatovatko.Server.Database
 {
-    public class UserCapsula
+    public class ConnectionInfo
     {
-        public UserCapsula(Users user, X509Certificate2 cert)
+        public ConnectionInfo(Users user, X509Certificate2 cert, int clientId)
         {
             UserId = user.Id;
             UserName = user.UserName;
             Certificate = cert;
+            ClientId = clientId;
         }
 
         public int UserId { get; }
         public string UserName { get; }
+        public int ClientId { get; }
         public X509Certificate2 Certificate {get; }
     }
 }

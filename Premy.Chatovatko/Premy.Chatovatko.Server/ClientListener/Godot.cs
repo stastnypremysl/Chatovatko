@@ -20,6 +20,7 @@ using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
 
 namespace Premy.Chatovatko.Server.ClientListener
 {
@@ -33,7 +34,7 @@ namespace Premy.Chatovatko.Server.ClientListener
         private readonly GodotCounter godotCounter;
 
         private readonly ServerConfig config;
-        private UserCapsula user;
+        private ConnectionInfo connectionInfo;
         
 
         public Godot(ulong id, Logger logger, ServerConfig config, X509Certificate2 serverCert, GodotCounter godotCounter)
@@ -62,7 +63,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 stream.AuthenticateAsServer(serverCert, true, SslProtocols.Tls12, false);
 
                 logger.Log(this, "SSL authentication completed. Starting Handshake.");
-                this.user = Handshake.Run(stream, Log, config);
+                this.connectionInfo = Handshake.Run(stream, Log, config);
 
 
                 bool running = true;
@@ -157,12 +158,12 @@ namespace Premy.Chatovatko.Server.ClientListener
                     {
                         Content = BinaryEncoder.ReceiveBytes(stream),
                         RecepientId = (int)messageRecepientId,
-                        SenderId = user.UserId
+                        SenderId = connectionInfo.UserId
                     };
                     context.BlobMessages.Add(blobMessage);
                     context.SaveChanges();
 
-                    if (messageRecepientId == user.UserId)
+                    if (messageRecepientId == connectionInfo.UserId)
                     {
                         response.MessageIds.Add(blobMessage.Id);
                         messagesIdsUploaded.Add(blobMessage.Id);
@@ -175,7 +176,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                 foreach(var toDeleteId in capsula.messageToDeleteIds)
                 {
                     var toDelete = context.BlobMessages
-                        .Where(u => u.RecepientId == user.UserId && u.Id == toDeleteId).SingleOrDefault();
+                        .Where(u => u.RecepientId == connectionInfo.UserId && u.Id == toDeleteId).SingleOrDefault();
                     if(toDelete != null)
                     { 
                         context.BlobMessages.Remove(toDelete);
@@ -199,47 +200,24 @@ namespace Premy.Chatovatko.Server.ClientListener
 #if (DEBUG)
             Log("Pushing started.");
 #endif
+            ClientPullCapsula clientPullCapsula = TextEncoder.ReadJson<ClientPullCapsula>(stream);
+
             using (Context context = new Context(config))
             {
                 ServerPullCapsula capsula = new ServerPullCapsula();
 
-                List<PullUser> pullUsers = new List<PullUser>();
-                foreach (Users user in context.Users.Where(u => !userIdsUploaded.Contains(u.Id)))
-                {
-                    PullUser pullUser = new PullUser()
-                    {
-                        PublicCertificate = user.PublicCertificate,
-                        UserId = user.Id,
-                        UserName = user.UserName
-                    };
-                    pullUsers.Add(pullUser);
-                    userIdsUploaded.Add(user.Id);
-                }
-                capsula.Users = pullUsers;
-#if (DEBUG)
-                Log($"{pullUsers.Count} users will be pushed.");
-#endif
-
-                capsula.TrustedUserIds = new List<long>();
-                foreach (var userId in (
-                    from userKeys in context.UsersKeys
-                    where userKeys.Trusted == true && userKeys.SenderId == user.UserId
-                    select new { userKeys.RecepientId }))
-                {
-                    capsula.TrustedUserIds.Add(userId.RecepientId);
-                }
-#if (DEBUG)
-                Log($"{capsula.TrustedUserIds.Count} users is trusted by host.");
-#endif
-
                 List<byte[]> messagesBlobsToSend = new List<byte[]>();
                 List<byte[]> aesBlobsToSend = new List<byte[]>();
+
+                var messagesIdsUploaded = context.ClientsMessagesDownloaded
+                    .Where(u => u.ClientsId == connectionInfo.ClientId)
+                    .Select(u => u.BlobMessagesId);
 
                 List<PullMessage> pullMessages = new List<PullMessage>();
                 foreach (var message in
                     from messages in context.BlobMessages
-                    orderby messages.Id ascending //Message order must be respected
-                    where messages.RecepientId == user.UserId //Messages of connected user
+                    orderby messages.Priority descending, messages.Id ascending //Message order must be respected
+                    where messages.RecepientId == connectionInfo.UserId //Messages of connected user
                     where !messagesIdsUploaded.Contains(messages.Id) //New messages
 
                     join keys in context.UsersKeys on messages.RecepientId equals keys.SenderId //Keys sended by connected user
@@ -254,7 +232,11 @@ namespace Premy.Chatovatko.Server.ClientListener
                         SenderId = message.SenderId
                     });
                     messagesBlobsToSend.Add(message.Content);
-                    messagesIdsUploaded.Add(message.Id);
+                    context.ClientsMessagesDownloaded.Add(new ClientsMessagesDownloaded()
+                    {
+                        BlobMessagesId = message.Id,
+                        ClientsId = connectionInfo.ClientId
+                    });
                 }
                 capsula.Messages = pullMessages;
 #if (DEBUG)
@@ -263,13 +245,12 @@ namespace Premy.Chatovatko.Server.ClientListener
                 capsula.AesKeysUserIds = new List<long>();
                 foreach (var user in
                     from userKeys in context.UsersKeys
-                    where userKeys.RecepientId == user.UserId
-                    where !aesKesUserIdsUploaded.Contains(userKeys.SenderId)
-                    select new { userKeys.SenderId, userKeys.EncryptedAesKey })
+                    where userKeys.RecepientId == connectionInfo.UserId
+                    where clientPullCapsula.AesKeysUserIds.Contains(userKeys.SenderId)
+                    select new { userKeys.SenderId, userKeys.AesKey })
                 {
                     capsula.AesKeysUserIds.Add(user.SenderId);
-                    aesKesUserIdsUploaded.Add(user.SenderId);
-                    aesBlobsToSend.Add(user.EncryptedAesKey);
+                    aesBlobsToSend.Add(user.AesKey);
                 }
 #if (DEBUG)
                 Log($"{capsula.AesKeysUserIds.Count} AES keys will be pushed.");
@@ -290,7 +271,8 @@ namespace Premy.Chatovatko.Server.ClientListener
                 {
                     BinaryEncoder.SendBytes(stream, data);
                 }
-
+                stream.Flush();
+                context.SaveChanges();
             }
 #if (DEBUG)
             Log("Pushing completed.");
@@ -305,7 +287,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             {
                 var key = context.UsersKeys
                     .Where(u => u.RecepientId == recepientId)
-                    .Where(u => u.SenderId == user.UserId)
+                    .Where(u => u.SenderId == connectionInfo.UserId)
                     .SingleOrDefault();
                 if(key != null)
                 {
@@ -323,7 +305,7 @@ namespace Premy.Chatovatko.Server.ClientListener
             {
                 var key = context.UsersKeys
                     .Where(u => u.RecepientId == recepientId)
-                    .Where(u => u.SenderId == user.UserId)
+                    .Where(u => u.SenderId == connectionInfo.UserId)
                     .SingleOrDefault();
                 if(BinaryEncoder.ReadInt(stream) == 0)
                 {
@@ -344,7 +326,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                         key = new UsersKeys()
                         {
                             RecepientId = recepientId,
-                            SenderId = user.UserId,
+                            SenderId = connectionInfo.UserId,
                             AesKey = aesKey,
                             Trusted = true
                         };
