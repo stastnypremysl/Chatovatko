@@ -198,8 +198,16 @@ namespace Premy.Chatovatko.Client
                                     break;
                                 }
 
-                                SearchCServerCapsula searchCapsula = connection.SearchContact(
-                                    GetUserId(commandParts, 1));
+                                SearchCServerCapsula searchCapsula;
+
+                                if (Validators.ValidateRegexUserName(commandParts[1]))
+                                {
+                                    searchCapsula = connection.SearchContact(commandParts[1]);
+                                }
+                                else
+                                {
+                                    searchCapsula = connection.SearchContact(Int32.Parse(commandParts[1]));
+                                }
 
                                 PrintSearchCapsula(searchCapsula);
                                 Write("Do you trust this is the searched user, and do you want to save him? (y/n): ");
