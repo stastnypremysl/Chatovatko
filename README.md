@@ -52,7 +52,7 @@ Server uses **TCP** in ports **8470-8472**.
     
 ### Console client
 #### Convenstion
-`<user>` means `<user_id>` or `<user_name>. <thread> means <private_thread_id> or <thread_name>, which doesn't contain any space and isn't number.
+`<user>` means `<user_id>` or `<user_name>`. `<thread>` means `<private_thread_id>` or **unique** `<thread_name>`, which doesn't contain any space and isn't number.
 #### Installation
 As it was in server installation, install [`.NET Core 2.1`](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) haven't done it already. There are no more prerequsities. Just run:
 
