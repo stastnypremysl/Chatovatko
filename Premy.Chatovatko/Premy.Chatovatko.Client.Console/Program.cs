@@ -47,6 +47,7 @@ namespace Premy.Chatovatko.Client
                 {
                     Log("Settings exists and will be loaded.");
                     settings = settingsLoader.GetSettingsCapsula();
+                    connection = new Connection(logger, settings);
                 }
                 else
                 {
