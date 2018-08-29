@@ -14,5 +14,9 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
         {
             return JsonTypes.MESSAGES;
         }
+        public long GetPriority()
+        {
+            return 10;
+        }
     }
 }

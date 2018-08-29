@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
+using System;
 using System.Collections.Generic;
 
 namespace Premy.Chatovatko.Server.Database.Models
 {
-    public partial class Users
+    public partial class Users : IUser
     {
         public Users()
         {
@@ -15,7 +16,7 @@ namespace Premy.Chatovatko.Server.Database.Models
 
         public int Id { get; set; }
         public string PublicCertificate { get; set; }
-        public byte[] PublicCertificateSha1 { get; set; }
+        public byte[] PublicCertificateSha256 { get; set; }
         public string UserName { get; set; }
 
         public ICollection<BlobMessages> BlobMessagesRecepient { get; set; }

@@ -64,5 +64,30 @@ namespace Premy.Chatovatko.Libs.DataTransmission
                 }
             }
         }
+
+
+        public static int ReadInt(Stream stream)
+        {
+            byte[] readed = new byte[4];
+            stream.Read(readed, 0, 4);
+            return BitConverter.ToInt32(readed, 0);
+        }
+
+        public static void SendInt(Stream stream, int toSend)
+        {
+            byte[] data = BitConverter.GetBytes(toSend);
+            stream.Write(data, 0, 4);
+        }
+
+        public static void SendCommand(Stream stream, ConnectionCommand command)
+        {
+            SendInt(stream, (int)command);
+        }
+
+        public static ConnectionCommand ReadCommand(Stream stream)
+        {
+            int readed = ReadInt(stream);
+            return (ConnectionCommand)readed;
+        }
     }
 }

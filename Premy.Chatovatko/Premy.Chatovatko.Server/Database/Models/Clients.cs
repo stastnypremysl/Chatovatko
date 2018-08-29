@@ -9,5 +9,6 @@ namespace Premy.Chatovatko.Server.Database.Models
         public int UserId { get; set; }
 
         public Users User { get; set; }
+        public ICollection<ClientsMessagesDownloaded> ClientsMessagesDownloaded { get; set; }
     }
 }

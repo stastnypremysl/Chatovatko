@@ -6,7 +6,6 @@ using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.DataTransmission;
-using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization;
 using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,6 +20,10 @@ using Premy.Chatovatko.Client.Libs.Database;
 using Premy.Chatovatko.Client.Libs.Cryptography;
 using Premy.Chatovatko.Client.Libs.Database.JsonModels;
 using Premy.Chatovatko.Libs.Cryptography;
+using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Push;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
@@ -40,7 +43,8 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         public int UserId { get; private set; }
         public string UserName { get; private set; }
         public int? ClientId { get; private set; }
-        public X509Certificate2 ClientCertificate { get; }
+        public X509Certificate2 MyCertificate { get; }
+        public AESPassword SelfAesPassword { get; private set; }
 
         /// <summary>
         /// Constructor for init operations.
@@ -56,7 +60,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             this.logger = logger;
             this.verificator = verificator;
             this.serverAddress = serverAddress;
-            this.ClientCertificate = clientCertificate;
+            this.MyCertificate = clientCertificate;
             this.UserName = userName;
             this.config = config;
             this.ClientId = null;
@@ -73,7 +77,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             this.logger = logger;
             this.verificator = new ConnectionVerificator(logger, settings.ServerPublicCertificate);
             this.serverAddress = settings.ServerAddress;
-            this.ClientCertificate = settings.ClientCertificate;
+            this.MyCertificate = settings.ClientCertificate;
             this.UserName = settings.UserName;
             this.config = settings.Config;
             this.ClientId = (int)settings.ClientId;
@@ -84,7 +88,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             return isConnected && stream.IsEncrypted;
         }
 
-        public void Connect()
+        public void Connect(String password = null)
         {
 
             client = new TcpClient(serverAddress, ServerPort);
@@ -92,70 +96,45 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
             stream = new SslStream(client.GetStream(), false, verificator.AppCertificateValidation);
             X509CertificateCollection clientCertificates = new X509CertificateCollection();
-            clientCertificates.Add(ClientCertificate);
+            clientCertificates.Add(MyCertificate);
 
             stream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
             logger.Log(this, "SSL authentication completed.");
 
 
             logger.Log(this, "Handshake started.");
-            var handshake = Handshake.Login(logger, stream, ClientCertificate, UserName, ClientId);
+            var handshake = Handshake.Login(logger, stream, MyCertificate, password, UserName, ClientId);
             logger.Log(this, "Handshake successeded.");
 
             UserName = handshake.UserName;
             UserId = handshake.UserId;
             ClientId = handshake.ClientId;
+            SelfAesPassword = handshake.SelfAesPassword;
             logger.Log(this, $"User {UserName} has id {UserId}. Client has id {ClientId}.");
 
-            InitSync();
             isConnected = true;
-
-            Pull();
-            Push();
-
         }
-
-        private void InitSync()
-        {
-            logger.Log(this, "Initializating synchronization");
-            InitClientSync toSend;
-            using (Context context = new Context(config))
-            {
-                toSend = new InitClientSync()
-                {
-                    UserIds = context.Contacts.Select(c => c.PublicId).ToList(),
-                    AesKeysUserIds = context.Contacts.Where(c => c.ReceiveAesKey != null).Select(c => c.PublicId).ToList(),
-                    PublicBlobMessagesIds = context.BlobMessages.Where(bm => bm.PublicId != null).Select(bm => bm.PublicId).ToList()
-                };
-
-            }
-            TextEncoder.SendJson(stream, toSend);
-
-            logger.Log(this, "Initialization of synchronization done");
-        }
-
+        
         public void Disconnect()
         {
             Log("Sending END_CONNECTION command.");
             isConnected = false;
-            TextEncoder.SendCommand(stream, ConnectionCommand.END_CONNECTION);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.END_CONNECTION);
             stream.Close();
             client.Close();
         }
 
         public void Push()
         {
+            ThrowExceptionIfNotConnected();
             Log("Sending PUSH command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.PUSH);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.PUSH);
             using (Context context = new Context(config))
             {
                 List<long> selfMessages = new List<long>();
                 var toSend = context.ToSendMessages.ToList();
 
-                PushCapsula capsula = new PushCapsula()
-                {
-                    recepientIds = new List<long>()
-                };
+                PushCapsula capsula = new PushCapsula();
 
                 foreach (var message in toSend)
                 {
@@ -163,14 +142,18 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     {
                         selfMessages.Add((long)message.BlobMessagesId);
                     }
-                    capsula.recepientIds.Add(message.RecepientId);
+                    capsula.PushMessages.Add(new PushMessage()
+                    {
+                        RecepientId = (int)message.RecepientId,
+                        Priority = (int)message.Priority
+                    });
                 }
-                capsula.messageToDeleteIds = context.BlobMessages
+                capsula.MessageToDeleteIds = context.BlobMessages
                     .Where(u => u.DoDelete == 1)
                     .Select(u => (long)u.PublicId).ToList();
 
 #if (DEBUG)
-                Log($"Sending capsula with {toSend.Count} messages. {capsula.messageToDeleteIds.Count} will be deleted.");
+                Log($"Sending capsula with {toSend.Count} messages. {capsula.MessageToDeleteIds.Count} will be deleted.");
 #endif
                 TextEncoder.SendJson(stream, capsula);
 #if (DEBUG)
@@ -200,7 +183,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 Log("Cleaning queue.");
 #endif
                 context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
-                context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1;;");
+                context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1 and PUBLIC_ID<>null;;");
                 context.SaveChanges();
 
             }
@@ -210,48 +193,47 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Pull()
         {
+            ThrowExceptionIfNotConnected();
             Log("Sending PULL command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.PULL);
-
-            PullCapsula capsula = TextEncoder.ReadPullCapsula(stream);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
 #if (DEBUG)
-            Log("Received PullCapsula.");
+            Log("Sending ClientPullCapsula.");
+#endif
+            ClientPullCapsula clientCapsula;
+            using (Context context = new Context(config))
+            {
+                clientCapsula = new ClientPullCapsula()
+                {
+                    AesKeysUserIds = context.Contacts
+                        .Where(u => u.ReceiveAesKey == null)
+                        .Select(u => u.PublicId)
+                        .ToArray()
+                };
+            }
+            TextEncoder.SendJson(stream, clientCapsula);
+
+            ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
+#if (DEBUG)
+            Log("Received ServerPullCapsula.");
 #endif
             using (Context context = new Context(config))
             {
-#if (DEBUG)
-                Log("Saving new users.");
-#endif
-                foreach (PullUser user in capsula.Users)
-                {
-                    context.Contacts.Add(new Contacts
-                    {
-                        PublicId = user.UserId,
-                        PublicCertificate = user.PublicCertificate,
-                        UserName = user.UserName
-                    });
-                }
-                context.SaveChanges();
-
-#if (DEBUG)
-                Log("Saving trusted contacts.");
-#endif
-                context.Database.ExecuteSqlCommand("update CONTACTS set TRUSTED=0;");
-                context.SaveChanges();
-
-                foreach (var user in context.Contacts
-                    .Where(users => capsula.TrustedUserIds.Contains(users.PublicId)))
-                {
-                    user.Trusted = 1;
-                }
-                context.SaveChanges();
 #if (DEBUG)
                 Log("Receiving and saving AES keys.");
 #endif
                 foreach (var id in capsula.AesKeysUserIds)
                 {
-                    var user = context.Contacts.Where(con => con.PublicId == id).SingleOrDefault();
-                    user.ReceiveAesKey = RSAEncoder.Decrypt(BinaryEncoder.ReceiveBytes(stream), ClientCertificate);
+                    var user = new UContact(context.Contacts.Where(con => con.PublicId == id).SingleOrDefault());
+                    try
+                    {
+                        user.ReceiveAesKey = RSAEncoder.DecryptAndVerify(BinaryEncoder.ReceiveBytes(stream), MyCertificate, X509Certificate2Utils.ImportFromPem(user.PublicCertificate));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Loading of Receive AESKey from {user.PublicId} has failed.");
+                        logger.LogException(this, ex);
+                    }
+                    PushOperations.Update(context, user, UserId, UserId);
                 }
                 context.SaveChanges();
 #if (DEBUG)
@@ -291,20 +273,25 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void UntrustContact(int contactId)
         {
+            ThrowExceptionIfNotConnected();
             if (contactId == this.UserId)
             {
-                throw new ChatovatkoException(this, "You really don't want untrust yourself.");
+                throw new Exception("You really don't want untrust yourself.");
             }
 
             Log("Sending UNTRUST_CONTACT command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
-            TextEncoder.SendInt(stream, contactId);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
+            BinaryEncoder.SendInt(stream, contactId);
             using (Context context = new Context(config))
             {
-                var contact = context.Contacts
+                var contact = new UContact(context.Contacts
                     .Where(u => u.PublicId == contactId)
-                    .SingleOrDefault();
-                contact.Trusted = 0;
+                    .SingleOrDefault())
+                {
+                    Trusted = false
+                };
+
+                PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
 
                 context.SaveChanges();
             }
@@ -312,36 +299,103 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void TrustContact(int contactId)
         {
+            ThrowExceptionIfNotConnected();
             Pull();
             Log("Sending TRUST_CONTACT command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
 
-            TextEncoder.SendInt(stream, contactId);
+            BinaryEncoder.SendInt(stream, contactId);
             using (Context context = new Context(config))
             {
-                var contact = context.Contacts
+                var contact = new UContact(context.Contacts
                     .Where(u => u.PublicId == contactId)
-                    .SingleOrDefault();
-                contact.Trusted = 1;
-                context.SaveChanges();
+                    .SingleOrDefault())
+                {
+                    Trusted = true
+                };
+
 
                 if (contact.SendAesKey == null)
                 {
+                    Log("Sending new key.");
+                    BinaryEncoder.SendInt(stream, 1);
                     AESPassword password = AESPassword.GenerateAESPassword();
-                    JAESKey key = new JAESKey(contactId, password);
-                    PushOperations.SendIJType(context, key, UserId, UserId);
 
-                    X509Certificate2 cert = X509Certificate2Utils.ImportFromPem(
+                    contact.SendAesKey = password.Password;
+                    X509Certificate2 recepientCert = X509Certificate2Utils.ImportFromPem(
                         context.Contacts
                         .Where(u => u.PublicId == contactId)
                         .Select(u => u.PublicCertificate)
                         .SingleOrDefault());
-                    BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(password.Password, cert));
 
-                    context.SaveChanges();
+                    byte[] toSend = RSAEncoder.EncryptAndSign(password.Password, recepientCert, MyCertificate);
+                    BinaryEncoder.SendBytes(stream, toSend);
+
                 }
+                else
+                {
+                    Log("No new key will be sended.");
+                    BinaryEncoder.SendInt(stream, 0);
+                }
+
+                if (contactId != this.UserId)
+                {
+                    PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
+                }
+                else
+                {
+                    var me = context.Contacts
+                        .Where(u => u.PublicId == UserId)
+                        .Single();
+                    me.SendAesKey = contact.SendAesKey;
+                    me.ReceiveAesKey = contact.ReceiveAesKey;
+                }
+
+                context.SaveChanges();
             }
+            Log("Trustification has been done.");
             Push();
+        }
+
+        public SearchCServerCapsula SearchContact(int publicId)
+        {
+            return SearchContact(new SearchCClientCapsula()
+            {
+                UserId = publicId
+            });
+        }
+
+        public SearchCServerCapsula SearchContact(String username)
+        {
+            return SearchContact(new SearchCClientCapsula()
+            {
+                UserName = username
+            });
+        }
+
+        public SearchCServerCapsula SearchContact(byte[] certificateHash)
+        {
+            return SearchContact(new SearchCClientCapsula()
+            {
+                CertificateHash = certificateHash
+            });
+        }
+
+        public SearchCServerCapsula SearchContact(SearchCClientCapsula searchCClientCapsula)
+        {
+            ThrowExceptionIfNotConnected();
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.SEARCH_CONTACT);
+
+            TextEncoder.SendJson(stream, searchCClientCapsula);
+            return TextEncoder.ReadJson<SearchCServerCapsula>(stream);
+        }
+
+        private void ThrowExceptionIfNotConnected()
+        {
+            if (!IsConnected())
+            {
+                throw new Exception("The connection is disconnected.");
+            }
         }
 
 

@@ -51,6 +51,8 @@ When everything is ready, run server with this command
 Server uses **TCP** in ports **8470-8472**.
     
 ### Console client
+#### Convenstion
+`<user>` means `<user_id>` or `<user_name>. <thread> means <private_thread_id> or <thread_name>, which doesn't contain any space and isn't number.
 #### Installation
 As it was in server installation, install [`.NET Core 2.1`](https://www.microsoft.com/net/learn/get-started-with-dotnet-tutorial#install) haven't done it already. There are no more prerequsities. Just run:
 
@@ -62,7 +64,9 @@ There are two inicialization commands:
 
     init new <server_address>
 
-This one will generate new p12 certificate and you will be asked to enter path to save it. **It is necessary to keep it SAFE!** After that you will be asked to enter your new unique username.
+This one will generate new p12 certificate and you will be asked to enter path to save it. 
+**It is necessary to keep it SAFE!** After that you will be asked to enter your new unique username.
+Username must be 4 chars at least long and can't be longer than 45 chars. It must match regex ^[a-zA-Z][-a-zA-Z0-9_]+$.
 
     init login <server_address>
     
@@ -102,10 +106,16 @@ Almost all changes are kept in local database. It is necessary to push them on s
     push
     pull
     
+##### Searching and saving contacts
+You must find, verify and save a contact to your chain (user's private database),
+if you want to do any further operation with the user. To do so, please enter to your console 
+
+    search <user>
+
 ##### Trutification
 Before you can send messages to an user, you must trustify him. To do so, enter
 
-    trust <user_id>
+    trust <user>
 
 This will send server information, that you trust this user and it will generate confirmatory message to user's chain. If you've done this first time, it will also create new AES key and send it encryped to server. The key is for encrypting your messages for the user and for his ability of reading it.
 
@@ -113,7 +123,7 @@ The user must have trustifed you to receive your messages.
 
 If you change your mind and want to untrust some user, just enter to console
 
-    untrust <user_id>
+    untrust <user>
     
 Please, remember the already loaded messages from untrusted users will not be loaded again after database deletion.
 
@@ -121,7 +131,7 @@ Please, remember the already loaded messages from untrusted users will not be lo
 These commands will be always executed offline and it is necessary to pull/push to keep everything up-to-date.
 
 ##### Lists
-To list all users, please enter
+To list all saved users, please enter
 
     ls users
      
@@ -133,18 +143,18 @@ Each thread has its own private id (`id`) and its public id (`public_id`). Priva
 
 Thread writeout can be invoced by
 
-    ls messages <private_thread_id>
+    ls messages <thread>
     
 ##### Posts
 A new thread can be created by
 
-    post thread <user_id> <name>
+    post thread <user> <name>
 
 Please, keep in mind, a name can't contain double space.
 
 To send new message, please enter
 
-    post message <private_thread_id> <eof>
+    post message <thread> <eof>
     ......................
     ....message content...
     ......................
@@ -155,15 +165,27 @@ Remember that `<eof>` cannot contain any space.
 ##### Rename
 A thread can be renamed by
 
-    rename thread <private_thread_id> <name>
+    rename <thread> <name>
     
 The rule for `<name>` are same as you were creating new thread.
+
+##### Nickname
+User's nick name can be set using command
+
+    nickname <user> <nick_name>
+
+A nick name can't contain double space.
 
 ##### Delete
 To delete message thread, please enter
 
-    delete thread <private_thread_id>
+    delete thread <thread>
      
 Messages can be deleted by
 
     delete message <message_id> 
+
+##### Hash
+If you want to compute SHA-256 hash of your certificate, use
+
+    hash

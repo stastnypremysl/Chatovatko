@@ -8,8 +8,8 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
     public interface IUpdateModel
     {
         UpdateModelTypes GetModelType();
-        IJType GetSelfUpdate();
-        IJType GetRecepientUpdate();
+        JsonCapsula GetSelfUpdate();
+        JsonCapsula GetRecepientUpdate();
 
     }
 }

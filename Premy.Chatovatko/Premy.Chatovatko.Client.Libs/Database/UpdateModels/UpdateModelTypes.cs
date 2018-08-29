@@ -6,7 +6,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
 {
     public enum UpdateModelTypes
     {
-        CONTACT_DETAIL,
+        CONTACT,
         MESSAGE_THREAD
     }
 }

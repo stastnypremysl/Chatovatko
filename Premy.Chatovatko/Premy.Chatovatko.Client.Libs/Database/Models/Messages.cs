@@ -10,6 +10,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public string Text { get; set; }
         public string Date { get; set; }
         public long BlobMessagesId { get; set; }
+        public byte[] Attechment { get; set; }
 
         public BlobMessages BlobMessages { get; set; }
         public MessagesThread IdMessagesThreadNavigation { get; set; }

@@ -14,11 +14,11 @@ namespace Premy.Chatovatko.Client.Libs.Database
     {
         public static void ParseEncryptedMessage(Context context, byte[] message, long senderId, long messageId, long myUserId)
         {
-            IJType decoded = JsonEncoder.GetJsonDecoded(context, message, senderId);
+            JsonCapsula decoded = JsonEncoder.GetJsonDecoded(context, message, senderId);
             ParseIJTypeMessage(context, decoded, senderId, messageId, myUserId);    
         }
 
-        public static void ParseIJTypeMessage(Context context, IJType decoded, long senderId, long messageId, long myUserId)
+        public static void ParseIJTypeMessage(Context context, JsonCapsula decoded, long senderId, long messageId, long myUserId)
         {
             if(decoded == null)
             {
@@ -33,13 +33,13 @@ namespace Premy.Chatovatko.Client.Libs.Database
             }
 
             bool permission = senderId == myUserId;
-            switch (decoded.GetJsonType())
+            switch (decoded.Message.GetJsonType())
             {
                 case JsonTypes.ALARM:
-                    JAlarm alarm = (JAlarm)decoded;
+                    JAlarm alarm = (JAlarm)decoded.Message;
                     permission = permission || 
-                        context.ContactsDetail
-                        .Where(u => u.ContactId == senderId)
+                        context.Contacts
+                        .Where(u => u.PublicId == senderId)
                         .Select(u => u.AlarmPermission)
                         .SingleOrDefault() == 1;
 
@@ -59,36 +59,44 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     }
                     break;
 
-                case JsonTypes.CONTACT_DETAIL:
-                    JContactDetail detail = (JContactDetail)decoded;
-                    permission = permission ||
-                       context.ContactsDetail
-                       .Where(u => u.ContactId == senderId)
-                       .Select(u => u.ChangeContactsPermission)
-                       .SingleOrDefault() == 1;
-
+                case JsonTypes.CONTACT:
+                    JContact detail = (JContact)decoded.Message;
+                    
                     if (permission)
                     {
-                        var toUpdate = context.ContactsDetail
-                            .Where(u => u.ContactId == detail.ContactId)
+                        var toUpdate = context.Contacts
+                            .Where(u => u.PublicId == detail.PublicId)
                             .SingleOrDefault();
                         if(toUpdate != null)
                         {
                             toUpdate.NickName = detail.NickName;
-                            toUpdate.BlobMessagesId = messageId;
+                            toUpdate.PublicCertificate = detail.PublicCertificate;
                             toUpdate.AlarmPermission = detail.AlarmPermission ? 1 : 0;
-                            toUpdate.ChangeContactsPermission = detail.ChangeContactPermission;
+                            toUpdate.PublicId = detail.PublicId;
+
+                            toUpdate.ReceiveAesKey = detail.ReceiveAesKey;
+                            toUpdate.SendAesKey = detail.SendAesKey;
+                            toUpdate.UserName = detail.UserName;
+                            toUpdate.Trusted = detail.Trusted ? 1 : 0;
+
+                            toUpdate.BlobMessagesId = messageId;
                         }
                         else
                         { 
-                            context.ContactsDetail.Add(new ContactsDetail()
+                            context.Contacts.Add(new Contacts()
                             {
-                                AlarmPermission = detail.ChangeContactPermission,
                                 NickName = detail.NickName,
-                                BlobMessagesId = messageId,
-                                ContactId = detail.ContactId,
-                                ChangeContactsPermission = detail.ChangeContactPermission
-                        });
+                                PublicCertificate = detail.PublicCertificate,
+                                AlarmPermission = detail.AlarmPermission ? 1 : 0,
+                                PublicId = detail.PublicId,
+
+                                ReceiveAesKey = detail.ReceiveAesKey,
+                                SendAesKey = detail.SendAesKey,
+                                UserName = detail.UserName,
+                                Trusted = detail.Trusted ? 1 : 0,
+
+                                BlobMessagesId = messageId                                
+                            });
                         }
                         context.SaveChanges();
                     }
@@ -99,7 +107,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     break;
 
                 case JsonTypes.MESSAGES:
-                    JMessage jmessage = (JMessage)decoded;
+                    JMessage jmessage = (JMessage)decoded.Message;
                     long threadWithUser =(
                        from threads in context.MessagesThread
                        where threads.PublicId == jmessage.MessageThreadId
@@ -155,7 +163,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     break;
 
                 case JsonTypes.MESSAGES_THREAD:
-                    JMessageThread messageThread = (JMessageThread)decoded;
+                    JMessageThread messageThread = (JMessageThread)decoded.Message;
                     permission = permission || (messageThread.WithUserId == senderId && !messageThread.DoOnlyDelete);
                     if (permission)
                     {
@@ -174,7 +182,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                         {
                             old.Name = messageThread.Name;
                             old.BlobMessagesId = messageId;
-                            old.Archived = messageThread.Archived;
+                            old.Archived = messageThread.Archived ? 1 : 0;
                         }
                         else                        
                         { 
@@ -182,8 +190,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
                             {
                                 Name = messageThread.Name,
                                 PublicId = messageThread.PublicId,
-                                Onlive = messageThread.Onlive,
-                                Archived = messageThread.Archived,
+                                Onlive = messageThread.Onlive ? 1 : 0,
+                                Archived = messageThread.Archived ? 1 : 0,
                                 WithUser = messageThread.WithUserId,
                                 BlobMessagesId = messageId
                             });
@@ -196,25 +204,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
                     }
                     break;
 
-                case JsonTypes.AES_KEY:
-                    JAESKey aesKey = (JAESKey)decoded;
-                    if (permission)
-                    {
-                        var contact = context.Contacts
-                            .Where(c => c.PublicId == aesKey.UserId)
-                            .SingleOrDefault();
-                        if (contact.SendAesKey != null)
-                        {
-                            throw new Exception($"AES key of user {contact.UserName} already exist.");
-                        }
-                        contact.SendAesKey = aesKey.AESKey;
-                        context.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new Exception($"User with id {senderId} doesn't have permission to create AES keys to send.");
-                    }
-                    break;
+                default:
+                    throw new Exception($"Json type unknown.");
             }
         }
 

@@ -20,6 +20,7 @@ namespace Premy.Chatovatko.Server.Database.Models
         public virtual DbSet<BlobMessages> BlobMessages { get; set; }
         public virtual DbSet<Logs> Logs { get; set; }
         public virtual DbSet<UsersKeys> UsersKeys { get; set; }
+        public virtual DbSet<ClientsMessagesDownloaded> ClientsMessagesDownloaded { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Clients> Clients { get; set; }
 
@@ -65,6 +66,10 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("sender_id")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.Priority)
+                    .HasColumnName("priority")
+                    .HasColumnType("int(11)");
+
                 entity.HasOne(d => d.Recepient)
                     .WithMany(p => p.BlobMessagesRecepient)
                     .HasForeignKey(d => d.RecepientId)
@@ -91,11 +96,49 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("user_id")
                     .HasColumnType("int(11)");
 
-               entity.HasOne(d => d.User)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.Clients)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_clients_users1");
+            });
+
+            modelBuilder.Entity<ClientsMessagesDownloaded>(entity =>
+            {
+                entity.HasKey(e => new { e.Id, e.ClientsId, e.BlobMessagesId });
+
+                entity.ToTable("clients_messages_downloaded");
+
+                entity.HasIndex(e => e.BlobMessagesId)
+                    .HasName("fk_clients_messages_downloaded_blob_messages1_idx");
+
+                entity.HasIndex(e => e.ClientsId)
+                    .HasName("fk_clients_messages_downloaded_clients1_idx");
+
+                entity.HasIndex(e => new { e.ClientsId, e.BlobMessagesId })
+                    .HasName("client_messages_index");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.ClientsId)
+                    .HasColumnName("clients_id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.BlobMessagesId)
+                    .HasColumnName("blob_messages_id")
+                    .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.BlobMessages)
+                    .WithMany(p => p.ClientsMessagesDownloaded)
+                    .HasForeignKey(d => d.BlobMessagesId)
+                    .HasConstraintName("fk_clients_messages_downloaded_blob_messages1");
+
+                entity.HasOne(d => d.Clients)
+                    .WithMany(p => p.ClientsMessagesDownloaded)
+                    .HasForeignKey(d => d.ClientsId)
+                    .HasConstraintName("fk_clients_messages_downloaded_clients1");
             });
 
             modelBuilder.Entity<Logs>(entity =>
@@ -141,8 +184,8 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasName("id_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.PublicCertificateSha1)
-                    .HasName("public_certificate_sha1_UNIQUE")
+                entity.HasIndex(e => e.PublicCertificateSha256)
+                    .HasName("public_certificate_sha256_UNIQUE")
                     .IsUnique();
 
                 entity.HasIndex(e => e.UserName)
@@ -158,10 +201,10 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("public_certificate")
                     .HasColumnType("mediumtext");
 
-                entity.Property(e => e.PublicCertificateSha1)
+                entity.Property(e => e.PublicCertificateSha256)
                     .IsRequired()
-                    .HasColumnName("public_certificate_sha1")
-                    .HasMaxLength(20);
+                    .HasColumnName("public_certificate_sha256")
+                    .HasMaxLength(64);
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
@@ -184,9 +227,10 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.EncryptedAesKey)
-                    .HasColumnName("encrypted_aes_key")
-                    .HasMaxLength(256);
+                entity.Property(e => e.AesKey)
+                    .IsRequired()
+                    .HasColumnName("aes_key")
+                    .HasMaxLength(1024);
 
                 entity.Property(e => e.RecepientId)
                     .HasColumnName("recepient_id")

@@ -5,7 +5,7 @@ using Premy.Chatovatko.Client.Libs.Database.JsonModels;
 
 namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
 {
-    public class CAlarm : JAlarm ,ICInsertModel
+    public class CAlarm : JAlarm, ICInsertModel
     {
         public CAlarm(DateTime time, String text)
         {
@@ -19,12 +19,12 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
             return InsertModelTypes.ALARM;
         }
 
-        public IJType GetRecepientUpdate()
+        public JsonCapsula GetRecepientUpdate()
         {
-            return this;
+            return new JsonCapsula(this);
         }
 
-        public IJType GetSelfUpdate()
+        public JsonCapsula GetSelfUpdate()
         {
             return null;
         }

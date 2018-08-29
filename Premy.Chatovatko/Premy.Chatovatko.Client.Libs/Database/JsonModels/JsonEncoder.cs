@@ -8,12 +8,13 @@ using System.IO;
 using Newtonsoft.Json;
 using Premy.Chatovatko.Client.Libs.Cryptography;
 using Premy.Chatovatko.Libs.Logging;
+using Premy.Chatovatko.Libs.DataTransmission;
 
 namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
 {
     public static class JsonEncoder
     {
-        public static IJType GetJsonDecoded(Context context, byte[] message, long senderId)
+        public static JsonCapsula GetJsonDecoded(Context context, byte[] message, long senderId)
         {
             byte[] aesBinKey = context.Contacts
                 .Where(u => u.PublicId == senderId)
@@ -22,33 +23,47 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
 
             AESPassword key = new AESPassword(aesBinKey);
             byte[] decrypted = key.Decrypt(message);
-            JsonTypes type = (JsonTypes)decrypted[0];
-            string jsonText = Encoding.UTF8.GetString(decrypted, 1, decrypted.Length - 1);
 
+            MemoryStream stream = new MemoryStream(decrypted);
+            JsonTypes type = (JsonTypes)BinaryEncoder.ReadInt(stream);
+            string jsonText = TextEncoder.ReadString(stream);
+
+            byte[] attechment = null;
+            int isAttechment = BinaryEncoder.ReadInt(stream);
+
+            if(isAttechment == 1)
+            {
+                attechment = BinaryEncoder.ReceiveBytes(stream);
+            }
+            
+            IJType jmessage;
             switch (type)
             {
                 case JsonTypes.ALARM:
-                    return JsonConvert.DeserializeObject<JAlarm>(jsonText);
-
-                case JsonTypes.CONTACT_DETAIL:
-                    return JsonConvert.DeserializeObject<JContactDetail>(jsonText);
-
+                    jmessage = JsonConvert.DeserializeObject<JAlarm>(jsonText);
+                    break;
+                case JsonTypes.CONTACT:
+                    jmessage = JsonConvert.DeserializeObject<JContact>(jsonText);
+                    break;
                 case JsonTypes.MESSAGES:
-                    return JsonConvert.DeserializeObject<JMessage>(jsonText);
-
+                    jmessage = JsonConvert.DeserializeObject<JMessage>(jsonText);
+                    break;
                 case JsonTypes.MESSAGES_THREAD:
-                    return JsonConvert.DeserializeObject<JMessageThread>(jsonText);
-
-                case JsonTypes.AES_KEY:
-                    return JsonConvert.DeserializeObject<JAESKey>(jsonText);
-
+                    jmessage = JsonConvert.DeserializeObject<JMessageThread>(jsonText);
+                    break;
                 default:
                     throw new Exception("Unknown JsonType.");
             }
 
+            return new JsonCapsula()
+            {
+                Attechment = attechment,
+                Message = jmessage
+            };
+
         }
 
-        public static byte[] GetJsonEncoded(Context context, IJType message, long receiverId)
+        public static byte[] GetJsonEncoded(Context context, IJType message, long receiverId, byte[] attechment = null)
         {
             byte[] aesBinKey = context.Contacts
                 .Where(u => u.PublicId == receiverId)
@@ -58,15 +73,28 @@ namespace Premy.Chatovatko.Client.Libs.Database.JsonModels
             AESPassword key = new AESPassword(aesBinKey);
 
             MemoryStream stream = new MemoryStream();
-            stream.WriteByte((byte)message.GetJsonType());
+            BinaryEncoder.SendInt(stream, (int)message.GetJsonType());
 
             string json = JsonConvert.SerializeObject(message);
-            StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
-            writer.Write(json);
-            writer.Close();
+            TextEncoder.SendString(stream, json);
+
+            if(attechment == null)
+            {
+                BinaryEncoder.SendInt(stream, 0);
+            }
+            else
+            {
+                BinaryEncoder.SendInt(stream, 1);
+                BinaryEncoder.SendBytes(stream, attechment);
+            }
 
             byte[] notEncrypted = stream.ToArray();
             return key.Encrypt(notEncrypted);
+        }
+
+        public static byte[] GetJsonEncoded(Context context, JsonCapsula capsula, long receiverId)
+        {
+            return GetJsonEncoded(context, capsula.Message, receiverId, capsula.Attechment);
         }
     }
 }

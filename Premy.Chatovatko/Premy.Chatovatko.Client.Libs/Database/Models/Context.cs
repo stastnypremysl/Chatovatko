@@ -21,7 +21,6 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public virtual DbSet<Alarms> Alarms { get; set; }
         public virtual DbSet<BlobMessages> BlobMessages { get; set; }
         public virtual DbSet<Contacts> Contacts { get; set; }
-        public virtual DbSet<ContactsDetail> ContactsDetail { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
         public virtual DbSet<MessagesThread> MessagesThread { get; set; }
         public virtual DbSet<Settings> Settings { get; set; }
@@ -48,7 +47,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.BlobMessagesId)
                     .HasColumnName("blob_messages_id")
@@ -112,9 +111,26 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.ToTable("contacts");
 
+                entity.HasIndex(e => e.BlobMessagesId)
+                    .HasName("fk_contact_blob_messages_id_idx")
+                    .IsUnique();
+
                 entity.Property(e => e.PublicId)
                     .HasColumnName("public_id")
                     .ValueGeneratedNever();
+
+                entity.Property(e => e.AlarmPermission)
+                    .HasColumnName("alarm_permission")
+                    .HasColumnType("TINYINT");
+
+                entity.Property(e => e.BlobMessagesId)
+                    .HasColumnName("blob_messages_id")
+                    .HasColumnType("INT");
+
+                entity.Property(e => e.NickName)
+                    .IsRequired()
+                    .HasColumnName("nick_name")
+                    .HasColumnType("VARCHAR");
 
                 entity.Property(e => e.PublicCertificate)
                     .IsRequired()
@@ -133,53 +149,13 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .IsRequired()
                     .HasColumnName("user_name")
                     .HasColumnType("VARCHAR");
+
+                entity.HasOne(d => d.BlobMessagesNavigation)
+                    .WithOne(p => p.Contacts)
+                    .HasForeignKey<Contacts>(d => d.BlobMessagesId);
             });
 
-            modelBuilder.Entity<ContactsDetail>(entity =>
-            {
-                entity.HasKey(e => e.ContactId);
-
-                entity.ToTable("contacts_detail");
-
-                entity.HasIndex(e => e.BlobMessagesId)
-                    .HasName("fk_contacts_detail_blob_messages_id_idx")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.ContactId)
-                    .HasName("fk_contacts_detail_contacts_idx")
-                    .IsUnique();
-
-                entity.Property(e => e.ContactId)
-                    .HasColumnName("contact_id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.AlarmPermission)
-                    .HasColumnName("alarm_permission")
-                    .HasColumnType("TINYINT");
-
-                entity.Property(e => e.BlobMessagesId)
-                    .HasColumnName("blob_messages_id")
-                    .HasColumnType("INT");
-
-                entity.Property(e => e.ChangeContactsPermission)
-                    .HasColumnName("change_contacts_permission")
-                    .HasColumnType("TINYINT");
-
-                entity.Property(e => e.NickName)
-                    .IsRequired()
-                    .HasColumnName("nick_name")
-                    .HasColumnType("VARCHAR");
-
-                entity.HasOne(d => d.BlobMessages)
-                    .WithOne(p => p.ContactsDetail)
-                    .HasForeignKey<ContactsDetail>(d => d.BlobMessagesId);
-
-                entity.HasOne(d => d.Contact)
-                    .WithOne(p => p.ContactsDetail)
-                    .HasForeignKey<ContactsDetail>(d => d.ContactId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-            });
-
+           
             modelBuilder.Entity<Messages>(entity =>
             {
                 entity.ToTable("messages");
@@ -212,6 +188,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
                     .IsRequired()
                     .HasColumnName("text")
                     .HasColumnType("MEDIUMTEXT");
+
+                entity.Property(e => e.Attechment)
+                    .HasColumnName("attechment")
+                    .HasColumnType("BLOB");
 
                 entity.HasOne(d => d.BlobMessages)
                     .WithOne(p => p.Messages)
@@ -346,6 +326,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
 
                 entity.Property(e => e.RecepientId)
                     .HasColumnName("recepient_id")
+                    .HasColumnType("INT");
+
+                entity.Property(e => e.Priority)
+                    .HasColumnName("priority")
                     .HasColumnType("INT");
 
                 entity.HasOne(d => d.BlobMessages)

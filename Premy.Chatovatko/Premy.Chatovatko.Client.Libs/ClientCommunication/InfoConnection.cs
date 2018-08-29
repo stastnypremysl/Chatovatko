@@ -27,13 +27,14 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 {
                     using(Stream stream = tcpClient.GetStream())
                     {
-                        return TextEncoder.ReadServerInfo(stream);
+                        return TextEncoder.ReadJson<ServerInfo>(stream);
                     }
                 }
             }
             catch(Exception ex)
             {
-                throw new ChatovatkoException(this, ex, "Info downloading wasn't successful");
+                logger.Log(this, "Info downloading wasn't successful");
+                throw ex;
             }
         }
 

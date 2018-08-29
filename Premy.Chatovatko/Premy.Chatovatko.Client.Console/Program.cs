@@ -18,6 +18,7 @@ using System.Text;
 using Premy.Chatovatko.Client.Libs.Database.InsertModels;
 using Premy.Chatovatko.Client.Libs.Database.DeleteModels;
 using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 
 namespace Premy.Chatovatko.Client
 {
@@ -46,6 +47,7 @@ namespace Premy.Chatovatko.Client
                 {
                     Log("Settings exists and will be loaded.");
                     settings = settingsLoader.GetSettingsCapsula();
+                    connection = new Connection(logger, settings);
                 }
                 else
                 {
@@ -129,13 +131,13 @@ namespace Premy.Chatovatko.Client
                                     WriteLine();
                                     ServerInfo info = infoConnection.DownloadInfo();
                                     WriteServerInfo(info);
-                                    Write("Do you trust this server (y/n):");
+                                    Write("Do you trust this server (y/n): ");
 
-                                    string pushed = ReadLine();
-                                    if (!pushed.Equals("y"))
+                                    if (!ReadLine().Equals("y"))
                                     {
                                         break;
                                     }
+                                    
 
                                     IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicKey);
                                     connection = new Connection(logger, verificator, serverAddress, clientCert, config, userName);
@@ -144,6 +146,27 @@ namespace Premy.Chatovatko.Client
                                     Log("Saving settings.");
                                     settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicKey, (int)connection.ClientId);
                                     settings = settingsLoader.GetSettingsCapsula();
+
+                                    Log("Saving the self AES key.");
+                                    //The only user outside of the chain
+                                    using (Context context = new Context(config))
+                                    {
+                                        context.Contacts.Add(new Contacts()
+                                        {
+                                            PublicId = connection.UserId,
+                                            UserName = connection.UserName,
+                                            AlarmPermission = 1,
+                                            BlobMessagesId = null,
+
+                                            NickName = null,
+                                            Trusted = 1,
+                                            ReceiveAesKey = connection.SelfAesPassword?.Password,
+                                            SendAesKey = connection.SelfAesPassword?.Password,
+
+                                            PublicCertificate = X509Certificate2Utils.ExportToPem(clientCert)
+                                        });
+                                        context.SaveChanges();
+                                    }
 
                                     Log("Self-trustification begin.");
                                     connection.TrustContact(connection.UserId);
@@ -169,19 +192,37 @@ namespace Premy.Chatovatko.Client
                                 connection.Disconnect();
                                 break;
 
-                            case "push":
-                                if (!VerifyConnectionOpened(true))
+                            case "search":
+                                if (commandParts.Length < 2)
                                 {
+                                    WriteNotEnoughParameters();
                                     break;
                                 }
+
+                                SearchCServerCapsula searchCapsula;
+
+                                if (Validators.ValidateRegexUserName(commandParts[1]))
+                                {
+                                    searchCapsula = connection.SearchContact(commandParts[1]);
+                                }
+                                else
+                                {
+                                    searchCapsula = connection.SearchContact(Int32.Parse(commandParts[1]));
+                                }
+
+                                PrintSearchCapsula(searchCapsula);
+                                Write("Do you trust this is the searched user, and do you want to save him? (y/n): ");
+                                if (ReadLine().Equals("y"))
+                                {
+                                    SaveUser(searchCapsula);
+                                }          
+                                break;
+
+                            case "push":
                                 connection.Push();
                                 break;
 
                             case "pull":
-                                if (!VerifyConnectionOpened(true))
-                                {
-                                    break;
-                                }
                                 connection.Pull();
                                 break;
 
@@ -220,7 +261,7 @@ namespace Premy.Chatovatko.Client
                                             WriteNotEnoughParameters();
                                             break;
                                         }
-                                        DeleteThread(Int32.Parse(commandParts[2]));
+                                        DeleteThread(GetThreadId(commandParts[2]));
                                         break;
                                     
                                     default:
@@ -266,7 +307,7 @@ namespace Premy.Chatovatko.Client
                                             WriteNotEnoughParameters();
                                             break;
                                         }
-                                        WriteMessages(Int32.Parse(commandParts[2]));
+                                        WriteMessages(GetThreadId(commandParts[2]));
                                         break;
                                     default:
                                         WriteSyntaxError(commandParts[1]);
@@ -283,10 +324,10 @@ namespace Premy.Chatovatko.Client
                                 switch (commandParts[1])
                                 {
                                     case "thread":
-                                        PostThread(Int32.Parse(commandParts[2]), BuildFromRest(commandParts, 3));
+                                        PostThread(GetUserId(commandParts[2]), BuildFromRest(commandParts, 3));
                                         break;
                                     case "message":
-                                        PostMessage(Int32.Parse(commandParts[2]), commandParts[3]);
+                                        PostMessage(GetThreadId(commandParts[2]), commandParts[3]);
                                         break;
                                     default:
                                         WriteSyntaxError(commandParts[1]);
@@ -294,22 +335,26 @@ namespace Premy.Chatovatko.Client
                                 }
                                 break;
 
-                            case "rename":
-                                if (commandParts.Length < 4)
+                            case "nickname":
+                                if (commandParts.Length < 3)
                                 {
                                     WriteNotEnoughParameters();
                                     break;
                                 }
-                                switch (commandParts[1])
-                                {
-                                    case "thread":
-                                        RenameThread(Int32.Parse(commandParts[2]), BuildFromRest(commandParts, 3));
-                                        break;
-                                    default:
-                                        WriteSyntaxError(commandParts[1]);
-                                        break;
-                                }
+                                int userId = GetUserId(commandParts[1]);
+                                string nickName = BuildFromRest(commandParts, 2);
+                                SetNickName(userId, nickName);
                                 break;
+
+                            case "rename":
+                                if (commandParts.Length < 3)
+                                {
+                                    WriteNotEnoughParameters();
+                                    break;
+                                }
+                                
+                                RenameThread(GetThreadId(commandParts[2]), BuildFromRest(commandParts, 3));
+                                 break;
 
                             case "trust":
                                 if (commandParts.Length < 2)
@@ -318,7 +363,7 @@ namespace Premy.Chatovatko.Client
                                     break;
                                 }
                                 VerifyConnectionOpened(true);
-                                connection.TrustContact(Int32.Parse(commandParts[1]));
+                                connection.TrustContact(GetUserId(commandParts, 1));
                                 break;
 
                             case "untrust":
@@ -328,7 +373,7 @@ namespace Premy.Chatovatko.Client
                                     break;
                                 }
                                 VerifyConnectionOpened(true);
-                                connection.UntrustContact(Int32.Parse(commandParts[1]));
+                                connection.UntrustContact(GetUserId(commandParts, 1));
                                 break;
 
                             case "generate":
@@ -349,12 +394,17 @@ namespace Premy.Chatovatko.Client
                                         break;
                                 }
                                 break;
+
                             case "aesTrial":
                                 if (!VerifyConnectionOpened(true))
                                 {
                                     break;
                                 }
                                 AesTrial();
+                                break;
+
+                            case "hash":
+                                PrintHash(settings.ClientCertificate);
                                 break;
 
                             case "exit":
@@ -376,11 +426,6 @@ namespace Premy.Chatovatko.Client
                                 break;
                         }
                     }
-                    catch (ChatovatkoException ex)
-                    {
-                        logger.Log("Program", "Core", "The command has failed.", true);
-                        logger.LogException(ex);
-                    }
                     catch (Exception ex)
                     {
                         logger.LogException(ex, "Program", "Core", "The command has failed.");
@@ -394,7 +439,7 @@ namespace Premy.Chatovatko.Client
             }
             catch(Exception ex)
             {
-                logger.Log("Program", "Core",String.Format("The client has crashed. Exception:\n{0}\n{1}", ex.Message, ex.StackTrace), true);
+                logger.LogException(ex, "Program", "Core", "Core has crashed.");
             }
             finally
             {
@@ -402,6 +447,37 @@ namespace Premy.Chatovatko.Client
                 logger = null;
             }
             
+        }
+
+        static void PrintHash(X509Certificate2 cert)
+        {
+            WriteLine(SHA256Utils.ComputeSha256Hash(cert));
+        }
+
+        static void SaveUser(SearchCServerCapsula searchCapsula)
+        {
+            using(Context context = new Context(config))
+            {
+                CContact contact = new CContact()
+                {
+                    AlarmPermission = false,
+                    NickName = null,
+                    PublicCertificate = searchCapsula.PemCertificate,
+                    PublicId = searchCapsula.UserId,
+                    ReceiveAesKey = null,
+                    SendAesKey = null,
+                    Trusted = false,
+                    UserName = searchCapsula.UserName
+                };
+                PushOperations.Insert(context, contact, settings.UserPublicId, settings.UserPublicId);
+            }
+        }
+
+        static void PrintSearchCapsula(SearchCServerCapsula searchCapsula)
+        {
+            WriteLine($"UserId: {searchCapsula.UserId}");
+            WriteLine($"UserName: {searchCapsula.UserName}");
+            WriteLine($"Certificate SHA-256 hash: {SHA256Utils.ComputeCertHash(searchCapsula.PemCertificate)}");
         }
 
         static void AesTrial()
@@ -433,7 +509,8 @@ namespace Premy.Chatovatko.Client
             for(int i = startIndex; i != data.Length; i++)
             {
                 builder.Append(data[i]);
-                builder.Append(' ');
+                if(i + 1 != data.Length)
+                    builder.Append(' ');
             }
             return builder.ToString();
         }
@@ -545,27 +622,81 @@ namespace Premy.Chatovatko.Client
 
         static void WriteUsers()
         {
-            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-30}";
+            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-12} {6,-30}";
             using (Context context = new Context(config))
             {
                 WriteLine();
-                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ContactPer", "UserName");
+                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ReceiveKey", "SendKey", "UserName");
                 foreach(var user in 
                     from contacts in context.Contacts
-                    join detail in context.ContactsDetail on contacts.PublicId equals detail.ContactId into jDetail
-                    from detail in jDetail.DefaultIfEmpty()
                     select new
                     {
                         Id = contacts.PublicId,
                         Trusted = contacts.Trusted == 1,
-                        detail.NickName,
-                        AlarmPermission = detail.AlarmPermission == 1,
-                        ContactPermission = detail.ChangeContactsPermission == 1,
-                        contacts.UserName
+                        contacts.NickName,
+                        AlarmPermission = contacts.AlarmPermission == 1,
+
+                        contacts.UserName,
+                        LoadedReceiveAesKey = contacts.ReceiveAesKey != null,
+                        LoadedSendAesKey = contacts.SendAesKey != null,
                     })
                 {
-                    WriteLine(format, user.Id, user.NickName, user.Trusted, user.AlarmPermission, user.ContactPermission, user.UserName);
+                    WriteLine(format, user.Id, user.NickName, user.Trusted, user.AlarmPermission, user.LoadedReceiveAesKey, user.LoadedSendAesKey, user.UserName);
                 }
+            }
+        }
+
+        static int GetUserId(string userTextRaw)
+        {
+            if (Validators.ValidateRegexUserName(userTextRaw))
+            {
+                using(Context context = new Context(config))
+                {
+                    return (int)context.Contacts
+                        .Where(u => u.UserName == userTextRaw)
+                        .Select(u => u.PublicId)
+                        .Single();
+                }
+            }
+            else
+            {
+                return int.Parse(userTextRaw);
+            }
+        }
+
+        static int GetUserId(string[] inputString, int startIndex)
+        {
+            return GetUserId(BuildFromRest(inputString, startIndex));
+        }
+
+        static int GetThreadId(string userTextRaw)
+        {
+            if (!int.TryParse(userTextRaw, out int ret))
+            {
+                using (Context context = new Context(config))
+                {
+                    return (int)context.MessagesThread
+                        .Where(u => u.Name == userTextRaw)
+                        .Select(u => u.Id)
+                        .Single();
+                }
+            }
+            else
+            {
+                return ret;
+            }
+        }
+        
+        static void SetNickName(int userId, string nickName)
+        {
+            using(Context context = new Context(config))
+            {
+                UContact contact = new UContact(
+                    context.Contacts
+                    .Where(u => u.PublicId == userId)
+                    .Single());
+                contact.NickName = nickName;
+                PushOperations.Update(context, contact, settings.UserPublicId, settings.UserPublicId);
             }
         }
 
@@ -620,8 +751,8 @@ namespace Premy.Chatovatko.Client
         {
             WriteLine("Server name:");
             WriteLine(info.Name);
-            WriteLine("Public key:");
-            WriteLine(info.PublicKey);
+            WriteLine("Public key SHA-256 sum:");
+            WriteLine(SHA256Utils.ComputeCertHash(info.PublicKey));
         }
 
         static void WriteStatus(Settings settings, IClientDatabaseConfig config)

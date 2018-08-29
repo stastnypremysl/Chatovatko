@@ -12,23 +12,18 @@ using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace Premy.Chatovatko.Server.ClientListener.Scenarios
 {
     public static class Handshake
     {
-        public static UserCapsula Run(Stream stream, Action<string> log, ServerConfig config)
+        public static ConnectionInfo Run(Stream stream, Action<string> log, ServerConfig config)
         {
             
-            ClientHandshake clientHandshake = TextEncoder.ReadClientHandshake(stream);
+            ClientHandshake clientHandshake = TextEncoder.ReadJson<ClientHandshake>(stream);
             X509Certificate2 clientCertificate = X509Certificate2Utils.ImportFromPem(clientHandshake.PemCertificate);
             log($"Logging user sent username {clientHandshake.UserName}\n Certificate:\n {clientHandshake.PemCertificate}");
-
-            log("Generating random bytes");
-            byte[] randomBytes = LUtils.GenerateRandomBytes(TcpConstants.HANDSHAKE_LENGHT);
-
-            log("Sending encrypted bytes");
-            BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(randomBytes, clientCertificate));
 
             ServerHandshake errorHandshake = new ServerHandshake()
             {
@@ -39,10 +34,23 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 UserName = ""
             };
 
+            if (config.Password != null && !config.Password.Equals(clientHandshake.ServerPassword))
+            {
+                errorHandshake.Errors = "Server password is wrong.";
+                TextEncoder.SendJson(stream, errorHandshake);
+                throw new Exception(errorHandshake.Errors);
+            }
+
+            log("Generating random bytes");
+            byte[] randomBytes = LUtils.GenerateRandomBytes(TcpConstants.HANDSHAKE_LENGHT);
+
+            log("Sending encrypted bytes");
+            BinaryEncoder.SendBytes(stream, RSAEncoder.Encrypt(randomBytes, clientCertificate));
+
             byte[] received = BinaryEncoder.ReceiveBytes(stream);
             if (!randomBytes.SequenceEqual(received))
             {
-                log("Sending error to client.");
+                log("Client's certificate verification failed.");
                 errorHandshake.Errors = "Client's certificate verification failed.";
                 TextEncoder.SendJson(stream, errorHandshake);
                 throw new Exception(errorHandshake.Errors);
@@ -53,12 +61,12 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             Users user;
             String message;
             Clients client;
+            byte[] aesKey = null;
             bool newUser = false;
             using (Context context = new Context(config))
             {
-                SHA1 sha = new SHA1CryptoServiceProvider();
-                byte[] hash = sha.ComputeHash(clientCertificate.RawData);
-                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha1.SequenceEqual(hash));
+                byte[] hash = SHA256Utils.ComputeByteSha256Hash(clientCertificate);
+                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha256.SequenceEqual(hash));
 
                 if (user == null){
                     log("User doesn't exist yet. I'll try to create him.");
@@ -68,8 +76,25 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                     String userName = clientHandshake.UserName;
                     if (context.Users.SingleOrDefault(u => u.UserName.Equals(userName)) != null)
                     {
-                        log("Username isn't unique.");
                         errorHandshake.Errors = "Username isn't unique.";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    else if(userName.Length > 45)
+                    {
+                        errorHandshake.Errors = "Username is too long (max. 45 chars)";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    else if (userName.Length < 4)
+                    {
+                        errorHandshake.Errors = "Username is too short (min. 4 chars)";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    else if(!Validators.ValidateRegexUserName(userName))
+                    {
+                        errorHandshake.Errors = "Username must match this regex ^[a-zA-Z][-a-zA-Z0-9_]+$ (Vaguely can't contain special chars and spaces)";
                         TextEncoder.SendJson(stream, errorHandshake);
                         throw new Exception(errorHandshake.Errors);
                     }
@@ -78,7 +103,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                     user = new Users()
                     {
                         PublicCertificate = clientHandshake.PemCertificate,
-                        PublicCertificateSha1 = hash,
+                        PublicCertificateSha256 = hash,
                         UserName = clientHandshake.UserName
                     };
 
@@ -99,7 +124,14 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 };
 
                 if (clientHandshake.ClientId == null)
-                {     
+                {
+                    log($"Loading self-aes key.");
+                    aesKey = context.UsersKeys
+                        .Where(u => u.RecepientId == user.Id)
+                        .Where(u => u.SenderId == user.Id)
+                        .Select(u => u.AesKey)
+                        .SingleOrDefault();
+
                     context.Add(client);
                     context.SaveChanges();
 
@@ -107,6 +139,14 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 }
                 else
                 {
+                    client.Id = (int)clientHandshake.ClientId;
+                    if(context.Clients.Where(u => u.Id == client.Id).Single().UserId != user.Id)
+                    {
+                        errorHandshake.Errors = "This client id isn't owned by this user.";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    
                     log($"Client with Id {client.Id} has logged in.");
                 }
 
@@ -120,12 +160,13 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 Succeeded = true,
                 UserId = user.Id,
                 UserName = user.UserName,
-                ClientId = client.Id
+                ClientId = client.Id,
+                SelfAesKey = aesKey
             };
             TextEncoder.SendJson(stream, toSend);
 
-            UserCapsula ret = new UserCapsula(user, clientCertificate);
-            log($"Handshake successeded. User {ret.UserName} with id {ret.UserId} has logged in");
+            ConnectionInfo ret = new ConnectionInfo(user, clientCertificate, client.Id);
+            log($"Handshake successeded. User {ret.UserName} with id {ret.UserId} has logged in. Client has id {client.Id}.");
             return ret;
         }
     }

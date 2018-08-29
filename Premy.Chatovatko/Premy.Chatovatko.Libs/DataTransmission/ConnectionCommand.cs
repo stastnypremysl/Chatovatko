@@ -20,7 +20,7 @@ namespace Premy.Chatovatko.Libs.DataTransmission
         /// </summary>
         TRUST_CONTACT = 2,
 
-        CREATE_ONLIVE_TUNNEL = 3,
+        SEARCH_CONTACT = 3,
 
         /// <summary>
         /// Client wants to push.

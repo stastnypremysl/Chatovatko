@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Premy.Chatovatko.Client.Libs.Cryptography;
 using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission;
@@ -13,22 +14,16 @@ using System.Text;
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
 {
 
-    public class HandshakeReturnCapsula
-    {
-        public string UserName{get;set; }
-        public int UserId { get; set; }
-        public int ClientId { get; set; }
-    }
-
     public class Handshake
     {
-        public static HandshakeReturnCapsula Login(Logger logger, Stream stream, X509Certificate2 cert, string userName = null, int? clientId = null)
+        public static HandshakeReturnCapsula Login(Logger logger, Stream stream, X509Certificate2 cert, string password, string userName = null, int? clientId = null)
         {
             ClientHandshake clientHandshake = new ClientHandshake()
             {
                 PemCertificate = X509Certificate2Utils.ExportToPem(cert),
                 UserName = userName,
-                ClientId = clientId
+                ClientId = clientId,
+                ServerPassword = password
             };
 
             if(userName != null && userName.Length > DataConstants.USER_NAME_MAX_LENGHT)
@@ -42,19 +37,20 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
             byte[] decrypted = RSAEncoder.Decrypt(encrypted, cert);
             BinaryEncoder.SendBytes(stream, decrypted);
 
-            ServerHandshake serverHandshake = TextEncoder.ReadServerHandshake(stream);
+            ServerHandshake serverHandshake = TextEncoder.ReadJson<ServerHandshake>(stream);
             logger.Log("Handshake", "Handshake", serverHandshake.Errors, false);
 
             if (!serverHandshake.Succeeded)
             {
-                throw new Exception("Handshake failed");
+                throw new Exception($"Handshake failed\n{serverHandshake.Errors}");
             }
 
             return new HandshakeReturnCapsula()
             {
                 UserId = serverHandshake.UserId,
                 UserName = serverHandshake.UserName,
-                ClientId = serverHandshake.ClientId
+                ClientId = serverHandshake.ClientId,
+                SelfAesPassword = serverHandshake.SelfAesKey == null ? null : new AESPassword(RSAEncoder.DecryptAndVerify(serverHandshake.SelfAesKey, cert, cert))
             };
         }
 

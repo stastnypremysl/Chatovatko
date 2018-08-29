@@ -46,7 +46,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
                 catch(Exception ex)
                 {
                     DBDelete();
-                    throw new ChatovatkoException(this, ex, "Initialization of database failed");
+                    logger.Log(this, "Initialization of database failed.");
+                    throw ex;
                 }
             }
             logger.Log(this, "Database initialized");

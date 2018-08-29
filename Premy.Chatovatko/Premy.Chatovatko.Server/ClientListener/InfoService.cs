@@ -72,7 +72,7 @@ namespace Premy.Chatovatko.Server.ClientListener
         public ServerInfo GetServerInfo()
         {
             String publicKey = X509Certificate2Utils.ExportToPem(cert);
-            return new ServerInfo(config.ServerName, publicKey);
+            return new ServerInfo(config.ServerName, publicKey, config.Password != null);
         }
 
         public void RunInBackground()

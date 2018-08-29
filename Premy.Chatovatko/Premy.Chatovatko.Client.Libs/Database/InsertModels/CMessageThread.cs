@@ -38,32 +38,32 @@ namespace Premy.Chatovatko.Client.Libs.Database.InsertModels
             return InsertModelTypes.MESSAGE_THREAD;
         }
 
-        public IJType GetRecepientUpdate()
+        public JsonCapsula GetRecepientUpdate()
         {
-            return new JMessageThread()
+            return new JsonCapsula(new JMessageThread()
             {
-                Archived = Archived ? 1 : 0,
+                Archived = Archived,
                 Name = Name,
-                Onlive = Onlive ? 1 : 0,
+                Onlive = Onlive,
                 PublicId = PublicId,
                 WithUserId = myUserId
-            };
+            });
         }
 
-        public IJType GetSelfUpdate()
+        public JsonCapsula GetSelfUpdate()
         {
             if(recepientId == myUserId)
             {
                 return null;
             }
-            return new JMessageThread()
+            return new JsonCapsula(new JMessageThread()
             {
-                Archived = Archived ? 1 : 0,
+                Archived = Archived,
                 Name = Name,
-                Onlive = Onlive ? 1 : 0,
+                Onlive = Onlive,
                 PublicId = PublicId,
                 WithUserId = recepientId
-            };
+            });
         }
     }
 }
