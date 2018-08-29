@@ -18,6 +18,7 @@ using System.Text;
 using Premy.Chatovatko.Client.Libs.Database.InsertModels;
 using Premy.Chatovatko.Client.Libs.Database.DeleteModels;
 using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 
 namespace Premy.Chatovatko.Client
 {
@@ -190,19 +191,35 @@ namespace Premy.Chatovatko.Client
                                 connection.Disconnect();
                                 break;
 
-                            case "push":
-                                if (!VerifyConnectionOpened(true))
+                            case "search":
+                                if (commandParts.Length < 3)
                                 {
+                                    WriteNotEnoughParameters();
                                     break;
                                 }
+
+                                SearchCServerCapsula searchCapsula;
+                                switch (commandParts[1])
+                                {
+                                    case "id":
+                                        searchCapsula = connection.SearchContact(Int32.Parse(commandParts[2]));
+                                        break;
+
+                                    case "username":
+                                        searchCapsula = connection.SearchContact(BuildFromRest(commandParts, 2));
+                                        break;
+
+                                    default:
+                                        WriteSyntaxError(commandParts[1]);
+                                        throw new Exception("Syntax error");
+                                }
+                                break;
+
+                            case "push":
                                 connection.Push();
                                 break;
 
                             case "pull":
-                                if (!VerifyConnectionOpened(true))
-                                {
-                                    break;
-                                }
                                 connection.Pull();
                                 break;
 

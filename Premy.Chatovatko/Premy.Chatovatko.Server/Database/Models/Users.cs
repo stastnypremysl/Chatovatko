@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
+using System;
 using System.Collections.Generic;
 
 namespace Premy.Chatovatko.Server.Database.Models
 {
-    public partial class Users
+    public partial class Users : IUser
     {
         public Users()
         {

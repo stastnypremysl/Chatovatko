@@ -102,6 +102,13 @@ Almost all changes are kept in local database. It is necessary to push them on s
     push
     pull
     
+##### Searching and saving contacts
+You must find, verify and save a contact to your chain (user's private database),
+if you want to do any further operation with the user. To do so, please enter to your console any of these
+
+    search id <user_id>
+    search username <username>
+
 ##### Trutification
 Before you can send messages to an user, you must trustify him. To do so, enter
 
@@ -121,7 +128,7 @@ Please, remember the already loaded messages from untrusted users will not be lo
 These commands will be always executed offline and it is necessary to pull/push to keep everything up-to-date.
 
 ##### Lists
-To list all users, please enter
+To list all saved users, please enter
 
     ls users
      

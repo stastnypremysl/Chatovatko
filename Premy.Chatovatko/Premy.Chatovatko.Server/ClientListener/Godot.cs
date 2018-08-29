@@ -21,6 +21,8 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Push;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 
 namespace Premy.Chatovatko.Server.ClientListener
 {
@@ -129,7 +131,26 @@ namespace Premy.Chatovatko.Server.ClientListener
 
         private void SearchContact()
         {
+            SearchCClientCapsula searchCapsula = TextEncoder.ReadJson<SearchCClientCapsula>(stream);
+            SearchCServerCapsula ret;
+            using(Context context = new Context(config))
+            {
+                ret = new SearchCServerCapsula(context.Users
+                    .Where(u => u.Id == searchCapsula.UserId)
+                    .SingleOrDefault());
 
+                if(!ret.Succeeded)
+                    ret = new SearchCServerCapsula(context.Users
+                    .Where(u => u.UserName == searchCapsula.UserName)
+                    .SingleOrDefault());
+
+                if(!ret.Succeeded)
+                    ret = new SearchCServerCapsula(context.Users
+                    .Where(u => u.PublicCertificateSha2 == searchCapsula.CertificateHash)
+                    .SingleOrDefault());
+
+            }
+            TextEncoder.SendJson(stream, ret);
         }
 
         
@@ -149,31 +170,36 @@ namespace Premy.Chatovatko.Server.ClientListener
             using (Context context = new Context(config))
             {
 #if (DEBUG)
-                Log($"Receiving and saving {capsula.recepientIds.Count} blobs.");
+                Log($"Receiving and saving {capsula.PushMessages.Count} blobs.");
 #endif
                 
-                foreach (var messageRecepientId in capsula.recepientIds)
+                foreach (var pushMessage in capsula.PushMessages)
                 {
                     BlobMessages blobMessage = new BlobMessages()
                     {
                         Content = BinaryEncoder.ReceiveBytes(stream),
-                        RecepientId = (int)messageRecepientId,
-                        SenderId = connectionInfo.UserId
+                        RecepientId = pushMessage.RecepientId,
+                        SenderId = connectionInfo.UserId,
+                        Priority = pushMessage.Priority
                     };
                     context.BlobMessages.Add(blobMessage);
                     context.SaveChanges();
 
-                    if (messageRecepientId == connectionInfo.UserId)
+                    if (pushMessage.RecepientId == connectionInfo.UserId)
                     {
                         response.MessageIds.Add(blobMessage.Id);
-                        messagesIdsUploaded.Add(blobMessage.Id);
+                        context.ClientsMessagesDownloaded.Add(new ClientsMessagesDownloaded()
+                        {
+                            BlobMessagesId = blobMessage.Id,
+                            ClientsId = connectionInfo.ClientId
+                        });
                     }
                     context.SaveChanges();
                 }
 #if (DEBUG)
-                Log($"Deleting {capsula.messageToDeleteIds.Count} blobs.");
+                Log($"Deleting {capsula.MessageToDeleteIds.Count} blobs.");
 #endif
-                foreach(var toDeleteId in capsula.messageToDeleteIds)
+                foreach(var toDeleteId in capsula.MessageToDeleteIds)
                 {
                     var toDelete = context.BlobMessages
                         .Where(u => u.RecepientId == connectionInfo.UserId && u.Id == toDeleteId).SingleOrDefault();

@@ -6,7 +6,6 @@ using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.DataTransmission;
-using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization;
 using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
@@ -23,6 +22,8 @@ using Premy.Chatovatko.Client.Libs.Database.JsonModels;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Push;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
@@ -125,17 +126,15 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Push()
         {
+            ThrowExceptionIfNotConnected();
             Log("Sending PUSH command.");
-            TextEncoder.SendCommand(stream, ConnectionCommand.PUSH);
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.PUSH);
             using (Context context = new Context(config))
             {
                 List<long> selfMessages = new List<long>();
                 var toSend = context.ToSendMessages.ToList();
 
-                PushCapsula capsula = new PushCapsula()
-                {
-                    recepientIds = new List<long>()
-                };
+                PushCapsula capsula = new PushCapsula();
 
                 foreach (var message in toSend)
                 {
@@ -143,14 +142,18 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     {
                         selfMessages.Add((long)message.BlobMessagesId);
                     }
-                    capsula.recepientIds.Add(message.RecepientId);
+                    capsula.PushMessages.Add(new PushMessage()
+                    {
+                        RecepientId = (int)message.RecepientId,
+                        Priority = (int)message.Priority
+                    });
                 }
-                capsula.messageToDeleteIds = context.BlobMessages
+                capsula.MessageToDeleteIds = context.BlobMessages
                     .Where(u => u.DoDelete == 1)
                     .Select(u => (long)u.PublicId).ToList();
 
 #if (DEBUG)
-                Log($"Sending capsula with {toSend.Count} messages. {capsula.messageToDeleteIds.Count} will be deleted.");
+                Log($"Sending capsula with {toSend.Count} messages. {capsula.MessageToDeleteIds.Count} will be deleted.");
 #endif
                 TextEncoder.SendJson(stream, capsula);
 #if (DEBUG)
@@ -190,6 +193,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Pull()
         {
+            ThrowExceptionIfNotConnected();
             Log("Sending PULL command.");
             BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
 #if (DEBUG)
@@ -268,6 +272,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void UntrustContact(int contactId)
         {
+            ThrowExceptionIfNotConnected();
             if (contactId == this.UserId)
             {
                 throw new Exception("You really don't want untrust yourself.");
@@ -293,6 +298,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void TrustContact(int contactId)
         {
+            ThrowExceptionIfNotConnected();
             Pull();
             Log("Sending TRUST_CONTACT command.");
             BinaryEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
@@ -332,6 +338,47 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 context.SaveChanges();
             }
             Push();
+        }
+
+        public SearchCServerCapsula SearchContact(int publicId)
+        {
+            return SearchContact(new SearchCClientCapsula()
+            {
+                UserId = publicId
+            });
+        }
+
+        public SearchCServerCapsula SearchContact(String username)
+        {
+            return SearchContact(new SearchCClientCapsula()
+            {
+                UserName = username
+            });
+        }
+
+        public SearchCServerCapsula SearchContact(byte[] certificateHash)
+        {
+            return SearchContact(new SearchCClientCapsula()
+            {
+                CertificateHash = certificateHash
+            });
+        }
+
+        public SearchCServerCapsula SearchContact(SearchCClientCapsula searchCClientCapsula)
+        {
+            ThrowExceptionIfNotConnected();
+            BinaryEncoder.SendCommand(stream, ConnectionCommand.SEARCH_CONTACT);
+
+            TextEncoder.SendJson(stream, searchCClientCapsula);
+            return TextEncoder.ReadJson<SearchCServerCapsula>(stream);
+        }
+
+        private void ThrowExceptionIfNotConnected()
+        {
+            if (!IsConnected())
+            {
+                throw new Exception("The connection is disconnected.");
+            }
         }
 
 
