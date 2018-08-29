@@ -578,7 +578,7 @@ namespace Premy.Chatovatko.Client
 
         static void WriteUsers()
         {
-            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {5,-30}";
+            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-30}";
             using (Context context = new Context(config))
             {
                 WriteLine();
