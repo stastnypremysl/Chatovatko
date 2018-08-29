@@ -602,6 +602,8 @@ namespace Premy.Chatovatko.Client
             }
         }
 
+        static void Set
+
         static bool VerifyConnectionOpened(bool log = false)
         {
             bool ret = connection != null && connection.IsConnected();

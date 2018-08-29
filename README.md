@@ -62,7 +62,9 @@ There are two inicialization commands:
 
     init new <server_address>
 
-This one will generate new p12 certificate and you will be asked to enter path to save it. **It is necessary to keep it SAFE!** After that you will be asked to enter your new unique username.
+This one will generate new p12 certificate and you will be asked to enter path to save it. 
+**It is necessary to keep it SAFE!** After that you will be asked to enter your new unique username.
+Username must be 4 chars at least long and can't be longer than 45 chars. It must match regex ^[a-zA-Z][-a-zA-Z0-9_]+$.
 
     init login <server_address>
     
@@ -165,6 +167,13 @@ A thread can be renamed by
     rename thread <private_thread_id> <name>
     
 The rule for `<name>` are same as you were creating new thread.
+
+##### Set
+User's nick name can be set using command
+
+    set nick <user_id> <nick_name>
+
+A nick name can't contain double space.
 
 ##### Delete
 To delete message thread, please enter

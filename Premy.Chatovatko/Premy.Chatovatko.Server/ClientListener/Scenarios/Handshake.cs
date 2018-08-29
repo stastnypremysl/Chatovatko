@@ -92,9 +92,9 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                         TextEncoder.SendJson(stream, errorHandshake);
                         throw new Exception(errorHandshake.Errors);
                     }
-                    else if(!Regex.IsMatch(userName, "^[-a-zA-Z0-9_]+$"))
+                    else if(!Regex.IsMatch(userName, "^[a-zA-Z][-a-zA-Z0-9_]+$"))
                     {
-                        errorHandshake.Errors = "Username must match this regex ^[-a-zA-Z0-9_]+$ (Vaguely can't contain special chars and spaces)";
+                        errorHandshake.Errors = "Username must match this regex ^[a-zA-Z][-a-zA-Z0-9_]+$ (Vaguely can't contain special chars and spaces)";
                         TextEncoder.SendJson(stream, errorHandshake);
                         throw new Exception(errorHandshake.Errors);
                     }
