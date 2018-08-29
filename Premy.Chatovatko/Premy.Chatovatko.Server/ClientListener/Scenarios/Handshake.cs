@@ -12,6 +12,7 @@ using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace Premy.Chatovatko.Server.ClientListener.Scenarios
 {
@@ -75,8 +76,25 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                     String userName = clientHandshake.UserName;
                     if (context.Users.SingleOrDefault(u => u.UserName.Equals(userName)) != null)
                     {
-                        log("Username isn't unique.");
                         errorHandshake.Errors = "Username isn't unique.";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    else if(userName.Length > 45)
+                    {
+                        errorHandshake.Errors = "Username is too long (max. 45 chars)";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    else if (userName.Length < 4)
+                    {
+                        errorHandshake.Errors = "Username is too short (min. 4 chars)";
+                        TextEncoder.SendJson(stream, errorHandshake);
+                        throw new Exception(errorHandshake.Errors);
+                    }
+                    else if(!Regex.IsMatch(userName, "^[-a-zA-Z0-9_]+$"))
+                    {
+                        errorHandshake.Errors = "Username must match this regex ^[-a-zA-Z0-9_]+$ (Vaguely can't contain special chars and spaces)";
                         TextEncoder.SendJson(stream, errorHandshake);
                         throw new Exception(errorHandshake.Errors);
                     }
