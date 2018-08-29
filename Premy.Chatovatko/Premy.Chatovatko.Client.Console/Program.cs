@@ -139,12 +139,12 @@ namespace Premy.Chatovatko.Client
                                     }
                                     
 
-                                    IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicKey);
+                                    IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicCertificate);
                                     connection = new Connection(logger, verificator, serverAddress, clientCert, config, userName);
                                     connection.Connect();
 
                                     Log("Saving settings.");
-                                    settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicKey, (int)connection.ClientId);
+                                    settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicCertificate, (int)connection.ClientId);
                                     settings = settingsLoader.GetSettingsCapsula();
 
                                     Log("Saving the self AES key.");
@@ -752,7 +752,7 @@ namespace Premy.Chatovatko.Client
             WriteLine("Server name:");
             WriteLine(info.Name);
             WriteLine("Public key SHA-256 sum:");
-            WriteLine(SHA256Utils.ComputeCertHash(info.PublicKey));
+            WriteLine(SHA256Utils.ComputeCertHash(info.PublicCertificate));
         }
 
         static void WriteStatus(Settings settings, IClientDatabaseConfig config)

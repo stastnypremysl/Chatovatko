@@ -9,11 +9,11 @@ namespace Premy.Chatovatko.Libs.DataTransmission.JsonModels
         public ServerInfo(String name, String publicKey, bool passwordRequired)
         {
             this.Name = name;
-            this.PublicKey = publicKey;
+            this.PublicCertificate = publicKey;
             this.PasswordRequired = passwordRequired;
         }
         public String Name { get; set; }
-        public String PublicKey { get; set; }
+        public String PublicCertificate { get; set; }
         public bool PasswordRequired { get; set; }
     }
 }
