@@ -353,8 +353,8 @@ namespace Premy.Chatovatko.Client
                                     break;
                                 }
                                 
-                                RenameThread(GetThreadId(commandParts[2]), BuildFromRest(commandParts, 3));
-                                 break;
+                                RenameThread(GetThreadId(commandParts[1]), BuildFromRest(commandParts, 2));
+                                break;
 
                             case "trust":
                                 if (commandParts.Length < 2)
