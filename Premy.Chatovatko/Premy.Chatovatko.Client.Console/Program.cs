@@ -578,11 +578,11 @@ namespace Premy.Chatovatko.Client
 
         static void WriteUsers()
         {
-            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-30}";
+            String format = "{0,-4} {1,-12} {2,-12} {3,-12} {4,-12} {5,-12} {6,-30}";
             using (Context context = new Context(config))
             {
                 WriteLine();
-                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "UserName");
+                WriteLine(format, "Id", "NickName", "Trusted", "AlarmPer", "ReceiveKey", "SendKey", "UserName");
                 foreach(var user in 
                     from contacts in context.Contacts
                     select new
@@ -591,10 +591,13 @@ namespace Premy.Chatovatko.Client
                         Trusted = contacts.Trusted == 1,
                         contacts.NickName,
                         AlarmPermission = contacts.AlarmPermission == 1,
-                        contacts.UserName
+
+                        contacts.UserName,
+                        LoadedReceiveAesKey = contacts.ReceiveAesKey != null,
+                        LoadedSendAesKey = contacts.SendAesKey != null,
                     })
                 {
-                    WriteLine(format, user.Id, user.NickName, user.Trusted, user.AlarmPermission, user.UserName);
+                    WriteLine(format, user.Id, user.NickName, user.Trusted, user.AlarmPermission, user.LoadedReceiveAesKey, user.LoadedSendAesKey, user.UserName);
                 }
             }
         }
