@@ -8,6 +8,10 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
 {
     public class UContact : IUpdateModel
     {
+
+        private readonly byte[] oldSendAesKey;
+        private readonly byte[] oldReceiveAesKey;
+
         public UContact(Contacts detail)
         {
             NickName = detail.NickName;
@@ -18,6 +22,9 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
             PublicCertificate = detail.PublicCertificate;
             Trusted = detail.Trusted == 1;
             UserName = detail.UserName;
+
+            oldSendAesKey = detail.SendAesKey;
+            oldReceiveAesKey = detail.ReceiveAesKey;
         }
 
         public long PublicId { get; }
@@ -34,8 +41,22 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
             return UpdateModelTypes.CONTACT;
         }
 
+        private void VerifyAesKeyChange()
+        {
+            if(oldReceiveAesKey != null && oldReceiveAesKey != ReceiveAesKey)
+            {
+                throw new Exception("It isn't possible to update receive Aes key.");
+            }
+
+            if (oldSendAesKey != null && oldSendAesKey != SendAesKey)
+            {
+                throw new Exception("It isn't possible to update send Aes key.");
+            }
+        }
+
         public JsonCapsula GetSelfUpdate()
         {
+            VerifyAesKeyChange();
             return new JsonCapsula(new JContact()
             {
                 AlarmPermission = this.AlarmPermission,
@@ -52,6 +73,7 @@ namespace Premy.Chatovatko.Client.Libs.Database.UpdateModels
 
         public JsonCapsula GetRecepientUpdate()
         {
+            VerifyAesKeyChange();
             return null;
         }
     }
