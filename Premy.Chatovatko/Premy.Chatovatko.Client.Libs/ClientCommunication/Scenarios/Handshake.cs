@@ -42,7 +42,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
 
             if (!serverHandshake.Succeeded)
             {
-                throw new Exception("Handshake failed");
+                throw new Exception($"Handshake failed\n{serverHandshake.Errors}");
             }
 
             return new HandshakeReturnCapsula()
