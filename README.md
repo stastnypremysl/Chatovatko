@@ -184,3 +184,8 @@ To delete message thread, please enter
 Messages can be deleted by
 
     delete message <message_id> 
+
+##### Hash
+If you want to compute SHA-256 hash of your certificate, use
+
+    hash

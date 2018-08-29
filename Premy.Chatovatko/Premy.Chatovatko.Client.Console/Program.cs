@@ -394,12 +394,17 @@ namespace Premy.Chatovatko.Client
                                         break;
                                 }
                                 break;
+
                             case "aesTrial":
                                 if (!VerifyConnectionOpened(true))
                                 {
                                     break;
                                 }
                                 AesTrial();
+                                break;
+
+                            case "hash":
+                                PrintHash(settings.ClientCertificate);
                                 break;
 
                             case "exit":
@@ -442,6 +447,11 @@ namespace Premy.Chatovatko.Client
                 logger = null;
             }
             
+        }
+
+        static void PrintHash(X509Certificate2 cert)
+        {
+            WriteLine(SHA256Utils.ComputeSha256Hash(cert));
         }
 
         static void SaveUser(SearchCServerCapsula searchCapsula)
