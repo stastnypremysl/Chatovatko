@@ -338,8 +338,8 @@ namespace Premy.Chatovatko.Server.ClientListener
                     var aesKey = BinaryEncoder.ReceiveBytes(stream);
                     if (key != null)
                     {
-                        Log("Updating!");
-                        key.AesKey = aesKey;
+                        Log("Updating denied!");
+                        //key.AesKey = aesKey;
                         key.Trusted = true;
                     }
                     else
