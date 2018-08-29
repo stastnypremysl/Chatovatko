@@ -1,25 +1,19 @@
 ﻿#define DEBUG
 //#undef  DEBUG
 
-using MySql.Data.MySqlClient;
 using Premy.Chatovatko.Libs;
 using Premy.Chatovatko.Libs.DataTransmission;
-using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Synchronization;
 using Premy.Chatovatko.Libs.Logging;
 using Premy.Chatovatko.Server.ClientListener.Scenarios;
 using Premy.Chatovatko.Server.Database;
 using Premy.Chatovatko.Server.Database.Models;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.IO;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Push;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
@@ -146,7 +140,7 @@ namespace Premy.Chatovatko.Server.ClientListener
 
                 if(!ret.Succeeded)
                     ret = new SearchCServerCapsula(context.Users
-                    .Where(u => u.PublicCertificateSha2 == searchCapsula.CertificateHash)
+                    .Where(u => u.PublicCertificateSha256 == searchCapsula.CertificateHash)
                     .SingleOrDefault());
 
             }
@@ -335,6 +329,7 @@ namespace Premy.Chatovatko.Server.ClientListener
                     .SingleOrDefault();
                 if(BinaryEncoder.ReadInt(stream) == 0)
                 {
+                    Log("No new key will be received.");
                     key.Trusted = true;
                 }
                 else

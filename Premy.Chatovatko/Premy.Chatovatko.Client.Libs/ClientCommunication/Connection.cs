@@ -316,6 +316,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
                 if (contact.SendAesKey == null)
                 {
+                    Log("Sending new key.");
                     BinaryEncoder.SendInt(stream, 1);
                     AESPassword password = AESPassword.GenerateAESPassword();
 
@@ -325,18 +326,22 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                         .Where(u => u.PublicId == contactId)
                         .Select(u => u.PublicCertificate)
                         .SingleOrDefault());
-                    BinaryEncoder.SendBytes(stream, RSAEncoder.EncryptAndSign(password.Password, recepientCert, MyCertificate));
+
+                    byte[] toSend = RSAEncoder.EncryptAndSign(password.Password, recepientCert, MyCertificate);
+                    BinaryEncoder.SendBytes(stream, toSend);
 
                 }
                 
                 else
                 {
+                    Log("No new key will be sended.");
                     BinaryEncoder.SendInt(stream, 0);
                 }
 
                 PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
                 context.SaveChanges();
             }
+            Log("Trustification has been done.");
             Push();
         }
 

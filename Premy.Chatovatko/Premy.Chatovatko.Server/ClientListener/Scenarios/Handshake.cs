@@ -60,11 +60,12 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             Users user;
             String message;
             Clients client;
+            byte[] aesKey = null;
             bool newUser = false;
             using (Context context = new Context(config))
             {
                 byte[] hash = SHA256.Create().ComputeHash(clientCertificate.RawData);
-                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha2.SequenceEqual(hash));
+                user = context.Users.SingleOrDefault(u => u.PublicCertificateSha256.SequenceEqual(hash));
 
                 if (user == null){
                     log("User doesn't exist yet. I'll try to create him.");
@@ -84,7 +85,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                     user = new Users()
                     {
                         PublicCertificate = clientHandshake.PemCertificate,
-                        PublicCertificateSha2 = hash,
+                        PublicCertificateSha256 = hash,
                         UserName = clientHandshake.UserName
                     };
 
@@ -105,7 +106,14 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 };
 
                 if (clientHandshake.ClientId == null)
-                {     
+                {
+                    log($"Loading self-aes key.");
+                    aesKey = context.UsersKeys
+                        .Where(u => u.RecepientId == user.Id)
+                        .Where(u => u.SenderId == user.Id)
+                        .Select(u => u.AesKey)
+                        .SingleOrDefault();
+
                     context.Add(client);
                     context.SaveChanges();
 
@@ -134,7 +142,8 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
                 Succeeded = true,
                 UserId = user.Id,
                 UserName = user.UserName,
-                ClientId = client.Id
+                ClientId = client.Id,
+                SelfAesKey = aesKey
             };
             TextEncoder.SendJson(stream, toSend);
 

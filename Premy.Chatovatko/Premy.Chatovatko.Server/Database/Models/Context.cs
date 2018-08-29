@@ -184,8 +184,8 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasName("id_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.PublicCertificateSha2)
-                    .HasName("public_certificate_sha1_UNIQUE")
+                entity.HasIndex(e => e.PublicCertificateSha256)
+                    .HasName("public_certificate_sha256_UNIQUE")
                     .IsUnique();
 
                 entity.HasIndex(e => e.UserName)
@@ -201,9 +201,9 @@ namespace Premy.Chatovatko.Server.Database.Models
                     .HasColumnName("public_certificate")
                     .HasColumnType("mediumtext");
 
-                entity.Property(e => e.PublicCertificateSha2)
+                entity.Property(e => e.PublicCertificateSha256)
                     .IsRequired()
-                    .HasColumnName("public_certificate_sha2")
+                    .HasColumnName("public_certificate_sha256")
                     .HasMaxLength(64);
 
                 entity.Property(e => e.UserName)

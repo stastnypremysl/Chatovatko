@@ -159,8 +159,8 @@ namespace Premy.Chatovatko.Client
 
                                             NickName = null,
                                             Trusted = 1,
-                                            ReceiveAesKey = connection.SelfAesPassword.Password,
-                                            SendAesKey = connection.SelfAesPassword.Password,
+                                            ReceiveAesKey = connection.SelfAesPassword?.Password,
+                                            SendAesKey = connection.SelfAesPassword?.Password,
 
                                             PublicCertificate = X509Certificate2Utils.ExportToPem(clientCert)
                                         });
@@ -427,7 +427,7 @@ namespace Premy.Chatovatko.Client
             }
             catch(Exception ex)
             {
-                logger.LogException(ex, "Program", "Core", "The command has failed.");
+                logger.LogException(ex, "Program", "Core", "Core has crashed.");
             }
             finally
             {

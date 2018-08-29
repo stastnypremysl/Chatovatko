@@ -50,7 +50,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios
                 UserId = serverHandshake.UserId,
                 UserName = serverHandshake.UserName,
                 ClientId = serverHandshake.ClientId,
-                SelfAesPassword = new AESPassword(RSAEncoder.DecryptAndVerify(serverHandshake.SelfAesKey, cert, cert))
+                SelfAesPassword = serverHandshake.SelfAesKey == null ? null : new AESPassword(RSAEncoder.DecryptAndVerify(serverHandshake.SelfAesKey, cert, cert))
             };
         }
 

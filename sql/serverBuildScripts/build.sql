@@ -4,12 +4,12 @@ CREATE SCHEMA IF NOT EXISTS `chatovatko` DEFAULT CHARACTER SET utf8 ;
 CREATE TABLE IF NOT EXISTS `chatovatko`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `public_certificate` MEDIUMTEXT NOT NULL,
-  `public_certificate_sha2` VARBINARY(64) NOT NULL,
+  `public_certificate_sha256` VARBINARY(64) NOT NULL,
   `user_name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   UNIQUE INDEX `user_name_UNIQUE` (`user_name` ASC),
-  UNIQUE INDEX `public_certificate_sha1_UNIQUE` (`public_certificate_sha2` ASC))
+  UNIQUE INDEX `public_certificate_sha256_UNIQUE` (`public_certificate_sha256` ASC))
 ENGINE = InnoDB;
 /*----------------------------------------------------------------------*/
 CREATE TABLE IF NOT EXISTS `chatovatko`.`blob_messages` (
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `chatovatko`.`users_keys` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `recepient_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
-  `aes_key` VARBINARY(1024) NOT NULL,
+  `aes_key` VARBINARY(1032) NOT NULL,
   `trusted` BIT(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_id_keys` (`recepient_id` ASC, `sender_id` ASC),

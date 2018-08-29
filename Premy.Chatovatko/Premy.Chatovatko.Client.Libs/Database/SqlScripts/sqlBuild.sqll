@@ -21,7 +21,7 @@ CREATE TABLE `main`.`settings` (
     ON DELETE CASCADE
 	ON UPDATE CASCADE,
   `alarm_permission` TINYINT NOT NULL,
-  `nick_name` VARCHAR NOT NULL);
+  `nick_name` VARCHAR NULL);
   CREATE UNIQUE INDEX `fk_contact_blob_messages_id_idx` ON contacts (`blob_messages_id` ASC);
 
   ---------------------------------------

@@ -16,7 +16,7 @@ namespace Premy.Chatovatko.Server.Database.Models
 
         public int Id { get; set; }
         public string PublicCertificate { get; set; }
-        public byte[] PublicCertificateSha2 { get; set; }
+        public byte[] PublicCertificateSha256 { get; set; }
         public string UserName { get; set; }
 
         public ICollection<BlobMessages> BlobMessagesRecepient { get; set; }
