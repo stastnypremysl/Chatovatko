@@ -307,7 +307,7 @@ namespace Premy.Chatovatko.Client
                                             WriteNotEnoughParameters();
                                             break;
                                         }
-                                        WriteMessages(Int32.Parse(commandParts[2]));
+                                        WriteMessages(GetThreadId(commandParts[2]));
                                         break;
                                     default:
                                         WriteSyntaxError(commandParts[1]);
