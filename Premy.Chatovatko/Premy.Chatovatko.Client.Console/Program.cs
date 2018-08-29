@@ -130,7 +130,7 @@ namespace Premy.Chatovatko.Client
                                     WriteLine();
                                     ServerInfo info = infoConnection.DownloadInfo();
                                     WriteServerInfo(info);
-                                    Write("Do you trust this server (y/n):");
+                                    Write("Do you trust this server (y/n): ");
 
                                     string pushed = ReadLine();
                                     if (!pushed.Equals("y"))
@@ -200,7 +200,14 @@ namespace Premy.Chatovatko.Client
 
                                 SearchCServerCapsula searchCapsula = connection.SearchContact(
                                     GetUserId(commandParts, 1));
-                                
+
+                                PrintSearchCapsula(searchCapsula);
+                                Write("Do you trust this is the searched user, and do you want to save him? (y/n): ");
+                                string pushed = ReadLine();
+                                if (pushed.Equals("y"))
+                                {
+                                    SaveUser(searchCapsula);
+                                }          
                                 break;
 
                             case "push":
@@ -427,6 +434,32 @@ namespace Premy.Chatovatko.Client
                 logger = null;
             }
             
+        }
+
+        static void SaveUser(SearchCServerCapsula searchCapsula)
+        {
+            using(Context context = new Context(config))
+            {
+                CContact contact = new CContact()
+                {
+                    AlarmPermission = false,
+                    NickName = null,
+                    PublicCertificate = searchCapsula.PemCertificate,
+                    PublicId = searchCapsula.UserId,
+                    ReceiveAesKey = null,
+                    SendAesKey = null,
+                    Trusted = false,
+                    UserName = searchCapsula.UserName
+                };
+                PushOperations.Insert(context, contact, settings.UserPublicId, settings.UserPublicId);
+            }
+        }
+
+        static void PrintSearchCapsula(SearchCServerCapsula searchCapsula)
+        {
+            WriteLine($"UserId: {searchCapsula.UserId}");
+            WriteLine($"UserName: {searchCapsula.UserName}");
+            WriteLine($"Certificate SHA-256 hash: {searchCapsula.PemCertificate}");
         }
 
         static void AesTrial()
@@ -701,7 +734,7 @@ namespace Premy.Chatovatko.Client
             WriteLine("Server name:");
             WriteLine(info.Name);
             WriteLine("Public key SHA-256 sum:");
-            WriteLine(SHA256Utils.ComputeSha256Hash(info.PublicKey));
+            WriteLine(SHA256Utils.ComputeCertHash(info.PublicKey));
         }
 
         static void WriteStatus(Settings settings, IClientDatabaseConfig config)

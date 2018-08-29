@@ -65,7 +65,7 @@ namespace Premy.Chatovatko.Server.ClientListener.Scenarios
             bool newUser = false;
             using (Context context = new Context(config))
             {
-                byte[] hash = SHA256.Create().ComputeHash(clientCertificate.RawData);
+                byte[] hash = SHA256Utils.ComputeByteSha256Hash(clientCertificate);
                 user = context.Users.SingleOrDefault(u => u.PublicCertificateSha256.SequenceEqual(hash));
 
                 if (user == null){
