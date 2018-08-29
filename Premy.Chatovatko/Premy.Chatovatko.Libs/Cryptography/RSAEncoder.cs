@@ -10,7 +10,7 @@ namespace Premy.Chatovatko.Libs.Cryptography
 {
     public static class RSAEncoder
     {
-        private static readonly RSAEncryptionPadding encryptionPadding = RSAEncryptionPadding.OaepSHA256;
+        private static readonly RSAEncryptionPadding encryptionPadding = RSAEncryptionPadding.Pkcs1;
 
         public static byte[] Encrypt(byte[] data, X509Certificate2 cert)
         {
