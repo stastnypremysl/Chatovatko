@@ -466,7 +466,7 @@ namespace Premy.Chatovatko.Client
         {
             WriteLine($"UserId: {searchCapsula.UserId}");
             WriteLine($"UserName: {searchCapsula.UserName}");
-            WriteLine($"Certificate SHA-256 hash: {searchCapsula.PemCertificate}");
+            WriteLine($"Certificate SHA-256 hash: {SHA256Utils.ComputeCertHash(searchCapsula.PemCertificate)}");
         }
 
         static void AesTrial()
