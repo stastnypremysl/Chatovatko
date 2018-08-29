@@ -132,11 +132,11 @@ namespace Premy.Chatovatko.Client
                                     WriteServerInfo(info);
                                     Write("Do you trust this server (y/n): ");
 
-                                    string pushed = ReadLine();
-                                    if (!pushed.Equals("y"))
+                                    if (!ReadLine().Equals("y"))
                                     {
                                         break;
                                     }
+                                    
 
                                     IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicKey);
                                     connection = new Connection(logger, verificator, serverAddress, clientCert, config, userName);
@@ -203,8 +203,7 @@ namespace Premy.Chatovatko.Client
 
                                 PrintSearchCapsula(searchCapsula);
                                 Write("Do you trust this is the searched user, and do you want to save him? (y/n): ");
-                                string pushed = ReadLine();
-                                if (pushed.Equals("y"))
+                                if (ReadLine().Equals("y"))
                                 {
                                     SaveUser(searchCapsula);
                                 }          
