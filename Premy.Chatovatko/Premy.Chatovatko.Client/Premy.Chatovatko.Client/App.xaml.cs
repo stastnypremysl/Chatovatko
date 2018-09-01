@@ -2,6 +2,7 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Premy.Chatovatko.Client.Views;
+using System.Reflection;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Premy.Chatovatko.Client
@@ -12,9 +13,9 @@ namespace Premy.Chatovatko.Client
         public App()
         {
             InitializeComponent();
+            
 
-
-            MainPage = new MainPage();
+            MainPage = new CertificateSelection();
         }
 
         protected override void OnStart()
