@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -92,10 +92,18 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Premy.Chatovatko.Client.Libs\Premy.Chatovatko.Client.Libs.csproj">
+      <Project>{f1789851-ec70-4d92-ae3c-7058130a5e94}</Project>
+      <Name>Premy.Chatovatko.Client.Libs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Premy.Chatovatko.Libs\Premy.Chatovatko.Libs.csproj">
+      <Project>{f8bc7c18-c3c8-4458-a9ba-7879bb97aa23}</Project>
+      <Name>Premy.Chatovatko.Libs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Premy.Chatovatko.Client\Premy.Chatovatko.Client.csproj">
       <Project>{AD841A35-92D8-433F-BFAD-CE942EFD2C7C}</Project>
       <Name>Premy.Chatovatko.Client</Name>
     </ProjectReference>
   </ItemGroup>
- <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
