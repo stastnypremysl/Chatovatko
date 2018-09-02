@@ -10,7 +10,7 @@
                 <Image Source="{local:ImageResource Premy.Chatovatko.Client.Images.logo1.png}" Margin="20" HeightRequest="100" />
                 <Label Text="Wait please"
                 HorizontalOptions="CenterAndExpand" Margin="40, 40, 40, 0" x:Name="waitLabel"/>
-                <ActivityIndicator x:Name="activityIndicator" Color="#00AEED" Margin="10"/>
+                <ActivityIndicator x:Name="activityIndicator" Color="#00AEED" Margin="10" IsVisible="True" IsRunning="True"/>
                 
             </StackLayout>
         </StackLayout>
