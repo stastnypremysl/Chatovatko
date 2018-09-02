@@ -10,7 +10,7 @@ namespace Premy.Chatovatko.Client.Libs.Sync
         public int Miliseconds { get; set; }
         private DateTime timeToRun;
 
-        public DelayAction(int miliseconds = 500)
+        public DelayAction(int miliseconds = 1000)
         {
             Miliseconds = miliseconds;
             this.timeToRun = DateTime.Now;

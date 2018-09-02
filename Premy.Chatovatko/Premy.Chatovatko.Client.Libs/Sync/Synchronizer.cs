@@ -32,5 +32,10 @@ namespace Premy.Chatovatko.Client.Libs.Sync
                 }
             });
         }
+
+        public void AddAction(Action action)
+        {
+            Queue.Enqueue(new SingleAction(action));
+        }
     }
 }

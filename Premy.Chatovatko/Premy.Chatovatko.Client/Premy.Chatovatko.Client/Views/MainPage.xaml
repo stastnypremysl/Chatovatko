@@ -2,8 +2,17 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:views="clr-namespace:Premy.Chatovatko.Client.Views"
+            xmlns:local="clr-namespace:Premy.Chatovatko.Client.Views;assembly=Premy.Chatovatko.Client"
             x:Class="Premy.Chatovatko.Client.Views.MainPage">
-    <TabbedPage.Children>
-        
-    </TabbedPage.Children>
+    <NavigationPage Title="Threads" >
+        <x:Arguments>
+            <views:ThreadsList/>
+        </x:Arguments>
+    </NavigationPage>
+    <NavigationPage Title="Contacts" >
+        <x:Arguments>
+            <views:ContactList/>
+        </x:Arguments>
+    </NavigationPage> 
+    
 </TabbedPage>

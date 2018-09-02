@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -11,6 +11,7 @@ namespace Premy.Chatovatko.Client.Views
         public MainPage()
         {
             InitializeComponent();
+            
         }
     }
 }
