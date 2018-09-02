@@ -1,6 +1,10 @@
-﻿using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -64,6 +68,17 @@ namespace Premy.Chatovatko.Libs.Cryptography
             {
                 flag = X509KeyStorageFlags.PersistKeySet;
             }
+
+            using (MemoryStream stream = new MemoryStream(data))
+            {
+                Pkcs12Store store = new Pkcs12Store(stream, new char[] { });
+                
+                foreach (string n in store.Aliases)
+                {
+                    return new X509Certificate2(DotNetUtilities.ToX509Certificate(store.GetCertificate(n).Certificate));        
+                }
+            }
+
             return new X509Certificate2(data, String.Empty, flag);
         }
 

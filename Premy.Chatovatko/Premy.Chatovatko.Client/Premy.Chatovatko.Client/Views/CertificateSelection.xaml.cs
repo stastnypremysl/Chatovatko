@@ -1,5 +1,7 @@
 using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using Premy.Chatovatko.Client.Cryptography;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.Logging;
@@ -16,7 +18,7 @@ using Xamarin.Forms.Xaml;
 namespace Premy.Chatovatko.Client.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CertificateSelection : ContentPage
+    public partial class CertificateSelection : ContentPage, ILoggable
     {
         App app;
         Logger logger;
@@ -45,16 +47,52 @@ namespace Premy.Chatovatko.Client.Views
         private async void LoadFromFile()
         {
             IsLoadingFile = true;
-            FileData fileData = await CrossFilePicker.Current.PickFile();
-            if (fileData == null)
+            try
             {
-                IsLoadingFile = false;
-                return;
+
+                var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Storage);
+                if (status != PermissionStatus.Granted)
+                {
+                    if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Storage))
+                    {
+                        await DisplayAlert("Need access storage", "It is nessecary for certificate loading.", "OK");
+                    }
+
+                    var results = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Storage);
+                    status = results[Permission.Storage];
+                }
+
+                if (status == PermissionStatus.Denied)
+                {
+                    await DisplayAlert("Error", "Storage permission is not granted.", "OK");
+                    IsLoadingFile = false;
+                    return;
+                }
+
+
+                FileData fileData = await CrossFilePicker.Current.PickFile();
+
+                if (fileData == null)
+                {
+                    IsLoadingFile = false;
+                    return;
+                }
+
+                X509Certificate2 cert = X509Certificate2Utils.ImportFromPkcs12(fileData.DataArray);
+
+                app.AfterCertificateSelected(cert);
             }
+            catch(Exception ex)
+            {
+                logger.LogException(this, ex);
+                await DisplayAlert("Error", "Certificate loading failed.", "OK");
+                IsLoadingFile = false;
+            }
+        }
 
-            X509Certificate2 cert = X509Certificate2Utils.ImportFromPkcs12(fileData.DataArray);
-
-            app.AfterCertificateSelected(cert);
+        public string GetLogSource()
+        {
+            return "Certificate selector";
         }
 
         private bool _IsGenerating;

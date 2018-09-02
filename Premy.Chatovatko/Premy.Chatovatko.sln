@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.iOS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client.UWP", "Premy.Chatovatko.Client\Premy.Chatovatko.Client.UWP\Premy.Chatovatko.Client.UWP.csproj", "{278A0B5F-27A4-4192-9405-B3E72C87716F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Premy.Chatovatko.Client", "Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.csproj", "{AA78360C-462D-4786-AB8A-5DD822FBF5D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Premy.Chatovatko.Client", "Premy.Chatovatko.Client\Premy.Chatovatko.Client\Premy.Chatovatko.Client.csproj", "{AA78360C-462D-4786-AB8A-5DD822FBF5D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -402,9 +402,9 @@ Global
 		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x64.ActiveCfg = Debug|x64
 		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x64.Build.0 = Debug|x64
 		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x64.Deploy.0 = Debug|x64
-		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x86.ActiveCfg = Debug|x86
-		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x86.Build.0 = Debug|x86
-		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x86.Deploy.0 = Debug|x86
+		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x86.ActiveCfg = Debug|x64
+		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x86.Build.0 = Debug|x64
+		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Debug|x86.Deploy.0 = Debug|x64
 		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Release|Any CPU.ActiveCfg = Release|x86
 		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Release|ARM.ActiveCfg = Release|ARM
 		{278A0B5F-27A4-4192-9405-B3E72C87716F}.Release|ARM.Build.0 = Release|ARM
