@@ -66,6 +66,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
                 });
 
                 context.SaveChanges();
+                scope.Complete();
             }
             PushAction.Changed = true;
 
