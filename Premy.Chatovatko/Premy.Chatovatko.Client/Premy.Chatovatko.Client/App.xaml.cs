@@ -96,6 +96,7 @@ namespace Premy.Chatovatko.Client
             }
             catch(Exception ex)
             {
+                logger.LogException(this, ex);
                 MainPage = new ServerSelection(this, clientCert, address, password, userName, ex.Message);
             }
         }

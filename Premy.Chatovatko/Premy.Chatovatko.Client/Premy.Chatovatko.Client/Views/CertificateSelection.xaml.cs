@@ -78,7 +78,7 @@ namespace Premy.Chatovatko.Client.Views
                     return;
                 }
 
-                X509Certificate2 cert = X509Certificate2Utils.ImportFromPkcs12(fileData.DataArray);
+                X509Certificate2 cert = X509Certificate2Utils.ImportFromPkcs12(fileData.DataArray, true);
 
                 app.AfterCertificateSelected(cert);
             }
