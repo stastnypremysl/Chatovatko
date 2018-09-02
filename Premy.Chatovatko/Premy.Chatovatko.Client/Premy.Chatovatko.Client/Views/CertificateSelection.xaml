@@ -3,17 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Premy.Chatovatko.Client.Views.CertificateSelection"
              xmlns:local="clr-namespace:Premy.Chatovatko.Client.Images;assembly=Premy.Chatovatko.Client">
+    
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Padding="0,10,0,0" Spacing="0">
-                <Image Source="{local:ImageResource Premy.Chatovatko.Client.Images.logo1.png}" Margin="20" HeightRequest="100"/>
+                
+                <Image Source="{local:ImageResource Premy.Chatovatko.Client.Images.logo1.png}" Margin="20" HeightRequest="100" />
+                <Label Text="Generating certificate"
+                HorizontalOptions="CenterAndExpand" Margin="40, 40, 40, 0" x:Name="generatingLabel"/>
+                <ActivityIndicator x:Name="activityIndicator" Color="#00AEED" Margin="10"/>
                 <Label Text="Welcome to Chatovatko!&#10;&#10;It is nessesary to have X509 certificate. Do you want to use an own certificate (*.p12), or do you want to generate a new one?"
-                HorizontalOptions="CenterAndExpand" Margin="40, 40, 40, 0"/>
-                <StackLayout VerticalOptions="EndAndExpand" Padding="50, 0, 50, 50">
+                HorizontalOptions="CenterAndExpand" Margin="40, 40, 40, 0" x:Name="introLabel"/>
+                <StackLayout VerticalOptions="EndAndExpand" Padding="50, 0, 50, 50" x:Name="buttonLayout">
                     <Button Text="Load from file" />
-                    <Button Text="Generate"/>
+                    <Button Text="Generate" Pressed="Generate"/>
                 </StackLayout>
             </StackLayout>
+            
         </ScrollView>
+
     </ContentPage.Content>
+    
 </ContentPage>

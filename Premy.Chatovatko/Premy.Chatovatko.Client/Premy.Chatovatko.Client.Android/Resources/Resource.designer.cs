@@ -26,6 +26,8 @@ namespace Premy.Chatovatko.Client.Droid
 		
 		public static void UpdateIdValues()
 		{
+			global::PCLStorage.Resource.String.ApplicationName = global::Premy.Chatovatko.Client.Droid.Resource.String.ApplicationName;
+			global::PCLStorage.Resource.String.Hello = global::Premy.Chatovatko.Client.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::Premy.Chatovatko.Client.Droid.Resource.Attribute.actionBarSize;
 		}
 		
@@ -3964,6 +3966,12 @@ namespace Premy.Chatovatko.Client.Droid
 		
 		public partial class String
 		{
+			
+			// aapt resource value: 0x7f0a003d
+			public const int ApplicationName = 2131361853;
+			
+			// aapt resource value: 0x7f0a003c
+			public const int Hello = 2131361852;
 			
 			// aapt resource value: 0x7f0a0015
 			public const int abc_action_bar_home_description = 2131361813;
