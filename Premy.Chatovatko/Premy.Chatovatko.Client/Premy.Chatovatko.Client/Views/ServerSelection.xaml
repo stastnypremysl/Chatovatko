@@ -11,7 +11,7 @@
                 <Entry x:Name="serverAddressEntry" Text="51.144.234.233" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
                 <Entry x:Name="passwordEntry" IsPassword="True" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
             </StackLayout>
-            <Button VerticalOptions="End" HorizontalOptions="CenterAndExpand" x:Name="ConfirmButton" Text="Confirm"/>
+            <Button VerticalOptions="End" HorizontalOptions="CenterAndExpand" x:Name="ConfirmButton" Text="Confirm" Pressed="Confirm"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

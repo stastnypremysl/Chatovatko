@@ -57,7 +57,12 @@ namespace Premy.Chatovatko.Client
         
         public void AfterCertificateSelected(X509Certificate2 cert)
         {
-            MainPage = new ServerSelection();
+            MainPage = new ServerSelection(this, cert);
+        }
+
+        public void AfterServerSelected(X509Certificate2 cert, String address, String password)
+        {
+
         }
 
         protected override void OnStart()
