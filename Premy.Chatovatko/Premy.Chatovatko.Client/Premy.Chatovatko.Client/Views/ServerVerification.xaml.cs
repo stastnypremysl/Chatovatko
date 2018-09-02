@@ -16,7 +16,7 @@ namespace Premy.Chatovatko.Client.Views
 	public partial class ServerVerification : ContentPage
 	{
         App app;
-        X509Certificate2 serverCert;
+        ServerInfo info;
         X509Certificate2 clientCert;
         String serverAddress;
         String password;
@@ -27,7 +27,7 @@ namespace Premy.Chatovatko.Client.Views
 			InitializeComponent ();
             this.app = app;
             this.clientCert = clientCert;
-            this.serverCert = X509Certificate2Utils.ImportFromPem(info.PublicCertificate);
+            this.info = info;
             this.serverAddress = serverAddress;
             this.password = password;
             this.userName = userName;
@@ -48,7 +48,7 @@ namespace Premy.Chatovatko.Client.Views
 
         public void Trusted()
         {
-            app.AfterServerConfirmed(clientCert, serverCert, serverAddress, password, userName);
+            app.AfterServerConfirmed(clientCert, info, serverAddress, password, userName);
         }
 
         public void NotTrusted()

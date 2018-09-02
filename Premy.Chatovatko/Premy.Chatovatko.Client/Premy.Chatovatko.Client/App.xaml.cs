@@ -10,6 +10,7 @@ using Premy.Chatovatko.Client.Libs.ClientCommunication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
+using Premy.Chatovatko.Libs.Cryptography;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Premy.Chatovatko.Client
@@ -38,6 +39,7 @@ namespace Premy.Chatovatko.Client
                 Log("Settings exists and will be loaded.");
                 settings = settingsLoader.GetSettingsCapsula();
                 connection = new Connection(logger, settings);
+                Init();
             }
             else
             {
@@ -45,15 +47,13 @@ namespace Premy.Chatovatko.Client
                 MainPage = new CertificateSelection(this, logger);
             }
 
-            Init();
-
         }
 
 
 
         private void Init()
         {
-
+            MainPage = new MainPage();
         }
 
         
@@ -83,14 +83,14 @@ namespace Premy.Chatovatko.Client
             }
         }
         
-        public async void AfterServerConfirmed(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password, String userName)
+        public async void AfterServerConfirmed(X509Certificate2 clientCert, ServerInfo info, String address, String password, String userName)
         {
             MainPage = new Loading("Client is being registred...");
             try
             { 
                 await Task.Run(() =>
                 {
-                    Register(clientCert, serverCert, address, password);
+                    ConnectionUtils.Register(out connection, out settings, logger, Log, address, clientCert, config, userName, settingsLoader, info);
                 });
                 Init();
             }
@@ -99,12 +99,7 @@ namespace Premy.Chatovatko.Client
                 MainPage = new ServerSelection(this, clientCert, address, password, userName, ex.Message);
             }
         }
-
-        public void Register(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password)
-        {
-
-        }
-
+        
         protected override void OnStart()
         {
             // Handle when your app starts
