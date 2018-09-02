@@ -20,7 +20,8 @@ namespace Premy.Chatovatko.Client.Views
 		{
 			InitializeComponent ();
             this.settings = settings;
-		}
+            //searchUser.Icon = (FileImageSource)FileImageSource.FromResource("Premy.Chatovatko.Client.Images.search.png");
+        }
 
         protected override void OnAppearing()
         {

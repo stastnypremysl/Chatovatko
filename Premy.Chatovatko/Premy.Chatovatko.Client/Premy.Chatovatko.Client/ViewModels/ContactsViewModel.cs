@@ -24,8 +24,6 @@ namespace Premy.Chatovatko.Client.ViewModels
             }
         }
 
-        public ICommand SearchUser { get; private set; }
-
         public ContactsViewModel(SettingsCapsula settings)
         {
 
@@ -35,8 +33,6 @@ namespace Premy.Chatovatko.Client.ViewModels
                 var contactList = context.Contacts.ToList();
 
                 Contacts = new ObservableCollection<Contacts>(contactList);
-
-                SearchUser = new Command(async () => await Application.Current.MainPage.Navigation.PushAsync(new SearchUser()));
             }
         }
     }

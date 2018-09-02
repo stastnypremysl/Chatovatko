@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Premy.Chatovatko.Client.Views.ContactList">
+             x:Class="Premy.Chatovatko.Client.Views.ContactList"
+             Title="Contact list"
+             xmlns:local="clr-namespace:Premy.Chatovatko.Client.Images;assembly=Premy.Chatovatko.Client">
+    <ContentPage.ToolbarItems>
+
+        <ToolbarItem Text="Search user"
+                     x:Name="searchUser"
+                     Icon="search.png"/>
+
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <ListView ItemsSource="{Binding Contacts}"
