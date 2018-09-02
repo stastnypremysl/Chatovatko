@@ -1,29 +1,26 @@
 #define DEBUG
 //#undef DEBUG
 
+using Microsoft.EntityFrameworkCore;
 using Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios;
+using Premy.Chatovatko.Client.Libs.Cryptography;
+using Premy.Chatovatko.Client.Libs.Database;
 using Premy.Chatovatko.Client.Libs.Database.Models;
+using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
 using Premy.Chatovatko.Client.Libs.UserData;
-using Premy.Chatovatko.Libs;
+using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Push;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Premy.Chatovatko.Client.Libs.Database;
-using Premy.Chatovatko.Client.Libs.Cryptography;
-using Premy.Chatovatko.Client.Libs.Database.JsonModels;
-using Premy.Chatovatko.Libs.Cryptography;
-using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
-using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
-using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Push;
-using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 using System.Transactions;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
@@ -115,7 +112,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
             isConnected = true;
         }
-        
+
         public void Disconnect()
         {
             Log("Sending END_CONNECTION command.");
@@ -193,7 +190,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
                     scope.Complete();
                 }
-                
+
             }
 
             Log("Push have been done.");
@@ -212,16 +209,14 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     Log("Sending ClientPullCapsula.");
 #endif
                     ClientPullCapsula clientCapsula;
-                    using (Context context = new Context(config))
+                    clientCapsula = new ClientPullCapsula()
                     {
-                        clientCapsula = new ClientPullCapsula()
-                        {
-                            AesKeysUserIds = context.Contacts
-                                .Where(u => u.ReceiveAesKey == null)
-                                .Select(u => u.PublicId)
-                                .ToArray()
-                        };
-                    }
+                        AesKeysUserIds = context.Contacts
+                            .Where(u => u.ReceiveAesKey == null)
+                            .Select(u => u.PublicId)
+                            .ToArray()
+                    };
+
                     TextEncoder.SendJson(stream, clientCapsula);
 
                     ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
@@ -313,9 +308,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     context.SaveChanges();
                     scope.Complete();
                 }
-                
+
             }
-        
+
         }
 
         public void TrustContact(int contactId)
