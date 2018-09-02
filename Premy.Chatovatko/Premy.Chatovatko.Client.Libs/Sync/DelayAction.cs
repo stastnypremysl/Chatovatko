@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -7,19 +7,19 @@ namespace Premy.Chatovatko.Client.Libs.Sync
 {
     public class DelayAction : IAction
     {
-        private int miliseconds;
+        public int Miliseconds { get; set; }
         private DateTime timeToRun;
 
-        public DelayAction(int miliseconds = 30)
+        public DelayAction(int miliseconds = 500)
         {
-            this.miliseconds = miliseconds;
+            Miliseconds = miliseconds;
             this.timeToRun = DateTime.Now;
             timeToRun.AddMilliseconds(miliseconds);
         }
 
         public IAction GetNext()
         {
-            throw new NotImplementedException();
+            return new DelayAction(Miliseconds);
         }
 
         public void Run()
