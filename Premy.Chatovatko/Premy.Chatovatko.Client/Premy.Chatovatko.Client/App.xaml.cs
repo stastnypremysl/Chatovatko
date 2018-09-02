@@ -64,6 +64,16 @@ namespace Premy.Chatovatko.Client
         {
 
         }
+        
+        public void AfterServerConfirmed(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password)
+        {
+            Register(clientCert, serverCert, address, password);
+        }
+
+        public void Register(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password)
+        {
+
+        }
 
         protected override void OnStart()
         {
