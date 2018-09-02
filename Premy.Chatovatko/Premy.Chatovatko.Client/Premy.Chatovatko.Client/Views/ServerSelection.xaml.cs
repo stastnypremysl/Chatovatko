@@ -23,9 +23,26 @@ namespace Premy.Chatovatko.Client.Views
             this.app = app;
 		}
 
+        public ServerSelection(App app, X509Certificate2 cert, String serverAddress, String password, String userName, String error) : this(app, cert)
+        {
+            serverAddressEntry.Text = serverAddress;
+            passwordEntry.Text = password;
+            userNameEntry.Text = userName;
+            this.DispleyError(error);
+        }
+
+        public async void DispleyError(String message)
+        {
+            if(message == null)
+            {
+                return;
+            }
+            await DisplayAlert("Error", message, "OK");
+        }
+
         public void Confirm()
         {
-            app.AfterServerSelected(cert, serverAddressEntry.Text, serverAddressEntry.Text);
+            app.AfterServerSelected(cert, serverAddressEntry.Text, passwordEntry.Text, userNameEntry.Text);
         }
 
 	}

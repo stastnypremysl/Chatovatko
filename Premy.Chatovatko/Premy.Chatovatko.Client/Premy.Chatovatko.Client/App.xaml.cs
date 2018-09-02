@@ -8,6 +8,8 @@ using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Client.Libs.Database;
 using Premy.Chatovatko.Client.Libs.ClientCommunication;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Premy.Chatovatko.Client
@@ -60,14 +62,42 @@ namespace Premy.Chatovatko.Client
             MainPage = new ServerSelection(this, cert);
         }
 
-        public void AfterServerSelected(X509Certificate2 cert, String address, String password)
+        public async void AfterServerSelected(X509Certificate2 clientCert, String address, String password, String userName)
         {
+            MainPage = new Loading("Server informations are downloading.");
+            try
+            {
+                InfoConnection infoConnection = new InfoConnection(address, logger);
+                ServerInfo info = null;
 
+                await Task.Run(() =>
+                {
+                    info = infoConnection.DownloadInfo();
+                });
+
+                MainPage = new ServerVerification(this, info, clientCert, address, password, userName);
+            }
+            catch (Exception ex)
+            {
+                MainPage = new ServerSelection(this, clientCert, address, password, userName, ex.Message);
+            }
         }
         
-        public void AfterServerConfirmed(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password)
+        public async void AfterServerConfirmed(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password, String userName)
         {
-            Register(clientCert, serverCert, address, password);
+            MainPage = new Loading("Client is being registred.");
+            try
+            { 
+                await Task.Run(() =>
+                {
+                    Register(clientCert, serverCert, address, password);
+                });
+                Init();
+            }
+            catch(Exception ex)
+            {
+                MainPage = new ServerSelection(this, clientCert, address, password, userName, ex.Message);
+            }
         }
 
         public void Register(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password)

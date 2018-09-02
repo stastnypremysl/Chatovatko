@@ -17,7 +17,7 @@ namespace Premy.Chatovatko.Client.Views
 			InitializeComponent ();
 		}
 
-        public Loading(String message) : base()
+        public Loading(String message) : this()
         {
             waitLabel.Text = message;
         }
