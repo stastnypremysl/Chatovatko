@@ -76,7 +76,7 @@ namespace Premy.Chatovatko.Client.Views
         private bool _IsLoadingFile;
         public bool IsLoadingFile
         {
-            get { return _IsLoadingFile; }
+            get => _IsLoadingFile;
             set
             {
                 _IsLoadingFile = value;
