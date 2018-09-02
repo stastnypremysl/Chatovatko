@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Premy.Chatovatko.Client.Libs.Sync
 {
-    public interface IAction
+    public interface IUpdatable
     {
-        bool Run();
-        IAction GetNext();
+        void Update();
     }
 }

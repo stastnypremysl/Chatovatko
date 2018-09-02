@@ -4,15 +4,5 @@
             xmlns:views="clr-namespace:Premy.Chatovatko.Client.Views"
             xmlns:local="clr-namespace:Premy.Chatovatko.Client.Views;assembly=Premy.Chatovatko.Client"
             x:Class="Premy.Chatovatko.Client.Views.MainPage">
-    <NavigationPage Title="Threads" >
-        <x:Arguments>
-            <views:ThreadsList/>
-        </x:Arguments>
-    </NavigationPage>
-    <NavigationPage Title="Contacts" >
-        <x:Arguments>
-            <views:ContactList/>
-        </x:Arguments>
-    </NavigationPage> 
-    
+        
 </TabbedPage>

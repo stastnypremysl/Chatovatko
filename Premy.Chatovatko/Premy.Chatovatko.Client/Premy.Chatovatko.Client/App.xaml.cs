@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Client.Libs.Sync;
+using Premy.Chatovatko.Client.Helpers;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Premy.Chatovatko.Client
@@ -58,7 +59,7 @@ namespace Premy.Chatovatko.Client
 
         private void Init()
         {
-            MainPage = new MainPage();
+            MainPage = new MainPage(settings);
             synchronizer = new Synchronizer(GetConnection, Reconnect, logger, settings);
             synchronizer.Run();
         }
@@ -73,8 +74,15 @@ namespace Premy.Chatovatko.Client
             {
 
             }
-            connection = new Connection(logger, settings);
-            connection.Connect();
+            try
+            { 
+                connection = new Connection(logger, settings);
+                connection.Connect();
+            }
+            catch(Exception ex)
+            {
+                logger.LogException(this, ex);
+            }
         }
 
         
@@ -121,20 +129,34 @@ namespace Premy.Chatovatko.Client
                 MainPage = new ServerSelection(this, clientCert, address, password, userName, ex.Message);
             }
         }
+
+        public void AddUpdatable(IUpdatable updatable)
+        {
+            synchronizer.Updatable.Add(new WeakReference<IUpdatable>(updatable));
+        }
         
         protected override void OnStart()
         {
-            // Handle when your app starts
+            if(synchronizer != null)
+            {
+                synchronizer.SetDelay(1000);
+            }
         }
 
         protected override void OnSleep()
         {
-            // Handle when your app sleeps
+            if (synchronizer != null)
+            {
+                synchronizer.SetDelay(30000);
+            }
         }
 
         protected override void OnResume()
         {
-            // Handle when your app resumes
+            if (synchronizer != null)
+            {
+                synchronizer.SetDelay(1000);
+            }
         }
 
         public string GetLogSource()

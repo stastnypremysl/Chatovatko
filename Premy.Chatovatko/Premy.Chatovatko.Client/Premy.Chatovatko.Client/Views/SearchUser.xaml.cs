@@ -1,5 +1,4 @@
-using Premy.Chatovatko.Client.Libs.UserData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace Premy.Chatovatko.Client.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ThreadsList : ContentPage
+	public partial class SearchUser : ContentPage
 	{
-		public ThreadsList (SettingsCapsula settings)
+		public SearchUser ()
 		{
 			InitializeComponent ();
 		}

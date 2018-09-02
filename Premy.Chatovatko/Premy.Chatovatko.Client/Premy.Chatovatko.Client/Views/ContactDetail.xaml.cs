@@ -11,9 +11,9 @@ using Xamarin.Forms.Xaml;
 namespace Premy.Chatovatko.Client.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ThreadsList : ContentPage
+	public partial class ContactDetail : ContentPage
 	{
-		public ThreadsList (SettingsCapsula settings)
+		public ContactDetail (SettingsCapsula settings, long userPublicId)
 		{
 			InitializeComponent ();
 		}

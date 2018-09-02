@@ -34,7 +34,7 @@ namespace Premy.Chatovatko.Client.Libs.Sync
             return new PushAction(getConnection, reconnect, logger, settings);
         }
 
-        public void Run()
+        public bool Run()
         {
             if (Changed)
             {
@@ -42,6 +42,7 @@ namespace Premy.Chatovatko.Client.Libs.Sync
                 {
                     getConnection().Push();
                     Changed = false;
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -49,6 +50,7 @@ namespace Premy.Chatovatko.Client.Libs.Sync
                     reconnect();
                 }
             }
+            return false;
         }
     }
 }

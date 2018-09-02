@@ -32,17 +32,18 @@ namespace Premy.Chatovatko.Client.Libs.Sync
             return new PullAction(getConnection, reconnect, logger, settings);
         }
 
-        public void Run()
+        public bool Run()
         {
             try
             {
-                getConnection().Pull();
+                return getConnection().Pull() > 0;
             }
             catch (Exception ex)
             {
                 logger.LogException(this, ex);
                 reconnect();
             }
+            return false;
         }
     }
 }

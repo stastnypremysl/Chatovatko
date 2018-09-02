@@ -191,8 +191,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             Log("Push have been done.");
         }
 
-        public void Pull()
+        public int Pull()
         {
+            int changes = 0;
             ThrowExceptionIfNotConnected();
             Log("Sending PULL command.");
             BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
@@ -215,6 +216,8 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
             ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
 #if (DEBUG)
             Log("Received ServerPullCapsula.");
+            changes += capsula.AesKeysUserIds.Count;
+            changes += capsula.Messages.Count;
 #endif
             using (Context context = new Context(config))
             {
@@ -236,6 +239,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     PushOperations.Update(context, user, UserId, UserId);
                 }
                 context.SaveChanges();
+                
 #if (DEBUG)
                 Log("Receiving and saving messages.");
 #endif
@@ -268,6 +272,7 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 }
             }
             Log("Pull have been done.");
+            return changes;
         }
 
 
