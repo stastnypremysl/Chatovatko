@@ -64,7 +64,7 @@ namespace Premy.Chatovatko.Client
 
         public async void AfterServerSelected(X509Certificate2 clientCert, String address, String password, String userName)
         {
-            MainPage = new Loading("Server informations are downloading.");
+            MainPage = new Loading("Server informations are downloading...");
             try
             {
                 InfoConnection infoConnection = new InfoConnection(address, logger);
@@ -85,7 +85,7 @@ namespace Premy.Chatovatko.Client
         
         public async void AfterServerConfirmed(X509Certificate2 clientCert, X509Certificate2 serverCert, String address, String password, String userName)
         {
-            MainPage = new Loading("Client is being registred.");
+            MainPage = new Loading("Client is being registred...");
             try
             { 
                 await Task.Run(() =>

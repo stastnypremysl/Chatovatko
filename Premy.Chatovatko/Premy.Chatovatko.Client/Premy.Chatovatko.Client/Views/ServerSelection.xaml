@@ -13,7 +13,7 @@
                     <Entry x:Name="passwordEntry" IsPassword="True" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
                 </StackLayout>
                 <Label Text="If you are using this certificate first time, please enter new username" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="40, 0, 40, 0"/>
-                <Entry x:Name="userNameEntry" IsPassword="True" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
+                <Entry x:Name="userNameEntry" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
                 <Button VerticalOptions="End" HorizontalOptions="CenterAndExpand" x:Name="ConfirmButton" Text="Confirm" Pressed="Confirm"/>
             </StackLayout>
         </ScrollView>
