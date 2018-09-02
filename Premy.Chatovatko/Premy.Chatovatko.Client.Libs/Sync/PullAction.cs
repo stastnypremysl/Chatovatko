@@ -10,14 +10,14 @@ namespace Premy.Chatovatko.Client.Libs.Sync
     public class PullAction : IAction, ILoggable
     {
         private readonly Action reconnect;
-        private readonly Connection connection;
+        private readonly Func<Connection> getConnection;
         private readonly Logger logger;
         private readonly SettingsCapsula settings;
 
-        public PullAction(Connection connection, Action reconnect, Logger logger, SettingsCapsula settings)
+        public PullAction(Func<Connection> getConnection, Action reconnect, Logger logger, SettingsCapsula settings)
         {
             this.reconnect = reconnect;
-            this.connection = connection;
+            this.getConnection = getConnection;
             this.logger = logger;
             this.settings = settings;
         }
@@ -29,14 +29,14 @@ namespace Premy.Chatovatko.Client.Libs.Sync
 
         public IAction GetNext()
         {
-            return new PullAction(connection, reconnect, logger, settings);
+            return new PullAction(getConnection, reconnect, logger, settings);
         }
 
         public void Run()
         {
             try
             {
-                connection.Pull();
+                getConnection().Pull();
             }
             catch (Exception ex)
             {

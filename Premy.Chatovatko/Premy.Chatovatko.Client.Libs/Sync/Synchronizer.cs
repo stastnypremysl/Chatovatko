@@ -12,11 +12,11 @@ namespace Premy.Chatovatko.Client.Libs.Sync
     {
         public Queue<IAction> Queue { get; set; }
 
-        public Synchronizer(Connection connection, Action reconnect, Logger logger, SettingsCapsula settings)
+        public Synchronizer(Func<Connection> getConnection, Action reconnect, Logger logger, SettingsCapsula settings)
         {
             Queue = new Queue<IAction>();
-            Queue.Enqueue(new PullAction(connection, reconnect, logger, settings));
-            Queue.Enqueue(new PushAction(connection, reconnect, logger, settings));
+            Queue.Enqueue(new PullAction(getConnection, reconnect, logger, settings));
+            Queue.Enqueue(new PushAction(getConnection, reconnect, logger, settings));
             Queue.Enqueue(new DelayAction());
         }
 

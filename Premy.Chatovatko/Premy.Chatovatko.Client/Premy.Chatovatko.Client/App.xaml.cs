@@ -11,6 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels;
 using Premy.Chatovatko.Libs.Cryptography;
+using Premy.Chatovatko.Client.Libs.Sync;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Premy.Chatovatko.Client
@@ -23,6 +24,7 @@ namespace Premy.Chatovatko.Client
         SettingsLoader settingsLoader;
         SettingsCapsula settings = null;
         Connection connection = null;
+        Synchronizer synchronizer = null;
 
         public App()
         {
@@ -49,11 +51,30 @@ namespace Premy.Chatovatko.Client
 
         }
 
-
+        protected Connection GetConnection()
+        {
+            return connection;
+        }
 
         private void Init()
         {
             MainPage = new MainPage();
+            synchronizer = new Synchronizer(GetConnection, Reconnect, logger, settings);
+            synchronizer.Run();
+        }
+
+        private void Reconnect()
+        {
+            try
+            {
+                connection.Disconnect();
+            }
+            catch
+            {
+
+            }
+            connection = new Connection(logger, settings);
+            connection.Connect();
         }
 
         

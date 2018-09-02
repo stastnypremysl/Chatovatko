@@ -10,16 +10,16 @@ namespace Premy.Chatovatko.Client.Libs.Sync
     public class PushAction : IAction, ILoggable
     {
         private readonly Action reconnect;
-        private readonly Connection connection;
+        private readonly Func<Connection> getConnection;
         private readonly Logger logger;
         private readonly SettingsCapsula settings;
 
         public static bool Changed { get; set; } = true;
 
-        public PushAction(Connection connection, Action reconnect, Logger logger, SettingsCapsula settings)
+        public PushAction(Func<Connection> getConnection, Action reconnect, Logger logger, SettingsCapsula settings)
         {
             this.reconnect = reconnect;
-            this.connection = connection;
+            this.getConnection = getConnection;
             this.logger = logger;
             this.settings = settings;
         }
@@ -31,7 +31,7 @@ namespace Premy.Chatovatko.Client.Libs.Sync
 
         public IAction GetNext()
         {
-            return new PushAction(connection, reconnect, logger, settings);
+            return new PushAction(getConnection, reconnect, logger, settings);
         }
 
         public void Run()
@@ -40,7 +40,7 @@ namespace Premy.Chatovatko.Client.Libs.Sync
             {
                 try
                 {
-                    connection.Push();
+                    getConnection().Push();
                     Changed = false;
                 }
                 catch (Exception ex)

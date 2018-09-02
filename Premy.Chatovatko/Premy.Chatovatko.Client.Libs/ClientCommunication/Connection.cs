@@ -128,13 +128,14 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         public void Push()
         {
             ThrowExceptionIfNotConnected();
-            using (TransactionScope scope = new TransactionScope())
+            using (Context context = new Context(config))
             {
-
-                Log("Sending PUSH command.");
-                BinaryEncoder.SendCommand(stream, ConnectionCommand.PUSH);
-                using (Context context = new Context(config))
+                using (TransactionScope scope = new TransactionScope())
                 {
+
+                    Log("Sending PUSH command.");
+                    BinaryEncoder.SendCommand(stream, ConnectionCommand.PUSH);
+
                     List<long> selfMessages = new List<long>();
                     var toSend = context.ToSendMessages.ToList();
 
@@ -190,8 +191,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1 and PUBLIC_ID<>null;;");
                     context.SaveChanges();
 
+                    scope.Complete();
                 }
-                scope.Complete();
+                
             }
 
             Log("Push have been done.");
@@ -199,33 +201,34 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Pull()
         {
-            using (TransactionScope scope = new TransactionScope())
+            using (Context context = new Context(config))
             {
-                ThrowExceptionIfNotConnected();
-                Log("Sending PULL command.");
-                BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
-#if (DEBUG)
-                Log("Sending ClientPullCapsula.");
-#endif
-                ClientPullCapsula clientCapsula;
-                using (Context context = new Context(config))
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    clientCapsula = new ClientPullCapsula()
+                    ThrowExceptionIfNotConnected();
+                    Log("Sending PULL command.");
+                    BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
+#if (DEBUG)
+                    Log("Sending ClientPullCapsula.");
+#endif
+                    ClientPullCapsula clientCapsula;
+                    using (Context context = new Context(config))
                     {
-                        AesKeysUserIds = context.Contacts
-                            .Where(u => u.ReceiveAesKey == null)
-                            .Select(u => u.PublicId)
-                            .ToArray()
-                    };
-                }
-                TextEncoder.SendJson(stream, clientCapsula);
+                        clientCapsula = new ClientPullCapsula()
+                        {
+                            AesKeysUserIds = context.Contacts
+                                .Where(u => u.ReceiveAesKey == null)
+                                .Select(u => u.PublicId)
+                                .ToArray()
+                        };
+                    }
+                    TextEncoder.SendJson(stream, clientCapsula);
 
-                ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
+                    ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
 #if (DEBUG)
-                Log("Received ServerPullCapsula.");
+                    Log("Received ServerPullCapsula.");
 #endif
-                using (Context context = new Context(config))
-                {
+
 #if (DEBUG)
                     Log("Receiving and saving AES keys.");
 #endif
@@ -274,8 +277,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
 
                     }
+
+                    scope.Complete();
                 }
-                scope.Complete();
             }
             Log("Pull have been done.");
         }
@@ -283,19 +287,20 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void UntrustContact(int contactId)
         {
-            using (TransactionScope scope = new TransactionScope())
+            using (Context context = new Context(config))
             {
-                ThrowExceptionIfNotConnected();
-                if (contactId == this.UserId)
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    throw new Exception("You really don't want untrust yourself.");
-                }
+                    ThrowExceptionIfNotConnected();
+                    if (contactId == this.UserId)
+                    {
+                        throw new Exception("You really don't want untrust yourself.");
+                    }
 
-                Log("Sending UNTRUST_CONTACT command.");
-                BinaryEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
-                BinaryEncoder.SendInt(stream, contactId);
-                using (Context context = new Context(config))
-                {
+                    Log("Sending UNTRUST_CONTACT command.");
+                    BinaryEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
+                    BinaryEncoder.SendInt(stream, contactId);
+
                     var contact = new UContact(context.Contacts
                         .Where(u => u.PublicId == contactId)
                         .SingleOrDefault())
@@ -306,23 +311,26 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
 
                     context.SaveChanges();
+                    scope.Complete();
                 }
-                scope.Complete();
+                
             }
+        
         }
 
         public void TrustContact(int contactId)
         {
             ThrowExceptionIfNotConnected();
-            using (TransactionScope scope = new TransactionScope())
+            using (Context context = new Context(config))
             {
-                Pull();
-                Log("Sending TRUST_CONTACT command.");
-                BinaryEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
-
-                BinaryEncoder.SendInt(stream, contactId);
-                using (Context context = new Context(config))
+                using (TransactionScope scope = new TransactionScope())
                 {
+                    Pull();
+                    Log("Sending TRUST_CONTACT command.");
+                    BinaryEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
+
+                    BinaryEncoder.SendInt(stream, contactId);
+
                     var contact = new UContact(context.Contacts
                         .Where(u => u.PublicId == contactId)
                         .SingleOrDefault())
@@ -368,9 +376,10 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                     }
 
                     context.SaveChanges();
+                    scope.Complete();
                 }
                 Log("Trustification has been done.");
-                scope.Complete();
+
             }
             Push();
         }
