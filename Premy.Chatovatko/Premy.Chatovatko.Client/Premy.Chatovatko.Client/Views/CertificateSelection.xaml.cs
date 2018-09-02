@@ -1,4 +1,7 @@
+using Plugin.FilePicker;
+using Plugin.FilePicker.Abstractions;
 using Premy.Chatovatko.Client.Cryptography;
+using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
@@ -24,23 +27,34 @@ namespace Premy.Chatovatko.Client.Views
             this.app = app;
             this.logger = logger;
             IsGenerating = false;
+            IsLoadingFile = false;
         }
 
         private async void Generate()
         {
-            X509Certificate2 clientCert;
+            X509Certificate2 clientCert = null;
             IsGenerating = true;
             await Task.Run(() =>
             {
                 clientCert = X509Certificate2Generator.GenerateCACertificate(logger);
             });
-            IsGenerating = false;
-
+            
+            app.AfterCertificateSelected(clientCert);
         }
 
-        private void LoadFromFile()
+        private async void LoadFromFile()
         {
+            IsLoadingFile = true;
+            FileData fileData = await CrossFilePicker.Current.PickFile();
+            if (fileData == null)
+            {
+                IsLoadingFile = false;
+                return;
+            }
 
+            X509Certificate2 cert = X509Certificate2Utils.ImportFromPkcs12(fileData.DataArray);
+
+            app.AfterCertificateSelected(cert);
         }
 
         private bool _IsGenerating;
@@ -51,6 +65,22 @@ namespace Premy.Chatovatko.Client.Views
             {
                 _IsGenerating = value;
                 generatingLabel.IsVisible = value;
+                activityIndicator.IsVisible = value;
+                activityIndicator.IsRunning = value;
+
+                introLabel.IsVisible = !value;
+                buttonLayout.IsVisible = !value;
+            }
+        }
+
+        private bool _IsLoadingFile;
+        public bool IsLoadingFile
+        {
+            get { return _IsLoadingFile; }
+            set
+            {
+                _IsLoadingFile = value;
+                loadingFileLabel.IsVisible = value;
                 activityIndicator.IsVisible = value;
                 activityIndicator.IsRunning = value;
 
