@@ -72,14 +72,16 @@ namespace Premy.Chatovatko.Libs.Cryptography
             using (MemoryStream stream = new MemoryStream(data))
             {
                 Pkcs12Store store = new Pkcs12Store(stream, new char[] { });
-                
-                foreach (string n in store.Aliases)
+                using (MemoryStream pfxStream = new MemoryStream())
                 {
-                    return new X509Certificate2(DotNetUtilities.ToX509Certificate(store.GetCertificate(n).Certificate));        
+                    store.Save(pfxStream, new char[0], new SecureRandom());
+                    pfxStream.Seek(0, SeekOrigin.Begin);
+                    return new X509Certificate2(pfxStream.ToArray(), string.Empty, X509KeyStorageFlags.Exportable);
                 }
+
             }
 
-            return new X509Certificate2(data, String.Empty, flag);
+            //return new X509Certificate2(data, String.Empty, flag);
         }
 
         public static X509Certificate2 ImportFromBase64(string base64, bool exportable = false)
