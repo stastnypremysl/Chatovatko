@@ -41,7 +41,17 @@ namespace Premy.Chatovatko.Libs.Cryptography
         /// <returns></returns>
         public static byte[] ExportToPkcs12(X509Certificate2 cert)
         {
-            return cert.Export(X509ContentType.Pkcs12, String.Empty);
+            var pkcs12Store = new Pkcs12Store();
+            var certEntry = new X509CertificateEntry(DotNetUtilities.FromX509Certificate(cert));
+            pkcs12Store.SetCertificateEntry(cert.SubjectName.Name, certEntry);
+            pkcs12Store.SetKeyEntry(cert.SubjectName.Name, new AsymmetricKeyEntry(DotNetUtilities.GetKeyPair(cert.PrivateKey).Private), new[] { certEntry });
+            using (MemoryStream pfxStream = new MemoryStream())
+            {
+                pkcs12Store.Save(pfxStream, new char[0], new SecureRandom());
+                pfxStream.Seek(0, SeekOrigin.Begin);
+                return pfxStream.ToArray();
+            }
+            //return cert.Export(X509ContentType.Pkcs12, String.Empty);
         }        
 
         /// <summary>
@@ -66,22 +76,10 @@ namespace Premy.Chatovatko.Libs.Cryptography
             }
             else
             {
-                flag = X509KeyStorageFlags.PersistKeySet;
+                flag = X509KeyStorageFlags.DefaultKeySet;
             }
-
-            using (MemoryStream stream = new MemoryStream(data))
-            {
-                Pkcs12Store store = new Pkcs12Store(stream, new char[] { });
-                using (MemoryStream pfxStream = new MemoryStream())
-                {
-                    store.Save(pfxStream, new char[0], new SecureRandom());
-                    pfxStream.Seek(0, SeekOrigin.Begin);
-                    return new X509Certificate2(pfxStream.ToArray(), string.Empty, X509KeyStorageFlags.Exportable);
-                }
-
-            }
-
-            //return new X509Certificate2(data, String.Empty, flag);
+            
+            return new X509Certificate2(data, String.Empty, flag);
         }
 
         public static X509Certificate2 ImportFromBase64(string base64, bool exportable = false)
