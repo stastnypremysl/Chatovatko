@@ -35,7 +35,7 @@ namespace Premy.Chatovatko.Client.Views
             if (e.Item != null)
             {
                 var contact = (Contacts)e.Item;
-                await Navigation.PushModalAsync(new ContactDetail(settings, contact.PublicId));
+                await Navigation.PushModalAsync(new NavigationPage(new ContactDetail(settings, contact.PublicId)));
             }
         }
 

@@ -26,8 +26,7 @@
                                                  HorizontalOptions="StartAndExpand">
 
                                 <Label Text="{Binding UserName}"
-                                               FontSize="Small"
-                                               Margin="4" />
+                                               Margin="10" />
                             </StackLayout>
 
                         </ViewCell>

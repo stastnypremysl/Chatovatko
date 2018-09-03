@@ -5,6 +5,14 @@
              NavigationPage.HasBackButton="True"
              NavigationPage.HasNavigationBar="True"
              Title="Contact detail">
+    <ContentPage.ToolbarItems>
+        
+        <ToolbarItem Text="Discard"
+                     x:Name="discardUser"
+                     Icon="close.png"
+                     Clicked="DiscardChanges"/>
+
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Welcome to Xamarin.Forms!"
