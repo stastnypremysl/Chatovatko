@@ -1,3 +1,4 @@
+using Premy.Chatovatko.Client.Helpers;
 using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Client.ViewModels;
@@ -16,13 +17,11 @@ namespace Premy.Chatovatko.Client.Views
 	public partial class ContactList : ContentPage
 	{
         private SettingsCapsula settings;
-        private readonly Action<Page> pushToNavigation;
 
-		public ContactList (SettingsCapsula settings, Action<Page> pushToNavigation)
+		public ContactList (SettingsCapsula settings)
 		{
 			InitializeComponent ();
             this.settings = settings;
-            this.pushToNavigation = pushToNavigation;
         }
 
         protected override void OnAppearing()

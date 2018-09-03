@@ -13,11 +13,10 @@ namespace Premy.Chatovatko.Client.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ThreadsList : ContentPage
 	{
-        private Action<Page> pushToNavigation;
-		public ThreadsList (SettingsCapsula settings, Action<Page> pushToNavigation)
+		public ThreadsList (SettingsCapsula settings)
 		{
 			InitializeComponent ();
-            this.pushToNavigation = pushToNavigation;
+            
 		}
 	}
 }

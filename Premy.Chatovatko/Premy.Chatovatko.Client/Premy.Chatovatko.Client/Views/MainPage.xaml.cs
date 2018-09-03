@@ -16,21 +16,15 @@ namespace Premy.Chatovatko.Client.Views
             this.app = app;
             InitializeComponent();
             {
-                var navigationPage = new NavigationPage(new ThreadsList(settings, PushToNavigation));
+                var navigationPage = new NavigationPage(new ThreadsList(settings));
                 navigationPage.Title = "Threads";
                 Children.Add(navigationPage);
             }
             {
-                var navigationPage = new NavigationPage(new ContactList(settings, PushToNavigation));
+                var navigationPage = new NavigationPage(new ContactList(settings));
                 navigationPage.Title = "Contacts";
                 Children.Add(navigationPage);
             }
-            
-        }
-
-        private void PushToNavigation(Page page)
-        {
-            ChangeMainPage(new CustomNavigationPage(ChangeMainPage, this, page));
             
         }
 
