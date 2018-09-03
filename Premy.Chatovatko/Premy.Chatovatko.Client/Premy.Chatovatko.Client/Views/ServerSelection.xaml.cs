@@ -15,6 +15,7 @@ namespace Premy.Chatovatko.Client.Views
 	{
         private X509Certificate2 cert;
         private App app;
+        private String error;
 
 		public ServerSelection (App app, X509Certificate2 cert)
 		{
@@ -28,7 +29,7 @@ namespace Premy.Chatovatko.Client.Views
             serverAddressEntry.Text = serverAddress;
             passwordEntry.Text = password;
             userNameEntry.Text = userName;
-            this.DispleyError(error);
+            this.error = error;
         }
 
         public async void DispleyError(String message)
@@ -38,6 +39,11 @@ namespace Premy.Chatovatko.Client.Views
                 return;
             }
             await DisplayAlert("Error", message, "OK");
+        }
+
+        protected override void OnAppearing()
+        {
+            this.DispleyError(error);
         }
 
         public void Confirm()
