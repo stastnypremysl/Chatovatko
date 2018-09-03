@@ -31,7 +31,7 @@ namespace Premy.Chatovatko.Client.Views
                 }
                 else
                 {
-                    ToolbarItem item = new ToolbarItem("Save", "save.png", SaveUser);
+                    ToolbarItem item = new ToolbarItem("Save", "checkmark.png", SaveUser);
                     ToolbarItems.Add(item);
                 }
             }
