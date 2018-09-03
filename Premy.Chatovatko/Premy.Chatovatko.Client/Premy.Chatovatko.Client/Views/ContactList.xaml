@@ -25,7 +25,7 @@
                             <StackLayout Orientation="Horizontal"
                                                  HorizontalOptions="StartAndExpand">
 
-                                <Label Text="{Binding UserName}"
+                                <Label Text="{Binding ShowName}"
                                                Margin="10" />
                             </StackLayout>
 

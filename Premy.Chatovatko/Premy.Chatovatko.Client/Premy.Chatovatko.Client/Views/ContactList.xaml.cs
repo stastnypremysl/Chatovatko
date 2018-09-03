@@ -1,5 +1,6 @@
 using Premy.Chatovatko.Client.Helpers;
 using Premy.Chatovatko.Client.Libs.Database.Models;
+using Premy.Chatovatko.Client.Libs.Sync;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Client.ViewModels;
 using System;
@@ -14,14 +15,17 @@ using Xamarin.Forms.Xaml;
 namespace Premy.Chatovatko.Client.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ContactList : ContentPage
+	public partial class ContactList : ContentPage, IUpdatable
 	{
         private SettingsCapsula settings;
+        private App app;
 
-		public ContactList (SettingsCapsula settings)
+		public ContactList (App app, SettingsCapsula settings)
 		{
 			InitializeComponent ();
             this.settings = settings;
+            this.app = app;
+            app.AddUpdatable(this);
         }
 
         protected override void OnAppearing()
@@ -37,6 +41,11 @@ namespace Premy.Chatovatko.Client.Views
                 var contact = (Contacts)e.Item;
                 await Navigation.PushModalAsync(new NavigationPage(new ContactDetail(settings, contact.PublicId)));
             }
+        }
+
+        public void Update()
+        {
+            
         }
 
     }

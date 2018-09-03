@@ -1,4 +1,6 @@
+using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Client.Libs.UserData;
+using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
 using System;
 using System.Collections.Generic;
@@ -37,16 +39,55 @@ namespace Premy.Chatovatko.Client.Views
             }
         }
 
+        private Contacts contact;
+
 		public ContactDetail (SettingsCapsula settings, long userPublicId)
 		{
 			InitializeComponent ();
             Adding = false;
+            Contacts contact;
+            using (Context context = new Context(settings.Config))
+            {
+                contact = context.Contacts
+                    .Where(u => u.PublicId == userPublicId)
+                    .Single();
+            }
+
+            LoadContact(contact);
 		}
 
         public ContactDetail(SettingsCapsula settings, SearchCServerCapsula user)
         {
             InitializeComponent();
             Adding = true;
+            Contacts contact = new Contacts()
+            {
+                PublicId = user.UserId,
+                UserName = user.UserName,
+                AlarmPermission = 0,
+                NickName = null,
+                Trusted = 0,
+                SendAesKey = null,
+                PublicCertificate = user.PemCertificate,
+                ReceiveAesKey = null
+            };
+
+            LoadContact(contact);
+        }
+
+        private void LoadContact(Contacts contact)
+        {
+            this.contact = contact;
+
+            publicIdLabel.Text = contact.PublicId.ToString();
+            userNameEntry.Text = contact.UserName;
+            alarmSwitch.IsToggled = contact.AlarmPermission == 1;
+            nickNameEntry.Text = contact.NickName;
+
+            trustedSwitch.IsToggled = contact.Trusted == 1;
+            sendAesLabel.Text = (contact.SendAesKey != null).ToString();
+            receiveAesLabel.Text = (contact.ReceiveAesKey != null).ToString();
+            sha256Label.Text = SHA256Utils.ComputeCertHash(contact.PublicCertificate);
         }
 
         private void DiscardChanges()

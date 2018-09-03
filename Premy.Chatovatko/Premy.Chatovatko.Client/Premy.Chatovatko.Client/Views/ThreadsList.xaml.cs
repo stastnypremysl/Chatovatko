@@ -13,10 +13,11 @@ namespace Premy.Chatovatko.Client.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ThreadsList : ContentPage
 	{
-		public ThreadsList (SettingsCapsula settings)
+        private App app;
+		public ThreadsList (App app, SettingsCapsula settings)
 		{
 			InitializeComponent ();
-            
+            this.app = app;
 		}
 	}
 }

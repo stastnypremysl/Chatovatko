@@ -59,9 +59,9 @@ namespace Premy.Chatovatko.Client
 
         private void Init()
         {
-            MainPage = (new MainPage(this, settings));
             synchronizer = new Synchronizer(GetConnection, Reconnect, logger, settings);
             synchronizer.Run();
+            MainPage = (new MainPage(this, settings));
         }
 
         private void Reconnect()

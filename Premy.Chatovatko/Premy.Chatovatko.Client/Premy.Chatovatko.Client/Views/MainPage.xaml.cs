@@ -16,12 +16,12 @@ namespace Premy.Chatovatko.Client.Views
             this.app = app;
             InitializeComponent();
             {
-                var navigationPage = new NavigationPage(new ThreadsList(settings));
+                var navigationPage = new NavigationPage(new ThreadsList(app, settings));
                 navigationPage.Title = "Threads";
                 Children.Add(navigationPage);
             }
             {
-                var navigationPage = new NavigationPage(new ContactList(settings));
+                var navigationPage = new NavigationPage(new ContactList(app, settings));
                 navigationPage.Title = "Contacts";
                 Children.Add(navigationPage);
             }
