@@ -65,11 +65,24 @@ namespace Premy.Chatovatko.Client.Views
             LoadContact(contact);
 		}
 
+
         public ContactDetail(SettingsCapsula settings, SearchCServerCapsula user, App app)
         {
             InitializeComponent();
             this.settings = settings;
             this.app = app;
+
+            using (Context context = new Context(settings.Config))
+            {
+                var tryContact = context.Contacts
+                    .Where(u => u.PublicId == user.UserId)
+                    .SingleOrDefault();
+                if(tryContact != null)
+                {
+                    throw new Exception("This user is already saved");
+                }
+            }
+
             Adding = true;
             Contacts contact = new Contacts()
             {

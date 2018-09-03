@@ -9,7 +9,8 @@
 
         <ToolbarItem Text="Search user"
                      x:Name="searchUser"
-                     Icon="search.png"/>
+                     Icon="search.png"
+                     Clicked="searchUser_Clicked"/>
 
     </ContentPage.ToolbarItems>
     <ContentPage.Content>

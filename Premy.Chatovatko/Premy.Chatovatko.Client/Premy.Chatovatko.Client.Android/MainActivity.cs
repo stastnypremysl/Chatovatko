@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Support.V4.Content;
 using Android.Support.V4.App;
 using Android;
+using Xamarin.Forms;
 
 namespace Premy.Chatovatko.Client.Droid
 {
@@ -17,6 +18,8 @@ namespace Premy.Chatovatko.Client.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            Forms.SetFlags("FastRenderers_Experimental");
+
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 

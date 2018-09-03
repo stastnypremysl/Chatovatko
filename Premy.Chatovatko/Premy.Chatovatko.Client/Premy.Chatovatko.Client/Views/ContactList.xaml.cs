@@ -19,6 +19,7 @@ namespace Premy.Chatovatko.Client.Views
 	{
         private SettingsCapsula settings;
         private App app;
+        private ContactsViewModel model;
 
 		public ContactList (App app, SettingsCapsula settings)
 		{
@@ -31,7 +32,8 @@ namespace Premy.Chatovatko.Client.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            BindingContext = new ContactsViewModel(settings);
+            model = new ContactsViewModel(settings);
+            BindingContext = model;
         }
 
         private async void OnContactTapped(object sender, ItemTappedEventArgs e)
@@ -47,9 +49,26 @@ namespace Premy.Chatovatko.Client.Views
 
         public void Update()
         {
-            base.OnAppearing();
-            BindingContext = new ContactsViewModel(settings);
+            bool changed = false;
+            var newModel = new ContactsViewModel(settings);
+            foreach(var areTheySame in newModel.Contacts.Zip(model.Contacts, (f, s) => f.ShowName.Equals(s.ShowName)))
+            {
+                changed = changed || !areTheySame;
+            }
+
+            if (changed)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    base.OnAppearing();
+                    BindingContext = newModel;
+                });
+            }
         }
 
+        private async void searchUser_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new NavigationPage(new SearchUser(app)));
+        }
     }
 }

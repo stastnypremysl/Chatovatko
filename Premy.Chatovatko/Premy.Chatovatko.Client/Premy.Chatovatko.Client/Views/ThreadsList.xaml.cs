@@ -19,5 +19,10 @@ namespace Premy.Chatovatko.Client.Views
 			InitializeComponent ();
             this.app = app;
 		}
-	}
+
+        private void addThread_Clicked(object sender, EventArgs e)
+        {
+
+        }
+    }
 }
