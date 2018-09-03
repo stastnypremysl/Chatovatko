@@ -56,7 +56,14 @@ namespace Premy.Chatovatko.Client.Libs.Sync
             {
                 if (updatableRef.TryGetTarget(out IUpdatable updatable))
                 {
-                    updatable.Update();
+                    try
+                    { 
+                        updatable.Update();
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }

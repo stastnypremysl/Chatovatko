@@ -13,6 +13,11 @@
                      Icon="add.png"
                      Clicked="send_Clicked"/>
 
+        <ToolbarItem Text="Delete"
+                     x:Name="delete"
+                     Icon="delete.png"
+                     Clicked="delete_Clicked"/>
+
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>

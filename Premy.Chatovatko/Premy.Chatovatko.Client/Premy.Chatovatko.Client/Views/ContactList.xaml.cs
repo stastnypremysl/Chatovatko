@@ -70,5 +70,10 @@ namespace Premy.Chatovatko.Client.Views
         {
             await Navigation.PushModalAsync(new NavigationPage(new SearchUser(app)));
         }
+
+        private async void settings_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new NavigationPage(new Settings(app)));
+        }
     }
 }

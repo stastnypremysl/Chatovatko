@@ -10,6 +10,7 @@ using Android.Support.V4.Content;
 using Android.Support.V4.App;
 using Android;
 using Xamarin.Forms;
+using System.IO;
 
 namespace Premy.Chatovatko.Client.Droid
 {
@@ -30,11 +31,19 @@ namespace Premy.Chatovatko.Client.Droid
 
             if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) != Permission.Granted || ContextCompat.CheckSelfPermission(this, Manifest.Permission.WriteExternalStorage) != Permission.Granted)
             {
-                ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.ReadExternalStorage, Manifest.Permission.AccessFineLocation }, 0);
-                ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.WriteExternalStorage, Manifest.Permission.AccessFineLocation }, 0);
+                ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.WriteExternalStorage, Manifest.Permission.ReadExternalStorage }, 0);
             }
 
-            LoadApplication(new App());
+            LoadApplication(new App(SaveFile));
+        }
+
+        private async void SaveFile(byte[] data, String fileName)
+        {
+            FileStream stream = new FileStream(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments) + "/" + fileName, FileMode.Create);
+            await stream.WriteAsync(data, 0, data.Length);
+            await stream.FlushAsync();
+            stream.Close();
+
         }
     }
 }

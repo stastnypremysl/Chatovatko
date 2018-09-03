@@ -1,4 +1,5 @@
 using Premy.Chatovatko.Client.Libs.Database;
+using Premy.Chatovatko.Client.Libs.Database.DeleteModels;
 using Premy.Chatovatko.Client.Libs.Database.InsertModels;
 using Premy.Chatovatko.Client.Libs.Database.Models;
 using Premy.Chatovatko.Client.Libs.Sync;
@@ -36,13 +37,7 @@ namespace Premy.Chatovatko.Client.Views
                     .Where(u => u.PublicId == threadId)
                     .Select(u => u.WithUser)
                     .Single();
-                if(!context.Contacts
-                    .Where(u => u.PublicId == withUserId)
-                    .Select(u => u.Trusted == 1)
-                    .Single())
-                {
-                    ShowFatalError(new Exception("Can't communicate with untrusted user."));
-                }
+                
             }
 
             toSend.Completed += (sender, e) => {
@@ -78,9 +73,18 @@ namespace Premy.Chatovatko.Client.Views
                 toSend.Text = "";
                 await Task.Run(() =>
                 {
-                    CMessage message = new CMessage(threadId, strToSend, DateTime.Now, withUserId, app.settings.UserPublicId);
                     using (Context context = new Context(app.settings.Config))
                     {
+                        if (!context.Contacts
+                            .Where(u => u.PublicId == withUserId)
+                            .Select(u => u.Trusted == 1)
+                            .Single())
+                        {
+                            throw new Exception("Can't communicate with untrusted user.");
+                            
+                        }
+                        CMessage message = new CMessage(threadId, strToSend, DateTime.Now, withUserId, app.settings.UserPublicId);
+
                         PushOperations.Insert(context, message, withUserId, app.settings.UserPublicId);
                     }
                     Update();
@@ -89,13 +93,14 @@ namespace Premy.Chatovatko.Client.Views
             }
             catch(Exception ex)
             {
-                ShowError(ex);
+                var task = ShowError(ex);
             }
         }
 
-        private void close_Clicked(object sender, EventArgs e)
+        private async void close_Clicked(object sender, EventArgs e)
         {
-            Navigation.PopModalAsync();
+            
+            await Navigation.PopModalAsync();
         }
 
         public void Update()
@@ -126,6 +131,22 @@ namespace Premy.Chatovatko.Client.Views
         public string GetLogSource()
         {
             return "Message View";
+        }
+
+        private async void delete_Clicked(object sender, EventArgs e)
+        {
+            var answer = await DisplayAlert("Delete", "Do you really want to delete this thread?", "Yes", "No");
+            if (answer)
+            {
+                using (Context context = new Context(app.settings.Config))
+                {
+                    DMessageThread thread = new DMessageThread(context.MessagesThread
+                        .Where(u => u.PublicId == threadId)
+                        .Single(), app.settings.UserPublicId);
+                    PushOperations.Delete(context, thread);
+                }
+                await Navigation.PopModalAsync();
+            }
         }
     }
 }

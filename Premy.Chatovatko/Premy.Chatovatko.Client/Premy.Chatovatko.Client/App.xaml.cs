@@ -28,10 +28,13 @@ namespace Premy.Chatovatko.Client
         public Synchronizer synchronizer = null;
 
         private Page mainPageBackup = null;
+        public Action<byte[], String> saveFile;
 
-        public App()
+        public App(Action<byte[], String> saveFile)
         {
             InitializeComponent();
+            this.saveFile = saveFile;
+
             logger = new Logger (new DebugLoggerOutput());
             config = new ClientDatabaseConfig();
             initializator = new DBInitializator(config, logger);
@@ -161,10 +164,7 @@ namespace Premy.Chatovatko.Client
 
         protected override void OnSleep()
         {
-            if (synchronizer != null)
-            {
-                synchronizer.SetDelay(30000);
-            }
+
         }
 
         protected override void OnResume()

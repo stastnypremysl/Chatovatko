@@ -12,6 +12,12 @@
                      Icon="search.png"
                      Clicked="searchUser_Clicked"/>
 
+        <ToolbarItem Text="Settings"
+                     x:Name="settingsTlb"
+                     Icon="settings.png"
+                     Clicked="settings_Clicked"/>
+
+
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
