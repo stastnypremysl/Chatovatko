@@ -19,13 +19,15 @@ namespace Premy.Chatovatko.Client
 {
     public partial class App : Application, ILoggable
     {
-        Logger logger;
-        IClientDatabaseConfig config;
-        DBInitializator initializator;
-        SettingsLoader settingsLoader;
-        SettingsCapsula settings = null;
-        Connection connection = null;
-        Synchronizer synchronizer = null;
+        public Logger logger;
+        public IClientDatabaseConfig config;
+        public DBInitializator initializator;
+        public SettingsLoader settingsLoader;
+        public SettingsCapsula settings = null;
+        public Connection connection = null;
+        public Synchronizer synchronizer = null;
+
+        private Page mainPageBackup = null;
 
         public App()
         {
@@ -62,6 +64,18 @@ namespace Premy.Chatovatko.Client
             synchronizer = new Synchronizer(GetConnection, Reconnect, logger, settings);
             synchronizer.Run();
             MainPage = (new MainPage(this, settings));
+            mainPageBackup = MainPage;
+        }
+
+        public void ShowLoading(string message)
+        {
+            mainPageBackup = MainPage;
+            MainPage = new Loading(message);
+        }
+
+        public void HideLoading()
+        {
+            MainPage = mainPageBackup;
         }
 
         private void Reconnect()
@@ -129,6 +143,8 @@ namespace Premy.Chatovatko.Client
                 MainPage = new ServerSelection(this, clientCert, address, password, userName, ex.Message);
             }
         }
+
+
 
         public void AddUpdatable(IUpdatable updatable)
         {

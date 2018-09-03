@@ -1,7 +1,12 @@
+using Premy.Chatovatko.Client.Helpers;
+using Premy.Chatovatko.Client.Libs.Database;
+using Premy.Chatovatko.Client.Libs.Database.InsertModels;
 using Premy.Chatovatko.Client.Libs.Database.Models;
+using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
 using Premy.Chatovatko.Client.Libs.UserData;
 using Premy.Chatovatko.Libs.Cryptography;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
+using Premy.Chatovatko.Libs.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +19,7 @@ using Xamarin.Forms.Xaml;
 namespace Premy.Chatovatko.Client.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ContactDetail : ContentPage
+	public partial class ContactDetail : ContentPage, ILoggable
 	{
         private bool _adding;
         private bool Adding
@@ -40,10 +45,14 @@ namespace Premy.Chatovatko.Client.Views
         }
 
         private Contacts contact;
+        private readonly SettingsCapsula settings;
+        private readonly App app;
 
-		public ContactDetail (SettingsCapsula settings, long userPublicId)
+		public ContactDetail (SettingsCapsula settings, long userPublicId, App app)
 		{
 			InitializeComponent ();
+            this.settings = settings;
+            this.app = app;
             Adding = false;
             Contacts contact;
             using (Context context = new Context(settings.Config))
@@ -56,9 +65,11 @@ namespace Premy.Chatovatko.Client.Views
             LoadContact(contact);
 		}
 
-        public ContactDetail(SettingsCapsula settings, SearchCServerCapsula user)
+        public ContactDetail(SettingsCapsula settings, SearchCServerCapsula user, App app)
         {
             InitializeComponent();
+            this.settings = settings;
+            this.app = app;
             Adding = true;
             Contacts contact = new Contacts()
             {
@@ -95,14 +106,94 @@ namespace Premy.Chatovatko.Client.Views
             Navigation.PopModalAsync();
         }
 
-        private void AddUser()
+        private async void AddUser()
         {
-            Navigation.PopModalAsync();
+            try
+            {
+                CContact contact = new CContact()
+                {
+                    AlarmPermission = alarmSwitch.IsToggled,
+                    NickName = nickNameEntry.Text,
+                    PublicCertificate = this.contact.PublicCertificate,
+                    PublicId = this.contact.PublicId,
+                    Trusted = this.contact.Trusted == 1,
+                    UserName = this.contact.UserName
+                };
+
+                using (Context context = new Context(settings.Config))
+                {
+                    PushOperations.Insert(context, contact, settings.UserPublicId, settings.UserPublicId);
+                }
+
+                if (contact.Trusted != trustedSwitch.IsToggled)
+                {
+                    await SaveTrustification(trustedSwitch.IsToggled);
+                }
+
+                await Navigation.PopModalAsync();
+            }
+            catch (Exception ex)
+            {
+                app.logger.LogException(this, ex);
+                ShowError(ex.Source, ex.Message);
+            }
+            
         }
 
-        private void SaveUser()
+        private async Task SaveTrustification(bool trust)
         {
-            Navigation.PopModalAsync();
+            using (LoadingLock theLock = new LoadingLock(this, "Saving trust changes to server..."))
+            {
+                switch (trustedSwitch.IsToggled)
+                {
+                    case true:
+                        await Task.Run(() => app.connection.TrustContact((int)contact.PublicId));
+                        break;
+
+                    case false:
+                        await Task.Run(() => app.connection.UntrustContact((int)contact.PublicId));
+                        break;
+                }
+            }
+        }
+
+        private async void SaveUser()
+        {
+            try
+            {
+                UContact contact = new UContact(this.contact);
+
+                contact.NickName = nickNameEntry.Text;
+                contact.AlarmPermission = alarmSwitch.IsToggled;
+
+                using (Context context = new Context(settings.Config))
+                {
+                    PushOperations.Update(context, contact, settings.UserPublicId, settings.UserPublicId);
+                }
+
+                if (contact.Trusted != trustedSwitch.IsToggled)
+                {
+                    await SaveTrustification(trustedSwitch.IsToggled);
+                }
+
+                await Navigation.PopModalAsync();
+            }
+            catch (Exception ex)
+            {
+                app.logger.LogException(this, ex);
+                ShowError(ex.Source, ex.Message);
+            }
+            
+        }
+
+        private async void ShowError(String name, String message)
+        {
+            await DisplayAlert(name, message, "OK");
+        }
+
+        public string GetLogSource()
+        {
+            return "Contact detail";
         }
     }
 }

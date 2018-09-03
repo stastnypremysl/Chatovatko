@@ -24,6 +24,7 @@ using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Pull;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.Push;
 using Premy.Chatovatko.Libs.DataTransmission.JsonModels.SearchContact;
+using System.Threading;
 
 namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 {
@@ -45,6 +46,8 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         public int? ClientId { get; private set; }
         public X509Certificate2 MyCertificate { get; }
         public AESPassword SelfAesPassword { get; private set; }
+
+        public Mutex mutex = new Mutex();
 
         /// <summary>
         /// Constructor for init operations.
@@ -90,188 +93,201 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public void Connect(String password = null)
         {
+            lock (mutex)
+            {
+                client = new TcpClient(serverAddress, ServerPort);
+                logger.Log(this, "Client connected.");
 
-            client = new TcpClient(serverAddress, ServerPort);
-            logger.Log(this, "Client connected.");
+                stream = new SslStream(client.GetStream(), false, verificator.AppCertificateValidation);
+                X509CertificateCollection clientCertificates = new X509CertificateCollection();
+                clientCertificates.Add(MyCertificate);
 
-            stream = new SslStream(client.GetStream(), false, verificator.AppCertificateValidation);
-            X509CertificateCollection clientCertificates = new X509CertificateCollection();
-            clientCertificates.Add(MyCertificate);
-
-            stream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
-            logger.Log(this, "SSL authentication completed.");
+                stream.AuthenticateAsClient("Dummy", clientCertificates, SslProtocols.Tls12, false);
+                logger.Log(this, "SSL authentication completed.");
 
 
-            logger.Log(this, "Handshake started.");
-            var handshake = Handshake.Login(logger, stream, MyCertificate, password, UserName, ClientId);
-            logger.Log(this, "Handshake successeded.");
+                logger.Log(this, "Handshake started.");
+                var handshake = Handshake.Login(logger, stream, MyCertificate, password, UserName, ClientId);
+                logger.Log(this, "Handshake successeded.");
 
-            UserName = handshake.UserName;
-            UserId = handshake.UserId;
-            ClientId = handshake.ClientId;
-            SelfAesPassword = handshake.SelfAesPassword;
-            logger.Log(this, $"User {UserName} has id {UserId}. Client has id {ClientId}.");
+                UserName = handshake.UserName;
+                UserId = handshake.UserId;
+                ClientId = handshake.ClientId;
+                SelfAesPassword = handshake.SelfAesPassword;
+                logger.Log(this, $"User {UserName} has id {UserId}. Client has id {ClientId}.");
 
-            isConnected = true;
+                isConnected = true;
+            }
         }
 
         public void Disconnect()
         {
-            Log("Sending END_CONNECTION command.");
-            isConnected = false;
-            BinaryEncoder.SendCommand(stream, ConnectionCommand.END_CONNECTION);
-            stream.Close();
-            client.Close();
+            lock (mutex)
+            {
+                Log("Sending END_CONNECTION command.");
+                isConnected = false;
+                BinaryEncoder.SendCommand(stream, ConnectionCommand.END_CONNECTION);
+                stream.Close();
+                client.Close();
+            }
         }
 
         public void Push()
         {
             ThrowExceptionIfNotConnected();
-            Log("Sending PUSH command.");
-            BinaryEncoder.SendCommand(stream, ConnectionCommand.PUSH);
-            using (Context context = new Context(config))
+            lock (mutex)
             {
-                List<long> selfMessages = new List<long>();
-                var toSend = context.ToSendMessages.ToList();
 
-                PushCapsula capsula = new PushCapsula();
-
-                foreach (var message in toSend)
+                Log("Sending PUSH command.");
+                BinaryEncoder.SendCommand(stream, ConnectionCommand.PUSH);
+                using (Context context = new Context(config))
                 {
-                    if (message.RecepientId == UserId)
+                    List<long> selfMessages = new List<long>();
+                    var toSend = context.ToSendMessages.ToList();
+
+                    PushCapsula capsula = new PushCapsula();
+
+                    foreach (var message in toSend)
                     {
-                        selfMessages.Add((long)message.BlobMessagesId);
+                        if (message.RecepientId == UserId)
+                        {
+                            selfMessages.Add((long)message.BlobMessagesId);
+                        }
+                        capsula.PushMessages.Add(new PushMessage()
+                        {
+                            RecepientId = (int)message.RecepientId,
+                            Priority = (int)message.Priority
+                        });
                     }
-                    capsula.PushMessages.Add(new PushMessage()
+                    capsula.MessageToDeleteIds = context.BlobMessages
+                        .Where(u => u.DoDelete == 1)
+                        .Select(u => (long)u.PublicId).ToList();
+
+#if (DEBUG)
+                    Log($"Sending capsula with {toSend.Count} messages. {capsula.MessageToDeleteIds.Count} will be deleted.");
+#endif
+                    TextEncoder.SendJson(stream, capsula);
+#if (DEBUG)
+                    Log($"Sending message blobs.");
+#endif
+                    foreach (var message in toSend)
                     {
-                        RecepientId = (int)message.RecepientId,
-                        Priority = (int)message.Priority
-                    });
-                }
-                capsula.MessageToDeleteIds = context.BlobMessages
-                    .Where(u => u.DoDelete == 1)
-                    .Select(u => (long)u.PublicId).ToList();
+                        BinaryEncoder.SendBytes(stream, message.Blob);
+                    }
+#if (DEBUG)
+                    Log($"Receiving PushResponse");
+#endif
+                    PushResponse response = TextEncoder.ReadJson<PushResponse>(stream);
+                    var selfMessagesZip = selfMessages.Zip(response.MessageIds, (u, v) =>
+                        new { PrivateId = u, PublicId = v });
 
+                    foreach (var message in selfMessagesZip)
+                    {
+                        context.BlobMessages.Where(u => u.Id == message.PrivateId)
+                            .SingleOrDefault().PublicId = message.PublicId;
+                    }
 #if (DEBUG)
-                Log($"Sending capsula with {toSend.Count} messages. {capsula.MessageToDeleteIds.Count} will be deleted.");
+                    Log("Saving new public ids.");
 #endif
-                TextEncoder.SendJson(stream, capsula);
+                    context.SaveChanges();
 #if (DEBUG)
-                Log($"Sending message blobs.");
+                    Log("Cleaning queue.");
 #endif
-                foreach (var message in toSend)
-                {
-                    BinaryEncoder.SendBytes(stream, message.Blob);
-                }
-#if (DEBUG)
-                Log($"Receiving PushResponse");
-#endif
-                PushResponse response = TextEncoder.ReadJson<PushResponse>(stream);
-                var selfMessagesZip = selfMessages.Zip(response.MessageIds, (u, v) =>
-                    new { PrivateId = u, PublicId = v });
+                    context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
+                    context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1 and PUBLIC_ID<>null;;");
+                    context.SaveChanges();
 
-                foreach (var message in selfMessagesZip)
-                {
-                    context.BlobMessages.Where(u => u.Id == message.PrivateId)
-                        .SingleOrDefault().PublicId = message.PublicId;
                 }
-#if (DEBUG)
-                Log("Saving new public ids.");
-#endif
-                context.SaveChanges();
-#if (DEBUG)
-                Log("Cleaning queue.");
-#endif
-                context.Database.ExecuteSqlCommand("delete from TO_SEND_MESSAGES;");
-                context.Database.ExecuteSqlCommand("delete from BLOB_MESSAGES where DO_DELETE=1 and PUBLIC_ID<>null;;");
-                context.SaveChanges();
 
+                Log("Push have been done.");
             }
-
-            Log("Push have been done.");
         }
 
         public int Pull()
         {
             int changes = 0;
             ThrowExceptionIfNotConnected();
-            Log("Sending PULL command.");
-            BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
-#if (DEBUG)
-            Log("Sending ClientPullCapsula.");
-#endif
-            ClientPullCapsula clientCapsula;
-            using (Context context = new Context(config))
-            {
-                clientCapsula = new ClientPullCapsula()
-                {
-                    AesKeysUserIds = context.Contacts
-                        .Where(u => u.ReceiveAesKey == null)
-                        .Select(u => u.PublicId)
-                        .ToArray()
-                };
-            }
-            TextEncoder.SendJson(stream, clientCapsula);
 
-            ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
-#if (DEBUG)
-            Log("Received ServerPullCapsula.");
-            changes += capsula.AesKeysUserIds.Count;
-            changes += capsula.Messages.Count;
-#endif
-            using (Context context = new Context(config))
+            lock (mutex)
             {
+                Log("Sending PULL command.");
+                BinaryEncoder.SendCommand(stream, ConnectionCommand.PULL);
 #if (DEBUG)
-                Log("Receiving and saving AES keys.");
+                Log("Sending ClientPullCapsula.");
 #endif
-                foreach (var id in capsula.AesKeysUserIds)
+                ClientPullCapsula clientCapsula;
+                using (Context context = new Context(config))
                 {
-                    var user = new UContact(context.Contacts.Where(con => con.PublicId == id).SingleOrDefault());
-                    try
+                    clientCapsula = new ClientPullCapsula()
                     {
-                        user.ReceiveAesKey = RSAEncoder.DecryptAndVerify(BinaryEncoder.ReceiveBytes(stream), MyCertificate, X509Certificate2Utils.ImportFromPem(user.PublicCertificate));
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"Loading of Receive AESKey from {user.PublicId} has failed.");
-                        logger.LogException(this, ex);
-                    }
-                    PushOperations.Update(context, user, UserId, UserId);
-                }
-                context.SaveChanges();
-                
-#if (DEBUG)
-                Log("Receiving and saving messages.");
-#endif
-                foreach (PullMessage metaMessage in capsula.Messages)
-                {
-
-                    BlobMessages metaBlob = new BlobMessages()
-                    {
-                        PublicId = metaMessage.PublicId,
-                        SenderId = metaMessage.SenderId,
-                        Failed = 0,
-                        DoDelete = 0
+                        AesKeysUserIds = context.Contacts
+                            .Where(u => u.ReceiveAesKey == null)
+                            .Select(u => u.PublicId)
+                            .ToArray()
                     };
-                    context.BlobMessages.Add(metaBlob);
-                    context.SaveChanges();
-
-                    try
-                    {
-                        PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id, UserId);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"Loading of message {metaMessage.PublicId} has failed.");
-                        metaBlob.Failed = 1;
-                        logger.LogException(this, ex);
-                    }
-                    context.SaveChanges();
-
-
                 }
+                TextEncoder.SendJson(stream, clientCapsula);
+
+                ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
+#if (DEBUG)
+                Log("Received ServerPullCapsula.");
+                changes += capsula.AesKeysUserIds.Count;
+                changes += capsula.Messages.Count;
+#endif
+                using (Context context = new Context(config))
+                {
+#if (DEBUG)
+                    Log("Receiving and saving AES keys.");
+#endif
+                    foreach (var id in capsula.AesKeysUserIds)
+                    {
+                        var user = new UContact(context.Contacts.Where(con => con.PublicId == id).SingleOrDefault());
+                        try
+                        {
+                            user.ReceiveAesKey = RSAEncoder.DecryptAndVerify(BinaryEncoder.ReceiveBytes(stream), MyCertificate, X509Certificate2Utils.ImportFromPem(user.PublicCertificate));
+                        }
+                        catch (Exception ex)
+                        {
+                            Log($"Loading of Receive AESKey from {user.PublicId} has failed.");
+                            logger.LogException(this, ex);
+                        }
+                        PushOperations.Update(context, user, UserId, UserId);
+                    }
+                    context.SaveChanges();
+
+#if (DEBUG)
+                    Log("Receiving and saving messages.");
+#endif
+                    foreach (PullMessage metaMessage in capsula.Messages)
+                    {
+
+                        BlobMessages metaBlob = new BlobMessages()
+                        {
+                            PublicId = metaMessage.PublicId,
+                            SenderId = metaMessage.SenderId,
+                            Failed = 0,
+                            DoDelete = 0
+                        };
+                        context.BlobMessages.Add(metaBlob);
+                        context.SaveChanges();
+
+                        try
+                        {
+                            PullMessageParser.ParseEncryptedMessage(context, BinaryEncoder.ReceiveBytes(stream), metaBlob.SenderId, metaBlob.Id, UserId);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log($"Loading of message {metaMessage.PublicId} has failed.");
+                            metaBlob.Failed = 1;
+                            logger.LogException(this, ex);
+                        }
+                        context.SaveChanges();
+
+
+                    }
+                }
+                Log("Pull have been done.");
             }
-            Log("Pull have been done.");
             return changes;
         }
 
@@ -279,87 +295,99 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
         public void UntrustContact(int contactId)
         {
             ThrowExceptionIfNotConnected();
-            if (contactId == this.UserId)
+            lock (mutex)
             {
-                throw new Exception("You really don't want untrust yourself.");
-            }
 
-            Log("Sending UNTRUST_CONTACT command.");
-            BinaryEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
-            BinaryEncoder.SendInt(stream, contactId);
-            using (Context context = new Context(config))
-            {
-                var contact = new UContact(context.Contacts
-                    .Where(u => u.PublicId == contactId)
-                    .SingleOrDefault())
+                if (contactId == this.UserId)
                 {
-                    Trusted = false
-                };
+                    throw new Exception("You really don't want untrust yourself.");
+                }
 
-                PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
+                Log("Sending UNTRUST_CONTACT command.");
+                BinaryEncoder.SendCommand(stream, ConnectionCommand.UNTRUST_CONTACT);
+                BinaryEncoder.SendInt(stream, contactId);
+                using (Context context = new Context(config))
+                {
+                    var contact = new UContact(context.Contacts
+                        .Where(u => u.PublicId == contactId)
+                        .SingleOrDefault())
+                    {
+                        Trusted = false
+                    };
 
-                context.SaveChanges();
+                    PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
+
+                    context.SaveChanges();
+                }
             }
+            Push();
         }
 
         public void TrustContact(int contactId)
         {
+            
             ThrowExceptionIfNotConnected();
+
             Pull();
-            Log("Sending TRUST_CONTACT command.");
-            BinaryEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
-
-            BinaryEncoder.SendInt(stream, contactId);
-            using (Context context = new Context(config))
+            lock (mutex)
             {
-                var contact = new UContact(context.Contacts
-                    .Where(u => u.PublicId == contactId)
-                    .SingleOrDefault())
+                Log("Sending TRUST_CONTACT command.");
+                BinaryEncoder.SendCommand(stream, ConnectionCommand.TRUST_CONTACT);
+
+                BinaryEncoder.SendInt(stream, contactId);
+                using (Context context = new Context(config))
                 {
-                    Trusted = true
-                };
-
-
-                if (contact.SendAesKey == null)
-                {
-                    Log("Sending new key.");
-                    BinaryEncoder.SendInt(stream, 1);
-                    AESPassword password = AESPassword.GenerateAESPassword();
-
-                    contact.SendAesKey = password.Password;
-                    X509Certificate2 recepientCert = X509Certificate2Utils.ImportFromPem(
-                        context.Contacts
+                    var contact = new UContact(context.Contacts
                         .Where(u => u.PublicId == contactId)
-                        .Select(u => u.PublicCertificate)
-                        .SingleOrDefault());
+                        .SingleOrDefault())
+                    {
+                        Trusted = true
+                    };
 
-                    byte[] toSend = RSAEncoder.EncryptAndSign(password.Password, recepientCert, MyCertificate);
-                    BinaryEncoder.SendBytes(stream, toSend);
 
-                }
-                else
-                {
-                    Log("No new key will be sended.");
-                    BinaryEncoder.SendInt(stream, 0);
-                }
+                    if (contact.SendAesKey == null)
+                    {
+                        Log("Sending new key.");
+                        BinaryEncoder.SendInt(stream, 1);
+                        AESPassword password = AESPassword.GenerateAESPassword();
 
-                if (contactId != this.UserId)
-                {
-                    PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
-                }
-                else
-                {
-                    var me = context.Contacts
-                        .Where(u => u.PublicId == UserId)
-                        .Single();
-                    me.SendAesKey = contact.SendAesKey;
-                    me.ReceiveAesKey = contact.ReceiveAesKey;
-                }
+                        contact.SendAesKey = password.Password;
+                        X509Certificate2 recepientCert = X509Certificate2Utils.ImportFromPem(
+                            context.Contacts
+                            .Where(u => u.PublicId == contactId)
+                            .Select(u => u.PublicCertificate)
+                            .SingleOrDefault());
 
-                context.SaveChanges();
+                        byte[] toSend = RSAEncoder.EncryptAndSign(password.Password, recepientCert, MyCertificate);
+                        BinaryEncoder.SendBytes(stream, toSend);
+
+                    }
+                    else
+                    {
+                        Log("No new key will be sended.");
+                        BinaryEncoder.SendInt(stream, 0);
+                    }
+
+                    if (contactId != this.UserId)
+                    {
+                        PushOperations.SendJsonCapsula(context, contact.GetSelfUpdate(), UserId, UserId);
+                    }
+                    else
+                    {
+                        var me = context.Contacts
+                            .Where(u => u.PublicId == UserId)
+                            .Single();
+                        me.SendAesKey = contact.SendAesKey;
+                        me.ReceiveAesKey = contact.ReceiveAesKey;
+                    }
+
+                    context.SaveChanges();
+                }
+                Log("Trustification has been done.");
             }
-            Log("Trustification has been done.");
             Push();
+
+            
         }
 
         public SearchCServerCapsula SearchContact(int publicId)
@@ -388,11 +416,16 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
 
         public SearchCServerCapsula SearchContact(SearchCClientCapsula searchCClientCapsula)
         {
-            ThrowExceptionIfNotConnected();
-            BinaryEncoder.SendCommand(stream, ConnectionCommand.SEARCH_CONTACT);
+            lock (mutex)
+            {
+                ThrowExceptionIfNotConnected();
+                BinaryEncoder.SendCommand(stream, ConnectionCommand.SEARCH_CONTACT);
 
-            TextEncoder.SendJson(stream, searchCClientCapsula);
-            return TextEncoder.ReadJson<SearchCServerCapsula>(stream);
+                TextEncoder.SendJson(stream, searchCClientCapsula);
+
+                return TextEncoder.ReadJson<SearchCServerCapsula>(stream);
+            }
+            
         }
 
         private void ThrowExceptionIfNotConnected()

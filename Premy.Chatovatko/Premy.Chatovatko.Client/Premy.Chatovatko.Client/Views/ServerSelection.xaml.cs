@@ -32,7 +32,7 @@ namespace Premy.Chatovatko.Client.Views
             this.error = error;
         }
 
-        public async void DispleyError(String message)
+        public async void DisplayError(String message)
         {
             if(message == null)
             {
@@ -43,7 +43,7 @@ namespace Premy.Chatovatko.Client.Views
 
         protected override void OnAppearing()
         {
-            this.DispleyError(error);
+            this.DisplayError(error);
         }
 
         public void Confirm()
