@@ -1,5 +1,5 @@
-#define DEBUG
-//#undef DEBUG
+//#define DEBUG
+#undef DEBUG
 
 using Premy.Chatovatko.Client.Libs.ClientCommunication.Scenarios;
 using Premy.Chatovatko.Client.Libs.Database.Models;

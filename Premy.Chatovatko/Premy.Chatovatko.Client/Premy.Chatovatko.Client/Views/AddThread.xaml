@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Premy.Chatovatko.Client.Views.ThreadsList"
-             Title="Thread list">
+             x:Class="Premy.Chatovatko.Client.Views.AddThread"
+             Title="Add thread">
     <ContentPage.ToolbarItems>
 
-        <ToolbarItem Text="Add"
-                     x:Name="addThread"
-                     Icon="add.png"
-                     Clicked="addThread_Clicked"/>
+        <ToolbarItem Text="Close"
+                     x:Name="close"
+                     Icon="close.png"
+                     Clicked="close_Clicked"/>
+
 
     </ContentPage.ToolbarItems>
+
     <ContentPage.Content>
-        
-            <StackLayout>
-            <ScrollView>
-                <ListView ItemsSource="{Binding MessagesThreads}"
+        <ScrollView>
+            <StackLayout Padding="30" Spacing="10">
+                <StackLayout>
+                    <Label Text="Name:"/>
+                    <Entry x:Name="nameLabel"/>
+                </StackLayout>
+                <Label Text="Select one trusted user whom do you want to contact to:"/>
+                <ListView ItemsSource="{Binding Contacts}"
                   HasUnevenRows="True"
-                  ItemTapped="OnThreadTapped"
+                  ItemTapped="OnContactTapped"
                   BackgroundColor="#f5f5f5">
 
                     <ListView.ItemTemplate>
@@ -26,7 +32,7 @@
                                 <StackLayout Orientation="Horizontal"
                                                  HorizontalOptions="StartAndExpand">
 
-                                    <Label Text="{Binding Name}"
+                                    <Label Text="{Binding ShowName}"
                                                Margin="10" />
                                 </StackLayout>
 
@@ -34,8 +40,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </ScrollView>
-        </StackLayout>
-        
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

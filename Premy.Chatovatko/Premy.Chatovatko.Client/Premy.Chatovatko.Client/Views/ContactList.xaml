@@ -15,25 +15,27 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <ListView ItemsSource="{Binding Contacts}"
+            <ScrollView>
+                <ListView ItemsSource="{Binding Contacts}"
                   HasUnevenRows="True"
                   ItemTapped="OnContactTapped"
                   BackgroundColor="#f5f5f5">
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Orientation="Horizontal"
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal"
                                                  HorizontalOptions="StartAndExpand">
 
-                                <Label Text="{Binding ShowName}"
+                                    <Label Text="{Binding ShowName}"
                                                Margin="10" />
-                            </StackLayout>
+                                </StackLayout>
 
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
