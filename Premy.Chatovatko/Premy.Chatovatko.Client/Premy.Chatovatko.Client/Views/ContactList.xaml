@@ -4,6 +4,7 @@
              x:Class="Premy.Chatovatko.Client.Views.ContactList"
              Title="Contact list"
              xmlns:local="clr-namespace:Premy.Chatovatko.Client.Images;assembly=Premy.Chatovatko.Client">
+
     <ContentPage.ToolbarItems>
 
         <ToolbarItem Text="Search user"

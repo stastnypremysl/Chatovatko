@@ -16,11 +16,13 @@ namespace Premy.Chatovatko.Client.Views
 	public partial class ContactList : ContentPage
 	{
         private SettingsCapsula settings;
-		public ContactList (SettingsCapsula settings)
+        private readonly Action<Page> pushToNavigation;
+
+		public ContactList (SettingsCapsula settings, Action<Page> pushToNavigation)
 		{
 			InitializeComponent ();
             this.settings = settings;
-            //searchUser.Icon = (FileImageSource)FileImageSource.FromResource("Premy.Chatovatko.Client.Images.search.png");
+            this.pushToNavigation = pushToNavigation;
         }
 
         protected override void OnAppearing()
@@ -34,13 +36,9 @@ namespace Premy.Chatovatko.Client.Views
             if (e.Item != null)
             {
                 var contact = (Contacts)e.Item;
-                await Navigation.PushAsync(new ContactDetail(settings, contact.PublicId));
+                await Navigation.PushModalAsync(new ContactDetail(settings, contact.PublicId));
             }
         }
 
-        private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-
-        }
     }
 }
