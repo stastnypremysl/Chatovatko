@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="1d5c6655-8d69-4371-a64d-6be358083bb3" Publisher="CN=1f8ded02-1fc1-4347-ab5e-c8484bdd6abe" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="ec0cc741-fd3e-485c-81be-68815c480690" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="45990Pemyslastn.Chatovatko" Publisher="CN=2E8A8FE6-1B33-42CE-9527-F9036DE56956" Version="1.1.0.0" />
+  <mp:PhoneIdentity PhoneProductId="7b3d1592-59a4-4cfd-b715-9b69b7c1fe41" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>Premy.Chatovatko.Client.UWP</DisplayName>
-    <PublisherDisplayName>1f8ded02-1fc1-4347-ab5e-c8484bdd6abe</PublisherDisplayName>
+    <DisplayName>Chatovatko</DisplayName>
+    <PublisherDisplayName>Přemysl Šťastný</PublisherDisplayName>
     <Logo>assets\Store\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Premy.Chatovatko.Client.UWP.App">
-      <uap:VisualElements DisplayName="Premy.Chatovatko.Client.UWP" Square150x150Logo="assets\Medium\Medium150x150Logo.png" Square44x44Logo="assets\AppList\AppList.png" Description="Premy.Chatovatko.Client.UWP" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="Chatovatko" Square150x150Logo="assets\Medium\Medium150x150Logo.png" Square44x44Logo="assets\AppList\AppList.png" Description="Premy.Chatovatko.Client.UWP" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="assets\Wide\Wide310x150Logo.png" Square310x310Logo="assets\Large\Large310x310Logo.png" Square71x71Logo="assets\Small\Small71x71Logo.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />
