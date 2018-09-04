@@ -1,6 +1,10 @@
-﻿using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -37,7 +41,24 @@ namespace Premy.Chatovatko.Libs.Cryptography
         /// <returns></returns>
         public static byte[] ExportToPkcs12(X509Certificate2 cert)
         {
-            return cert.Export(X509ContentType.Pkcs12, String.Empty);
+            try
+            {
+                var pkcs12Store = new Pkcs12Store();
+                var certEntry = new X509CertificateEntry(DotNetUtilities.FromX509Certificate(cert));
+                pkcs12Store.SetCertificateEntry(cert.SubjectName.Name, certEntry);
+                pkcs12Store.SetKeyEntry(cert.SubjectName.Name, new AsymmetricKeyEntry(DotNetUtilities.GetKeyPair(cert.PrivateKey).Private), new[] { certEntry });
+                using (MemoryStream pfxStream = new MemoryStream())
+                {
+                    pkcs12Store.Save(pfxStream, new char[0], new SecureRandom());
+                    pfxStream.Seek(0, SeekOrigin.Begin);
+                    return pfxStream.ToArray();
+                }
+            }
+            catch
+            {
+                throw;
+                //return cert.Export(X509ContentType.Pkcs12, String.Empty);
+            }
         }        
 
         /// <summary>
@@ -62,8 +83,9 @@ namespace Premy.Chatovatko.Libs.Cryptography
             }
             else
             {
-                flag = X509KeyStorageFlags.PersistKeySet;
+                flag = X509KeyStorageFlags.DefaultKeySet;
             }
+            
             return new X509Certificate2(data, String.Empty, flag);
         }
 

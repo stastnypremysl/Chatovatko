@@ -9,9 +9,9 @@ C:\Users\premy\Documents\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\D
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.deps.json
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.dll
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\bin\Debug\netstandard2.0\Premy.Chatovatko.Libs.pdb
+C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.csprojAssemblyReference.cache
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.csproj.CoreCompileInputs.cache
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.AssemblyInfoInputs.cache
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.AssemblyInfo.cs
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.dll
 C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.pdb
-C:\Chatovatko\Premy.Chatovatko\Premy.Chatovatko.Libs\obj\Debug\netstandard2.0\Premy.Chatovatko.Libs.csprojAssemblyReference.cache
