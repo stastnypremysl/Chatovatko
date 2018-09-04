@@ -12,7 +12,7 @@ Chatovatko is currently tested under Ubuntu 18.04 and Windows 10.
 * Multiplatform server app (Windows, Linux)
 
 ## Releases
-The last realease is **0.3**. Android app can be downloaded from [Google Play](https://play.google.com/store/apps/details?id=cos.premy.chatovatko.client). UWP client app must be sideloaded.
+The last realease is **0.3**. Android app can be downloaded from [Google Play](https://play.google.com/store/apps/details?id=cos.premy.chatovatko.client). UWP client app isn't available on Microsoft Store and must be sideloaded.
 
 ## Important technical details
 * **.NET Core 2.1** used for server-side service and for command-based console application (for testing purpuse)
