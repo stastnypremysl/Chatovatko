@@ -1,16 +1,11 @@
-﻿using Premy.Chatovatko.Client.Libs.Database.JsonModels;
-using Premy.Chatovatko.Client.Libs.Database.Models;
-using Premy.Chatovatko.Libs.DataTransmission;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Transactions;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Premy.Chatovatko.Client.Libs.Database.InsertModels;
-using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
 using Premy.Chatovatko.Client.Libs.Database.DeleteModels;
+using Premy.Chatovatko.Client.Libs.Database.InsertModels;
+using Premy.Chatovatko.Client.Libs.Database.JsonModels;
+using Premy.Chatovatko.Client.Libs.Database.Models;
+using Premy.Chatovatko.Client.Libs.Database.UpdateModels;
+using Premy.Chatovatko.Client.Libs.Sync;
+using System;
+using System.Linq;
 
 namespace Premy.Chatovatko.Client.Libs.Database
 {
@@ -19,7 +14,7 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
         public static void SendJsonCapsula(Context context, JsonCapsula toSend, long recepientId, long myUserId)
         {
-            if(toSend == null)
+            if (toSend == null)
             {
                 return;
             }
@@ -27,11 +22,11 @@ namespace Premy.Chatovatko.Client.Libs.Database
             var recepient = context.Contacts
                 .Where(u => u.PublicId == recepientId)
                 .SingleOrDefault();
-            if(recepient == null)
+            if (recepient == null)
             {
                 throw new Exception($"User is not downloaded in local database.");
             }
-            else if  (recepient.Trusted != 1)
+            else if (recepient.Trusted != 1)
             {
                 throw new Exception($"User {recepient.PublicId} ({recepient.UserName}) is not trusted.");
             }
@@ -64,24 +59,27 @@ namespace Premy.Chatovatko.Client.Libs.Database
 
             context.SaveChanges();
 
+            PushAction.Changed = true;
+
         }
 
         public static void Insert(Context context, ICInsertModel model, long recepientId, long myUserId)
         {
             SendJsonCapsula(context, model.GetSelfUpdate(), myUserId, myUserId);
             SendJsonCapsula(context, model.GetRecepientUpdate(), recepientId, myUserId);
-            
+
         }
 
         public static void Update(Context context, IUpdateModel model, long recepientId, long myUserId)
         {
             SendJsonCapsula(context, model.GetSelfUpdate(), myUserId, myUserId);
-            SendJsonCapsula(context, model.GetRecepientUpdate(), recepientId, myUserId);            
+            SendJsonCapsula(context, model.GetRecepientUpdate(), recepientId, myUserId);
         }
 
         public static void Delete(Context context, IDeleteModel model)
         {
             model.DoDelete(context);
+            PushAction.Changed = true;
         }
 
         internal static void DeleteBlobMessage(Context context, long BlobId, long myUserId)
@@ -95,8 +93,8 @@ namespace Premy.Chatovatko.Client.Libs.Database
                 var toDelete = context.ToSendMessages
                     .Where(u => u.BlobMessagesId == BlobId)
                     .SingleOrDefault();
-                if(toDelete != null)
-                { 
+                if (toDelete != null)
+                {
                     context.ToSendMessages.Remove(toDelete);
                 }
 

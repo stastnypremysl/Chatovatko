@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Premy.Chatovatko.Client.Libs.Database.Models
@@ -25,6 +25,18 @@ namespace Premy.Chatovatko.Client.Libs.Database.Models
         public long GetBlobId()
         {
             return (long)BlobMessagesId;
+        }
+
+        public string ShowName
+        {
+            get
+            {
+                if (NickName == null || NickName == "")
+                {
+                    return UserName;
+                }
+                return NickName;
+            }
         }
 
         public BlobMessages BlobMessagesNavigation { get; set; }

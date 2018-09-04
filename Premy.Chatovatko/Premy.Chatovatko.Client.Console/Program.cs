@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using static System.Console;
 using Premy.Chatovatko.Server.Logging;
 using Premy.Chatovatko.Libs.Logging;
@@ -137,45 +137,9 @@ namespace Premy.Chatovatko.Client
                                     {
                                         break;
                                     }
-                                    
 
-                                    IConnectionVerificator verificator = new ConnectionVerificator(logger, info.PublicCertificate);
-                                    connection = new Connection(logger, verificator, serverAddress, clientCert, config, userName);
-                                    connection.Connect();
 
-                                    Log("Saving settings.");
-                                    settingsLoader.Create(clientCert, connection.UserId, connection.UserName, info.Name, serverAddress, info.PublicCertificate, (int)connection.ClientId);
-                                    settings = settingsLoader.GetSettingsCapsula();
-
-                                    Log("Saving the self AES key.");
-                                    //The only user outside of the chain
-                                    using (Context context = new Context(config))
-                                    {
-                                        context.Contacts.Add(new Contacts()
-                                        {
-                                            PublicId = connection.UserId,
-                                            UserName = connection.UserName,
-                                            AlarmPermission = 1,
-                                            BlobMessagesId = null,
-
-                                            NickName = null,
-                                            Trusted = 1,
-                                            ReceiveAesKey = connection.SelfAesPassword?.Password,
-                                            SendAesKey = connection.SelfAesPassword?.Password,
-
-                                            PublicCertificate = X509Certificate2Utils.ExportToPem(clientCert)
-                                        });
-                                        context.SaveChanges();
-                                    }
-
-                                    Log("Self-trustification begin.");
-                                    connection.TrustContact(connection.UserId);
-                                    Log("Self-trustification done.");
-
-                                    Log("Updating.");
-                                    connection.Pull();
-                                    connection.Push();
-                                    Log("Updating done.");
+                                    ConnectionUtils.Register(out connection, out settings, logger, Log, serverAddress, clientCert, config, userName, settingsLoader, info);
 
                                 }
                                 break;

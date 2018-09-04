@@ -1,4 +1,4 @@
-﻿using Premy.Chatovatko.Client.Libs.Database.Models;
+using Premy.Chatovatko.Client.Libs.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -23,7 +23,7 @@ namespace Premy.Chatovatko.Client.Libs.UserData
         {
             Settings = settings;
             Config = config;
-            ClientCertificate = new X509Certificate2(Convert.FromBase64String(settings.PrivateCertificate));
+            ClientCertificate = new X509Certificate2(Convert.FromBase64String(settings.PrivateCertificate), String.Empty, X509KeyStorageFlags.Exportable);
         }
 
         

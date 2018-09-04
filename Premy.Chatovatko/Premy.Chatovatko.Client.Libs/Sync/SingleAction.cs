@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,9 +16,10 @@ namespace Premy.Chatovatko.Client.Libs.Sync
             return null;
         }
 
-        public void Run()
+        public bool Run()
         {
             action();
+            return false;
         }
     }
 }
