@@ -1,4 +1,5 @@
-# Chatovatko
+![Chatovatko](https://github.com/stastnypremysl/Chatovatko/blob/master/Premy.Chatovatko/Premy.Chatovatko.Client/Premy.Chatovatko.Client/Images/logo1.png)
+
 A chatting C# application with end-to-end encryption. The main purpuse of application is to deliver solution for secure chatting, where you can be sure your messages will remain private even if server will be misused.
 The application is now under development. The works on front end hasn't started yet.
 
@@ -12,7 +13,7 @@ Chatovatko is currently tested under Ubuntu 18.04 and Windows 10.
 * Multiplatform server app (Windows, Linux)
 
 ## Releases
-The last realease is **0.3**. Android app can be downloaded from [Google Play](https://play.google.com/store/apps/details?id=cos.premy.chatovatko.client). UWP client app isn't available on Microsoft Store and must be sideloaded.
+The last release is [**0.3**](https://github.com/stastnypremysl/Chatovatko/releases/tag/0.3). Android app can be downloaded from [Google Play](https://play.google.com/store/apps/details?id=cos.premy.chatovatko.client). UWP client app isn't available on Microsoft Store and must be [sideloaded](https://github.com/stastnypremysl/Chatovatko/releases/download/0.3/Premy.Chatovatko.Client.UWP_0.3.0.0_x86_x64_arm.appxbundle).
 
 ## Important technical details
 * **.NET Core 2.1** used for server-side service and for command-based console application (for testing purpuse)
