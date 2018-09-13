@@ -231,9 +231,9 @@ namespace Premy.Chatovatko.Client.Libs.ClientCommunication
                 ServerPullCapsula capsula = TextEncoder.ReadJson<ServerPullCapsula>(stream);
 #if (DEBUG)
                 Log("Received ServerPullCapsula.");
+#endif
                 changes += capsula.AesKeysUserIds.Count;
                 changes += capsula.Messages.Count;
-#endif
                 using (Context context = new Context(config))
                 {
 #if (DEBUG)
