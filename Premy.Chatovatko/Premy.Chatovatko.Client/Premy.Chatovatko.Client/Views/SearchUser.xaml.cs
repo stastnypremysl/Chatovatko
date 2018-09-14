@@ -39,7 +39,14 @@ namespace Premy.Chatovatko.Client.Views
                     {
                         if (userNameEntry.Text == null || !Validators.ValidateRegexUserName(userNameEntry.Text))
                         {
-                            capsula = app.connection.SearchContact(int.Parse(publicIdEntry.Text));
+                            if (int.TryParse(publicIdEntry.Text, out int publicId))
+                            {
+                                capsula = app.connection.SearchContact(publicId);
+                            }
+                            else
+                            {
+                                return;
+                            }
                         }
                         else
                         {
@@ -48,13 +55,20 @@ namespace Premy.Chatovatko.Client.Views
                     });
                 }
 
-                await Navigation.PopModalAsync();
+                if(capsula == null)
+                {
+                    ShowError("Parsing input", "Public id nor username isn't correct.");
+                    return;
+                }
+
+                
                 if (!capsula.Succeeded)
                 {   
                     ShowError("Searching user", "User not found");
                 }
                 else
                 {
+                    await Navigation.PopModalAsync();
                     await app.MainPage.Navigation.PushModalAsync(new NavigationPage(new ContactDetail(app.settings, capsula, app)));
                 }
 
