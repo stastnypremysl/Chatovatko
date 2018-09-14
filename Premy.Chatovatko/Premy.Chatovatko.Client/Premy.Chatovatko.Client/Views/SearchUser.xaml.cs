@@ -49,7 +49,15 @@ namespace Premy.Chatovatko.Client.Views
                 }
 
                 await Navigation.PopModalAsync();
-                await app.MainPage.Navigation.PushModalAsync(new NavigationPage(new ContactDetail(app.settings, capsula, app)));
+                if (!capsula.Succeeded)
+                {   
+                    ShowError("Searching user", "User not found");
+                }
+                else
+                {
+                    await app.MainPage.Navigation.PushModalAsync(new NavigationPage(new ContactDetail(app.settings, capsula, app)));
+                }
+
             }
             catch(Exception ex)
             {
