@@ -69,7 +69,7 @@ namespace Premy.Chatovatko.Client.Views
         {
             try
             {
-                var strToSend = toSend.Text;
+                var strToSend = toSend.Text??"";
                 toSend.Text = "";
                 await Task.Run(() =>
                 {
