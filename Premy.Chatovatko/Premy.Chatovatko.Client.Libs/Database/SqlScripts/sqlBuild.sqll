@@ -62,7 +62,7 @@ CREATE TABLE `main`.`settings` (
   `public_id` BIGINT NOT NULL);
 
   CREATE UNIQUE INDEX `fk_mess_thr_blob_mess_id_idx` ON messages_thread (`blob_messages_id` ASC);
-  CREATE UNIQUE INDEX `fk_mess_thr_with_user_id_idx` ON messages_thread (`with_user` ASC, `name`);
+  CREATE INDEX `fk_mess_thr_with_user_id_idx` ON messages_thread (`with_user` ASC, `name`);
   CREATE UNIQUE INDEX `fk_mess_thr_public_id_idx` ON messages_thread (`public_id`);
   
   --------------------------------------
