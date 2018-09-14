@@ -42,12 +42,15 @@ namespace Premy.Chatovatko.Client.Views
                 if (e.Item != null)
                 {
                     var contact = (Contacts)e.Item;
+
+                    CMessageThread thread;
                     using (Context context = new Context(settings.Config))
                     {
-                        CMessageThread thread = new CMessageThread(context, nameLabel.Text, false, contact.PublicId, settings.UserPublicId);
+                        thread = new CMessageThread(context, nameLabel.Text, false, contact.PublicId, settings.UserPublicId);
                         PushOperations.Insert(context, thread, contact.PublicId, settings.UserPublicId);
                     }
                     await Navigation.PopModalAsync();
+                    await app.MainPage.Navigation.PushModalAsync(new NavigationPage(new MessageView(app, thread.PublicId)));
                 }
             }
             catch(Exception ex)
@@ -86,6 +89,7 @@ namespace Premy.Chatovatko.Client.Views
         private void close_Clicked(object sender, EventArgs e)
         {
             Navigation.PopModalAsync();
+            
         }
 
         private async void ShowError(Exception ex)
