@@ -16,19 +16,19 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Padding="30" Spacing="10">
-                <StackLayout>
+                <StackLayout >
                     <Label Text="Name:"/>
-                    <Entry x:Name="nameLabel"/>
+                    <Entry x:Name="nameLabel" TextChanged="nameLabel_TextChanged"/>
                 </StackLayout>
                 <Label Text="Select one trusted user whom do you want to contact to:"/>
-                <ListView ItemsSource="{Binding Contacts}"
+                <ListView  ItemsSource="{Binding Contacts}"
                   HasUnevenRows="True"
                   ItemTapped="OnContactTapped"
-                  BackgroundColor="#f5f5f5">
+                  BackgroundColor="#f5f5f5" x:Name="usersList" IsEnabled="False">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <ViewCell>
+                            <ViewCell >
                                 <StackLayout Orientation="Horizontal"
                                                  HorizontalOptions="StartAndExpand">
 

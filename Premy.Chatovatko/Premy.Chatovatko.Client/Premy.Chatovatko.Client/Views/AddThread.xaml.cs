@@ -102,5 +102,17 @@ namespace Premy.Chatovatko.Client.Views
         {
             return "Add thread dialog";
         }
+
+        private void nameLabel_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(e.NewTextValue == null || e.NewTextValue.Equals(""))
+            {
+                usersList.IsEnabled = false;
+            }
+            else
+            {
+                usersList.IsEnabled = true;
+            }
+        }
     }
 }
