@@ -12,7 +12,11 @@
                     <Entry x:Name="serverAddressEntry" Text="51.144.234.233" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
                     <Entry x:Name="passwordEntry" IsPassword="True" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
                 </StackLayout>
-                <Label Text="If you are using this certificate first time, please enter new username" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="40, 0, 40, 0"/>
+                
+                <Label Text="If you are using this certificate first time, please enter new username." 
+                       HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="40, 0, 40, 0"/>
+                <Label Text="Username must be 4 chars at least long and can't be longer than 45 chars. It must match regex ^[a-zA-Z][-a-zA-Z0-9_]+$." 
+                       HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="40, 0, 40, 0"/>                
                 <Entry x:Name="userNameEntry" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" WidthRequest="200"/>
                 <Button VerticalOptions="End" HorizontalOptions="CenterAndExpand" x:Name="ConfirmButton" Text="Confirm" Pressed="Confirm"/>
             </StackLayout>
